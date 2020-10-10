@@ -8,6 +8,7 @@ Matthew Chen
 Melissa Cox
 Leonard Wang
 Clayton Chu
+[Clayton](https://www.facebook.com/messenger_media/?thread_id=3155855441208005&attachment_id=1638565866348542&message_id=mid.%24gAAs2O9qJIsV7QFoF7F1DxS1MjIgu)
 
 ## Dependencies
 
@@ -39,7 +40,7 @@ First, install [the Quickstart dependencies](https://github.com/rothfels/bespin#
 
 ### Choose your team slug
 
-Choose a short, alphanumeric [*slug*](https://en.wikipedia.org/wiki/Clean_URL#Slug) for your project. This will be used to identify all the AWS resources created for your project, as well as the public URL for your project. Once you finish the Quickstart, your app will be available at https://**yourteamslug**.cloudcity.computer. **Your slug should be only letters and digits.**
+Choose a short, alphanumeric [_slug_](https://en.wikipedia.org/wiki/Clean_URL#Slug) for your project. This will be used to identify all the AWS resources created for your project, as well as the public URL for your project. Once you finish the Quickstart, your app will be available at https://**yourteamslug**.cloudcity.computer. **Your slug should be only letters and digits.**
 
 ### Get the starter project
 
@@ -99,7 +100,6 @@ Open `Debug Console` in VS Code to see console output.
 Set breakpoints in the gutter to the left of your code. **Note: these only work on code executing on the server, not in the browser.**
 
 ![image](https://user-images.githubusercontent.com/1095573/93257545-dcf9ee00-f751-11ea-9a7a-1f103a3d3c5a.png)
-
 
 #### Run React Storybook
 
