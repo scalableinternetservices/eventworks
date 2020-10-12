@@ -4,22 +4,14 @@ Welcome to a new way of networking!
 
 # Team
 
-<<<<<<< HEAD
-## Matthew Chen
+*** Matthew Chen ***
 ![team member #1 - Matthew Chen](./images/matt.png)
-## Melissa Cox
+*** Melissa Cox ***
 ![team member #2 - Melissa Cox](./images/melissa.png)
-## Leonard Wang
-![team member #3 - Leonard Wang](./images/leonard.png)
-## Clayton Chu
-![team member #4 - Clayton Chu](./images/clayton.png)
-=======
-Matthew Chen
-Melissa Cox
-Leonard Wang
-Clayton Chu
-[Clayton](https://www.facebook.com/messenger_media/?thread_id=3155855441208005&attachment_id=1638565866348542&message_id=mid.%24gAAs2O9qJIsV7QFoF7F1DxS1MjIgu)
->>>>>>> 7a467b2c77bcae91871029ff2ef1d1b8f13005d0
+*** Leonard Wang ***
+![team member #3 - Leonard Wang](./images/leonard.jpg)
+*** Clayton Chu ***
+![team member #4 - Clayton Chu](./images/clayton.jpg)
 
 ## Dependencies
 
