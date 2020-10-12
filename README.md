@@ -1,13 +1,17 @@
-# bespin
+# EventWorks
 
-Welcome to Cloud City!
+Welcome to a new way of networking!
 
 # Team
 
-Matthew Chen
-Melissa Cox
-Leonard Wang
-Clayton Chu
+## Matthew Chen
+![team member #1 - Matthew Chen](./images/matt.png)
+## Melissa Cox
+![team member #2 - Melissa Cox](./images/melissa.png)
+## Leonard Wang
+![team member #3 - Leonard Wang](./images/leonard.png)
+## Clayton Chu
+![team member #4 - Clayton Chu](./images/clayton.png)
 
 ## Dependencies
 
