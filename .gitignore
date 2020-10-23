@@ -19,3 +19,7 @@ terraform.tfstate.backup
 
 # other
 .DS_Store
+
+.eslintrc.js*
+.vscode/
+prettier.config.js*

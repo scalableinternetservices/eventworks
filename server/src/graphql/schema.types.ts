@@ -90,6 +90,13 @@ export enum UserType {
   User = 'USER',
 }
 
+export enum EventUserPerm {
+  Attendee = 1,
+  TableLead = 2,
+  CoHost = 4,
+  EventHost = 8
+}
+
 export type ResolverTypeWrapper<T> = Promise<T> | T
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {

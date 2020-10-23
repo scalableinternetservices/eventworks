@@ -1,5 +1,6 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { User as GraphqlUser, UserType } from '../graphql/schema.types'
+import { EventUserConfig } from './EventUserConfig'
 
 @Entity()
 export class User extends BaseEntity implements GraphqlUser {
@@ -15,6 +16,11 @@ export class User extends BaseEntity implements GraphqlUser {
   @Column({
     length: 100,
   })
+  name: string
+
+  @Column({
+    length: 100,
+  })
   email: string
 
   @Column({
@@ -26,7 +32,10 @@ export class User extends BaseEntity implements GraphqlUser {
 
   @Column({
     length: 100,
-    nullable: true,
+    nullable: true
   })
-  name: string
+  photoLink: string
+
+  @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.user)
+  eventUserConfigs: EventUserConfig[]
 }

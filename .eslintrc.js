@@ -26,4 +26,7 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'error',
     'react/no-unescaped-entities': 'off',
   },
+  "prettier/prettier": ["error", {
+   endOfLine: "auto"
+ }],
 }
