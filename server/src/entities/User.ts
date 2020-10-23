@@ -1,5 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { User as GraphqlUser, UserType } from '../graphql/schema.types'
+import { ChatMessage } from './ChatMessage'
+import { EventTable } from './EventTable'
 import { EventUserConfig } from './EventUserConfig'
 
 @Entity()
@@ -38,4 +40,10 @@ export class User extends BaseEntity implements GraphqlUser {
 
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.user)
   eventUserConfigs: EventUserConfig[]
+
+  @OneToMany(() => ChatMessage, msg => msg.user)
+  chatMessages: ChatMessage[]
+
+  @OneToMany(() => EventTable, tbl => tbl.head)
+  tables: EventTable[]
 }

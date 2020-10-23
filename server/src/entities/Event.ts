@@ -1,4 +1,5 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { ChatMessage } from './ChatMessage'
 import { EventUserConfig } from './EventUserConfig'
 
 @Entity()
@@ -28,7 +29,7 @@ export class Event extends BaseEntity {
   endTime: Date
 
   @Column('int')
-  capacity: number
+  userCapacity: number
 
   // deal with this later
   @Column({ default: false })
@@ -36,4 +37,7 @@ export class Event extends BaseEntity {
 
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.event)
   eventUserConfigs: EventUserConfig[]
+
+  @OneToMany(() => ChatMessage, msg => msg.event)
+  chatMessages: ChatMessage[]
 }
