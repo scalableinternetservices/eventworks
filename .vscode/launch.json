@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "server.ts (restart on edit)",
-      "type": "pwa-node",
-      // "type": "node",
+      // "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ts-node-dev",
       "stopOnEntry": false,
@@ -23,8 +23,8 @@
     },
     {
       "name": "server.ts (no restart)",
-      "type": "pwa-node",
-      // "type": "node",
+      // "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ts-node",
       "stopOnEntry": false,
