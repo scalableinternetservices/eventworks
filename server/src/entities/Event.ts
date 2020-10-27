@@ -15,6 +15,9 @@ export class Event extends BaseEntity {
   })
   description: string
 
+  @Column()
+  orgName: string
+
   @UpdateDateColumn()
   timeCreated: Date
 
