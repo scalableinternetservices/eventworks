@@ -10,6 +10,7 @@ export enum Route {
   PROJECTS = 'app/projects',
   PLAYGROUND = 'app/playground',
   PLAYGROUND_APP = 'app/playground/:app',
+  CREATE_FORM = 'app/createevent'
 }
 
 export enum PlaygroundApp {
@@ -30,6 +31,9 @@ export function getPlaygroundPath() {
   return getPath(Route.PLAYGROUND)
 }
 
+export function getEventCreateFormPath() {
+  return getPath(Route.CREATE_FORM)
+}
 /**
  * Example: getPath(ROUTES.TASK) returns "/leasing/tasks" while getPath(ROUTES.TASK, {taskId: 5}) returns "leasing/tasks/task/5".
  *

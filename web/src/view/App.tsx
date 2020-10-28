@@ -10,6 +10,7 @@ import { style } from '../style/styled'
 import { fetchUser } from './auth/fetchUser'
 import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
+import { EventCreateForm } from './page/EventCreateForm'
 import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
@@ -57,6 +58,7 @@ export function AppBody() {
         <ProjectsPage path={Route.PROJECTS} />
         <PlaygroundPage path={Route.PLAYGROUND} />
         <PlaygroundPage path={Route.PLAYGROUND_APP} />
+        <EventCreateForm path={Route.CREATE_FORM} />
       </Router>
       <Footer>
         <FooterText>© 2020 John Rothfels</FooterText>
