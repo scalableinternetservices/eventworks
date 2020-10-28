@@ -1,6 +1,8 @@
 import { createPool, PoolConnection, QueryOptions } from 'mysql2'
 import { createConnection } from 'typeorm'
+import { ChatMessage } from '../entities/ChatMessage'
 import { Event } from '../entities/Event'
+import { EventTable } from '../entities/EventTable'
 import { EventUserConfig } from '../entities/EventUserConfig'
 import { Session } from '../entities/Session'
 import { Survey } from '../entities/Survey'
@@ -22,7 +24,7 @@ export async function initORM() {
     username: process.env.MYSQL_USER || 'root',
     synchronize: true,
     logging: false,
-    entities: [User, Session, Survey, SurveyQuestion, SurveyAnswer, EventUserConfig, Event],
+    entities: [User, Session, Survey, SurveyQuestion, SurveyAnswer, EventUserConfig, Event, ChatMessage, EventTable],
     extra: {
       connectionLimit: 5,
     },
