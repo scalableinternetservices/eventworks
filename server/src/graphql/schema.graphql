@@ -19,19 +19,41 @@ type Query {
   self: User
 
   surveys: [Survey!]!
-  survey (surveyId: Int!): Survey
+  survey(surveyId: Int!): Survey
 }
 
 type Mutation {
   # Records an answer to a survey question presented in class.
-  answerSurvey (input: SurveyInput!): Boolean!
+  answerSurvey(input: SurveyInput!): Boolean!
 
   # Moves the survey to the next question (or starts it if it hasn't started). ADMIN only.
-  nextSurveyQuestion (surveyId: Int!): Survey
+  nextSurveyQuestion(surveyId: Int!): Survey
+  #Creates Event from form
+  createEvent(input: EventInput!): String!
 }
 
 type Subscription {
-  surveyUpdates (surveyId: Int!): Survey
+  surveyUpdates(surveyId: Int!): Survey
+}
+
+#wrote manually
+input EventInput {
+  startTime: String!
+  endTime: String!
+  capacity: Int!
+  eventName: String!
+  orgName: String!
+  description: String!
+}
+
+#wrote manually, overlaps with input above
+type Event {
+  startTime: String!
+  endTime: String!
+  capacity: Int!
+  eventName: String!
+  orgName: String!
+  description: String!
 }
 
 type User {
@@ -41,12 +63,15 @@ type User {
   name: String!
 }
 
-enum UserType { ADMIN, USER }
+enum UserType {
+  ADMIN
+  USER
+}
 
 enum EventUserPerm {
-  ATTENDEE,
-  TABLELEAD,
-  COHOST,
+  ATTENDEE
+  TABLELEAD
+  COHOST
   EVENTHOST
 }
 

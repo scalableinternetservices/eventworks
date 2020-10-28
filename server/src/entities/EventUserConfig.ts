@@ -1,5 +1,5 @@
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-import { EventUserPerm } from '../graphql/schema.types'
+//import { EventUserPerm } from '../graphql/schema.types'
 import { Event } from './Event'
 import { User } from './User'
 
@@ -16,10 +16,10 @@ export class EventUserConfig extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: EventUserPerm,
-    default: EventUserPerm.Attendee,
+    //enum: EventUserPerm,
+    //default: EventUserPerm.Attendee,
   })
-  userType: EventUserPerm
+  //userType: EventUserPerm
 
   // only applies if they are a table lead
   @Column('int')
