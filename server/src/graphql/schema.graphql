@@ -43,6 +43,13 @@ type User {
 
 enum UserType { ADMIN, USER }
 
+enum EventUserPerm {
+  ATTENDEE,
+  TABLELEAD,
+  COHOST,
+  EVENTHOST
+}
+
 type Survey {
   id: Int!
 
@@ -88,4 +95,3 @@ input SurveyInput {
   questionId: Int!
   answer: String!
 }
-
