@@ -30,6 +30,8 @@ type Mutation {
   nextSurveyQuestion(surveyId: Int!): Survey
   #Creates Event from form
   createEvent(input: EventInput!): String!
+  #below is to update an event
+  #updateEvent(id: ID!, input: EventInput!): Event!
 }
 
 type Subscription {
@@ -48,6 +50,7 @@ input EventInput {
 
 #wrote manually, overlaps with input above
 type Event {
+  #id: Int!
   startTime: String!
   endTime: String!
   capacity: Int!

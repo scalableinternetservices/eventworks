@@ -4,6 +4,7 @@ import { Button } from '../../style/button';
 import { Input } from '../../style/input';
 import { AppRouteParams } from '../nav/route';
 
+
 interface EventCreateForm extends RouteComponentProps, AppRouteParams {}
 
 export function EventCreateForm(props: EventCreateForm) {
@@ -23,6 +24,7 @@ export function EventCreateForm(props: EventCreateForm) {
       Description: ${description}
       Event Name: ${eventName}
     `);
+
 
     event.preventDefault();
   }
