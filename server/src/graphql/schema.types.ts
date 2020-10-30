@@ -27,6 +27,7 @@ export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
+  createEvent: Scalars['String']
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -37,6 +38,10 @@ export interface MutationNextSurveyQuestionArgs {
   surveyId: Scalars['Int']
 }
 
+export interface MutationCreateEventArgs {
+  input: EventInput
+}
+
 export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
@@ -44,6 +49,25 @@ export interface Subscription {
 
 export interface SubscriptionSurveyUpdatesArgs {
   surveyId: Scalars['Int']
+}
+
+export interface EventInput {
+  startTime: Scalars['String']
+  endTime: Scalars['String']
+  capacity: Scalars['Int']
+  eventName: Scalars['String']
+  orgName: Scalars['String']
+  description: Scalars['String']
+}
+
+export interface Event {
+  __typename?: 'Event'
+  startTime: Scalars['String']
+  endTime: Scalars['String']
+  capacity: Scalars['Int']
+  eventName: Scalars['String']
+  orgName: Scalars['String']
+  description: Scalars['String']
 }
 
 export interface User {
@@ -178,9 +202,11 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>
   Mutation: ResolverTypeWrapper<{}>
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
-  Subscription: ResolverTypeWrapper<{}>
-  User: ResolverTypeWrapper<User>
   String: ResolverTypeWrapper<Scalars['String']>
+  Subscription: ResolverTypeWrapper<{}>
+  EventInput: EventInput
+  Event: ResolverTypeWrapper<Event>
+  User: ResolverTypeWrapper<User>
   UserType: UserType
   EventUserPerm: EventUserPerm
   Survey: ResolverTypeWrapper<Survey>
@@ -195,9 +221,11 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']
   Mutation: {}
   Boolean: Scalars['Boolean']
-  Subscription: {}
-  User: User
   String: Scalars['String']
+  Subscription: {}
+  EventInput: EventInput
+  Event: Event
+  User: User
   Survey: Survey
   SurveyQuestion: SurveyQuestion
   SurveyAnswer: SurveyAnswer
@@ -234,6 +262,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
+  createEvent?: Resolver<
+    ResolversTypes['String'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateEventArgs, 'input'>
+  >
 }
 
 export type SubscriptionResolvers<
@@ -247,6 +281,19 @@ export type SubscriptionResolvers<
     ContextType,
     RequireFields<SubscriptionSurveyUpdatesArgs, 'surveyId'>
   >
+}
+
+export type EventResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
+> = {
+  startTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  capacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  eventName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
 export type UserResolvers<
@@ -299,6 +346,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
+  Event?: EventResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Survey?: SurveyResolvers<ContextType>
   SurveyQuestion?: SurveyQuestionResolvers<ContextType>

@@ -30,6 +30,10 @@ const otherTabs = [
     name: 'playground',
     path: getPath(Route.PLAYGROUND),
   },
+  {
+    name: 'create event',
+    path: getPath(Route.CREATE_FORM),
+  },
 ]
 
 export function NavBar() {
