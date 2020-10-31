@@ -11,7 +11,7 @@ import {
   FetchSurvey_survey_currentQuestion,
   FetchSurvey_survey_currentQuestion_answers,
   SurveySubscription,
-  SurveySubscriptionVariables,
+  SurveySubscriptionVariables
 } from '../../graphql/query.gen'
 import { Button } from '../../style/button'
 import { H1, H2 } from '../../style/header'
@@ -23,6 +23,7 @@ import { link } from '../nav/Link'
 import { getSurveyPath } from '../nav/route'
 import { handleError } from '../toast/error'
 import { toast } from '../toast/toast'
+import { ChatBox } from './Chat'
 import { fetchSurvey, fetchSurveys, subscribeSurveys } from './fetchSurveys'
 import { answerSurveyQuestion, nextSurveyQuestion } from './mutateSurveys'
 
@@ -51,6 +52,7 @@ function SurveyList() {
           <BodyText $color={s.isStarted && !s.isCompleted ? 'coral' : undefined}>{surveyLabel(s)}</BodyText>
         </div>
       ))}
+      <ChatBox />
     </div>
   )
 }

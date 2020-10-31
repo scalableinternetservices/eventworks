@@ -17,6 +17,7 @@ export interface Query {
   self?: Maybe<User>
   surveys: Array<Survey>
   survey?: Maybe<Survey>
+  chatMessages: Array<ChatMessage>
 }
 
 export interface QuerySurveyArgs {
@@ -28,6 +29,7 @@ export interface Mutation {
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
   createEvent: Scalars['String']
+  sendMessage: ChatMessage
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -42,9 +44,15 @@ export interface MutationCreateEventArgs {
   input: EventInput
 }
 
+export interface MutationSendMessageArgs {
+  from: Scalars['String']
+  message: Scalars['String']
+}
+
 export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
+  chatUpdates?: Maybe<ChatMessage>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -54,7 +62,7 @@ export interface SubscriptionSurveyUpdatesArgs {
 export interface EventInput {
   startTime: Scalars['String']
   endTime: Scalars['String']
-  capacity: Scalars['Int']
+  userCapacity: Scalars['Int']
   eventName: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
@@ -119,6 +127,12 @@ export interface SurveyAnswer {
 export interface SurveyInput {
   questionId: Scalars['Int']
   answer: Scalars['String']
+}
+
+export interface ChatMessage {
+  __typename?: 'ChatMessage'
+  id: Scalars['Int']
+  message: Scalars['String']
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -213,6 +227,7 @@ export type ResolversTypes = {
   SurveyQuestion: ResolverTypeWrapper<SurveyQuestion>
   SurveyAnswer: ResolverTypeWrapper<SurveyAnswer>
   SurveyInput: SurveyInput
+  ChatMessage: ResolverTypeWrapper<ChatMessage>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -230,6 +245,7 @@ export type ResolversParentTypes = {
   SurveyQuestion: SurveyQuestion
   SurveyAnswer: SurveyAnswer
   SurveyInput: SurveyInput
+  ChatMessage: ChatMessage
 }
 
 export type QueryResolvers<
@@ -244,6 +260,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySurveyArgs, 'surveyId'>
   >
+  chatMessages?: Resolver<Array<ResolversTypes['ChatMessage']>, ParentType, ContextType>
 }
 
 export type MutationResolvers<
@@ -268,6 +285,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateEventArgs, 'input'>
   >
+  sendMessage?: Resolver<
+    ResolversTypes['ChatMessage'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationSendMessageArgs, 'from' | 'message'>
+  >
 }
 
 export type SubscriptionResolvers<
@@ -281,6 +304,7 @@ export type SubscriptionResolvers<
     ContextType,
     RequireFields<SubscriptionSurveyUpdatesArgs, 'surveyId'>
   >
+  chatUpdates?: SubscriptionResolver<Maybe<ResolversTypes['ChatMessage']>, 'chatUpdates', ParentType, ContextType>
 }
 
 export type EventResolvers<
@@ -342,6 +366,15 @@ export type SurveyAnswerResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
+export type ChatMessageResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['ChatMessage'] = ResolversParentTypes['ChatMessage']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
@@ -351,6 +384,7 @@ export type Resolvers<ContextType = any> = {
   Survey?: SurveyResolvers<ContextType>
   SurveyQuestion?: SurveyQuestionResolvers<ContextType>
   SurveyAnswer?: SurveyAnswerResolvers<ContextType>
+  ChatMessage?: ChatMessageResolvers<ContextType>
 }
 
 /**

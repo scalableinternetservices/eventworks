@@ -24,6 +24,44 @@ export interface FetchUserContext {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchChatMessage
+// ====================================================
+
+export interface FetchChatMessage_chatMessages {
+  __typename: "ChatMessage";
+  id: number;
+  message: string;
+}
+
+export interface FetchChatMessage {
+  chatMessages: FetchChatMessage_chatMessages[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL subscription operation: ChatSubscription
+// ====================================================
+
+export interface ChatSubscription_chatUpdates {
+  __typename: "ChatMessage";
+  id: number;
+  message: string;
+}
+
+export interface ChatSubscription {
+  chatUpdates: ChatSubscription_chatUpdates | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchSurveys
 // ====================================================
 
@@ -137,6 +175,30 @@ export interface FetchSurveyVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: SendChatMessage
+// ====================================================
+
+export interface SendChatMessage_sendMessage {
+  __typename: "ChatMessage";
+  id: number;
+  message: string;
+}
+
+export interface SendChatMessage {
+  sendMessage: SendChatMessage_sendMessage;
+}
+
+export interface SendChatMessageVariables {
+  from: string;
+  message: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: AnswerSurveyQuestion
 // ====================================================
 
@@ -185,6 +247,21 @@ export interface NextSurveyQuestion {
 
 export interface NextSurveyQuestionVariables {
   surveyId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: ChatMessage
+// ====================================================
+
+export interface ChatMessage {
+  __typename: "ChatMessage";
+  id: number;
+  message: string;
 }
 
 /* tslint:disable */
