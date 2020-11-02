@@ -34,7 +34,7 @@ type Mutation {
   #below is to update an event
   #updateEvent(id: ID!, input: EventInput!): Event!
 
-  sendMessage(from: String!, message: String!): ChatMessage!
+  sendMessage(senderId: Int!, message: String!): ChatMessage!
 }
 
 type Subscription {
@@ -130,7 +130,7 @@ input SurveyInput {
 
 type ChatMessage {
   id: Int!
-  # user: User!
+  user: User!
   message: String!
   # event: Event!
   # table: EventTable!

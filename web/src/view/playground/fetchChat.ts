@@ -1,10 +1,15 @@
 import { gql } from '@apollo/client'
+import { fragmentUser } from './fetchUser'
 
 export const fragmentChatMessage = gql`
   fragment ChatMessage on ChatMessage {
     id
+    user {
+      ...User
+    }
     message
   }
+  ${fragmentUser}
 `
 
 export const fetchChatMessage = gql`

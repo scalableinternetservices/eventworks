@@ -12,6 +12,7 @@ export interface FetchUserContext_self {
   id: number;
   name: string;
   userType: UserType;
+  email: string;
 }
 
 export interface FetchUserContext {
@@ -27,9 +28,18 @@ export interface FetchUserContext {
 // GraphQL query operation: FetchChatMessage
 // ====================================================
 
+export interface FetchChatMessage_chatMessages_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
 export interface FetchChatMessage_chatMessages {
   __typename: "ChatMessage";
   id: number;
+  user: FetchChatMessage_chatMessages_user;
   message: string;
 }
 
@@ -46,9 +56,18 @@ export interface FetchChatMessage {
 // GraphQL subscription operation: ChatSubscription
 // ====================================================
 
+export interface ChatSubscription_chatUpdates_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
 export interface ChatSubscription_chatUpdates {
   __typename: "ChatMessage";
   id: number;
+  user: ChatSubscription_chatUpdates_user;
   message: string;
 }
 
@@ -178,9 +197,18 @@ export interface FetchSurveyVariables {
 // GraphQL mutation operation: SendChatMessage
 // ====================================================
 
+export interface SendChatMessage_sendMessage_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
 export interface SendChatMessage_sendMessage {
   __typename: "ChatMessage";
   id: number;
+  user: SendChatMessage_sendMessage_user;
   message: string;
 }
 
@@ -189,7 +217,7 @@ export interface SendChatMessage {
 }
 
 export interface SendChatMessageVariables {
-  from: string;
+  senderId: number;
   message: string;
 }
 
@@ -258,9 +286,18 @@ export interface NextSurveyQuestionVariables {
 // GraphQL fragment: ChatMessage
 // ====================================================
 
+export interface ChatMessage_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
 export interface ChatMessage {
   __typename: "ChatMessage";
   id: number;
+  user: ChatMessage_user;
   message: string;
 }
 
@@ -315,6 +352,23 @@ export interface SurveyQuestion {
   prompt: string;
   choices: string[] | null;
   answers: SurveyQuestion_answers[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: User
+// ====================================================
+
+export interface User {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
 }
 
 /* tslint:disable */

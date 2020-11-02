@@ -3,17 +3,17 @@ import { getApolloClient } from '../../graphql/apolloClient'
 import { fragmentChatMessage } from './fetchChat'
 
 const sendChatMessageMutation = gql`
-  mutation SendChatMessage($from: String!, $message: String!) {
-    sendMessage(from: $from, message: $message) {
+  mutation SendChatMessage($senderId: Int!, $message: String!) {
+    sendMessage(senderId: $senderId, message: $message) {
       ...ChatMessage
     }
   }
   ${fragmentChatMessage}
 `
 
-export function sendChatMessage(from: string, message: string) {
+export function sendChatMessage(senderId: number, message: string) {
   return getApolloClient().mutate({
     mutation: sendChatMessageMutation,
-    variables: { from, message }
+    variables: { senderId, message }
   })
 }

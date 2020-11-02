@@ -14,13 +14,11 @@ import {
   SurveySubscriptionVariables
 } from '../../graphql/query.gen'
 import { Button } from '../../style/button'
-import { H1, H2 } from '../../style/header'
+import { H1 } from '../../style/header'
 import { Input } from '../../style/input'
 import { Spacer } from '../../style/spacer'
-import { BodyText, SmallText } from '../../style/text'
+import { SmallText } from '../../style/text'
 import { UserContext } from '../auth/user'
-import { link } from '../nav/Link'
-import { getSurveyPath } from '../nav/route'
 import { handleError } from '../toast/error'
 import { toast } from '../toast/toast'
 import { ChatBox } from './Chat'
@@ -43,7 +41,7 @@ function SurveyList() {
   }
   return (
     <div className="mw6">
-      {data.surveys.map((s, i) => (
+      {/* {data.surveys.map((s, i) => (
         <div key={i} className="pa3 br2 mb2 bg-black-10 flex items-center">
           <HeaderLink className="link dim pointer" $color="sky" to={getSurveyPath(s.id)}>
             {s.name}
@@ -51,13 +49,13 @@ function SurveyList() {
           <Spacer $w5 />
           <BodyText $color={s.isStarted && !s.isCompleted ? 'coral' : undefined}>{surveyLabel(s)}</BodyText>
         </div>
-      ))}
+      ))} */}
       <ChatBox />
     </div>
   )
 }
 
-const HeaderLink = link(H2)
+// const HeaderLink = link(H2)
 
 export function Survey({ surveyId }: { surveyId: number }) {
   const user = useContext(UserContext)

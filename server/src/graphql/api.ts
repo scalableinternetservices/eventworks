@@ -66,8 +66,9 @@ export const graphqlRoot: Resolvers<Context> = {
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
     },
-    sendMessage: (root, { from, message }, { pubsub }) => {
-      const chat: ChatMessage = { id: chats.length + 1, message }
+    sendMessage: async (root, { senderId, message }, { pubsub }) => {
+      const user = check(await User.findOne({ where: { id: senderId } }))
+      const chat: ChatMessage = { id: chats.length + 1, user, message }
 
       chats.push(chat)
       pubsub.publish('CHAT_CHANNEL', chat)

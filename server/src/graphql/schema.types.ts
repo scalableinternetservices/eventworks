@@ -45,7 +45,7 @@ export interface MutationCreateEventArgs {
 }
 
 export interface MutationSendMessageArgs {
-  from: Scalars['String']
+  senderId: Scalars['Int']
   message: Scalars['String']
 }
 
@@ -132,6 +132,7 @@ export interface SurveyInput {
 export interface ChatMessage {
   __typename?: 'ChatMessage'
   id: Scalars['Int']
+  user: User
   message: Scalars['String']
 }
 
@@ -289,7 +290,7 @@ export type MutationResolvers<
     ResolversTypes['ChatMessage'],
     ParentType,
     ContextType,
-    RequireFields<MutationSendMessageArgs, 'from' | 'message'>
+    RequireFields<MutationSendMessageArgs, 'senderId' | 'message'>
   >
 }
 
@@ -371,6 +372,7 @@ export type ChatMessageResolvers<
   ParentType extends ResolversParentTypes['ChatMessage'] = ResolversParentTypes['ChatMessage']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
