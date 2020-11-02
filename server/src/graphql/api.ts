@@ -7,7 +7,7 @@ import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
-import { ChatMessage, EventUserPerm, Resolvers } from './schema.types'
+import { ChatMessage, Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
 
@@ -68,10 +68,9 @@ export const graphqlRoot: Resolvers<Context> = {
     },
     sendMessage: (root, { from, message }, { pubsub }) => {
       const chat: ChatMessage = { id: chats.length + 1, message }
-      EventUserPerm
 
       chats.push(chat)
-      pubsub.publish('CHAT_CHANNEL', { messageSent: chat })
+      pubsub.publish('CHAT_CHANNEL', chat)
 
       return chat
     }
@@ -84,7 +83,8 @@ export const graphqlRoot: Resolvers<Context> = {
     chatUpdates: {
       subscribe: (root, args, { pubsub }) => {
         return pubsub.asyncIterator('CHAT_CHANNEL')
-      }
+      },
+      resolve: (payload: any) => payload,
     }
   },
 }
