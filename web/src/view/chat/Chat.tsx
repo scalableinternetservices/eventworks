@@ -6,26 +6,25 @@ import { UserContext } from '../auth/user'
 import { fetchChatMessage, subscribeChat } from './fetchChat'
 import { sendChatMessage } from './mutateChat'
 
-export const ChatBox = () => {
+interface ChatBoxProps {
+  eventId: number
+  tableId: number
+}
+
+export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   const user = useContext(UserContext)
   const { loading, data } = useQuery<FetchChatMessage>(fetchChatMessage, {
-    variables: {
-      eventId: 1,
-      tableId: 1
-    }
+    variables: { eventId, tableId }
   })
   const sub = useSubscription<ChatSubscription>(subscribeChat, {
-    variables: {
-      eventId: 1,
-      tableId: 1
-    }
+    variables: { eventId, tableId }
   })
   const [messages, setMessages] = useState<Array<ChatMessage>>([])
   const [currentMessage, setCurrentMessage] = useState('')
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter' && user?.user) {
-      sendChatMessage(user.user.id, 1, 1, currentMessage)
+      sendChatMessage(user.user.id, eventId, tableId, currentMessage)
         .then(() => setCurrentMessage(''))
     }
   }
