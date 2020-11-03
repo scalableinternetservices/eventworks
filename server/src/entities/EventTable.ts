@@ -23,5 +23,5 @@ export class EventTable extends BaseEntity {
   chatMessages: ChatMessage[]
 
   @ManyToOne(() => User, user => user.tables)
-  head: EventTable
+  head: User
 }

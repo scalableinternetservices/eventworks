@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql'
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql'
 export type Maybe<T> = T | null
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
 export type RequireFields<T, K extends keyof T> = { [X in Exclude<keyof T, K>]?: T[X] } &
@@ -10,6 +10,7 @@ export interface Scalars {
   Boolean: boolean
   Int: number
   Float: number
+  Date: any
 }
 
 export interface Query {
@@ -18,10 +19,21 @@ export interface Query {
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   chatMessages: Array<ChatMessage>
+  events: Array<Event>
+  tables: Array<EventTable>
 }
 
 export interface QuerySurveyArgs {
   surveyId: Scalars['Int']
+}
+
+export interface QueryChatMessagesArgs {
+  eventId: Scalars['Int']
+  tableId: Scalars['Int']
+}
+
+export interface QueryTablesArgs {
+  eventId: Scalars['Int']
 }
 
 export interface Mutation {
@@ -29,6 +41,7 @@ export interface Mutation {
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
   createEvent: Scalars['String']
+  createTable: Scalars['Boolean']
   sendMessage: ChatMessage
 }
 
@@ -44,8 +57,14 @@ export interface MutationCreateEventArgs {
   input: EventInput
 }
 
+export interface MutationCreateTableArgs {
+  tableId: Scalars['Int']
+}
+
 export interface MutationSendMessageArgs {
   senderId: Scalars['Int']
+  eventId: Scalars['Int']
+  tableId: Scalars['Int']
   message: Scalars['String']
 }
 
@@ -59,21 +78,27 @@ export interface SubscriptionSurveyUpdatesArgs {
   surveyId: Scalars['Int']
 }
 
+export interface SubscriptionChatUpdatesArgs {
+  eventId: Scalars['Int']
+  tableId: Scalars['Int']
+}
+
 export interface EventInput {
-  startTime: Scalars['String']
-  endTime: Scalars['String']
+  startTime: Scalars['Date']
+  endTime: Scalars['Date']
   userCapacity: Scalars['Int']
-  eventName: Scalars['String']
+  name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
 }
 
 export interface Event {
   __typename?: 'Event'
-  startTime: Scalars['String']
-  endTime: Scalars['String']
-  capacity: Scalars['Int']
-  eventName: Scalars['String']
+  id: Scalars['Int']
+  startTime: Scalars['Date']
+  endTime: Scalars['Date']
+  userCapacity: Scalars['Int']
+  name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
 }
@@ -134,6 +159,13 @@ export interface ChatMessage {
   id: Scalars['Int']
   user: User
   message: Scalars['String']
+  event: Event
+  table: EventTable
+}
+
+export interface EventTable {
+  __typename?: 'EventTable'
+  id: Scalars['Int']
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -219,6 +251,7 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>
   String: ResolverTypeWrapper<Scalars['String']>
   Subscription: ResolverTypeWrapper<{}>
+  Date: ResolverTypeWrapper<Scalars['Date']>
   EventInput: EventInput
   Event: ResolverTypeWrapper<Event>
   User: ResolverTypeWrapper<User>
@@ -229,6 +262,7 @@ export type ResolversTypes = {
   SurveyAnswer: ResolverTypeWrapper<SurveyAnswer>
   SurveyInput: SurveyInput
   ChatMessage: ResolverTypeWrapper<ChatMessage>
+  EventTable: ResolverTypeWrapper<EventTable>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -239,6 +273,7 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']
   String: Scalars['String']
   Subscription: {}
+  Date: Scalars['Date']
   EventInput: EventInput
   Event: Event
   User: User
@@ -247,6 +282,7 @@ export type ResolversParentTypes = {
   SurveyAnswer: SurveyAnswer
   SurveyInput: SurveyInput
   ChatMessage: ChatMessage
+  EventTable: EventTable
 }
 
 export type QueryResolvers<
@@ -261,7 +297,19 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QuerySurveyArgs, 'surveyId'>
   >
-  chatMessages?: Resolver<Array<ResolversTypes['ChatMessage']>, ParentType, ContextType>
+  chatMessages?: Resolver<
+    Array<ResolversTypes['ChatMessage']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId'>
+  >
+  events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
+  tables?: Resolver<
+    Array<ResolversTypes['EventTable']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryTablesArgs, 'eventId'>
+  >
 }
 
 export type MutationResolvers<
@@ -286,11 +334,17 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateEventArgs, 'input'>
   >
+  createTable?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateTableArgs, 'tableId'>
+  >
   sendMessage?: Resolver<
     ResolversTypes['ChatMessage'],
     ParentType,
     ContextType,
-    RequireFields<MutationSendMessageArgs, 'senderId' | 'message'>
+    RequireFields<MutationSendMessageArgs, 'senderId' | 'eventId' | 'tableId' | 'message'>
   >
 }
 
@@ -305,17 +359,28 @@ export type SubscriptionResolvers<
     ContextType,
     RequireFields<SubscriptionSurveyUpdatesArgs, 'surveyId'>
   >
-  chatUpdates?: SubscriptionResolver<Maybe<ResolversTypes['ChatMessage']>, 'chatUpdates', ParentType, ContextType>
+  chatUpdates?: SubscriptionResolver<
+    Maybe<ResolversTypes['ChatMessage']>,
+    'chatUpdates',
+    ParentType,
+    ContextType,
+    RequireFields<SubscriptionChatUpdatesArgs, 'eventId' | 'tableId'>
+  >
+}
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date'
 }
 
 export type EventResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
 > = {
-  startTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  endTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  capacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  eventName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  startTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
+  userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
@@ -374,6 +439,16 @@ export type ChatMessageResolvers<
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType>
+  table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
+export type EventTableResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['EventTable'] = ResolversParentTypes['EventTable']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -381,12 +456,14 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
+  Date?: GraphQLScalarType
   Event?: EventResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Survey?: SurveyResolvers<ContextType>
   SurveyQuestion?: SurveyQuestionResolvers<ContextType>
   SurveyAnswer?: SurveyAnswerResolvers<ContextType>
   ChatMessage?: ChatMessageResolvers<ContextType>
+  EventTable?: EventTableResolvers<ContextType>
 }
 
 /**

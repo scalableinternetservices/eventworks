@@ -8,14 +8,24 @@ import { sendChatMessage } from './mutateChat'
 
 export const ChatBox = () => {
   const user = useContext(UserContext)
-  const { loading, data } = useQuery<FetchChatMessage>(fetchChatMessage)
-  const sub = useSubscription<ChatSubscription>(subscribeChat)
+  const { loading, data } = useQuery<FetchChatMessage>(fetchChatMessage, {
+    variables: {
+      eventId: 1,
+      tableId: 1
+    }
+  })
+  const sub = useSubscription<ChatSubscription>(subscribeChat, {
+    variables: {
+      eventId: 1,
+      tableId: 1
+    }
+  })
   const [messages, setMessages] = useState<Array<ChatMessage>>([])
   const [currentMessage, setCurrentMessage] = useState('')
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter' && user?.user) {
-      sendChatMessage(user.user.id, currentMessage)
+      sendChatMessage(user.user.id, 1, 1, currentMessage)
         .then(() => setCurrentMessage(''))
     }
   }

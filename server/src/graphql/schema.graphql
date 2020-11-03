@@ -20,7 +20,9 @@ type Query {
 
   surveys: [Survey!]!
   survey (surveyId: Int!): Survey
-  chatMessages: [ChatMessage!]!
+  chatMessages(eventId: Int!, tableId: Int!): [ChatMessage!]!
+  events: [Event!]!
+  tables(eventId: Int!): [EventTable!]!
 }
 
 type Mutation {
@@ -31,34 +33,37 @@ type Mutation {
   nextSurveyQuestion(surveyId: Int!): Survey
   #Creates Event from form
   createEvent(input: EventInput!): String!
+  createTable(tableId: Int!): Boolean!
   #below is to update an event
   #updateEvent(id: ID!, input: EventInput!): Event!
 
-  sendMessage(senderId: Int!, message: String!): ChatMessage!
+  sendMessage(senderId: Int!, eventId: Int!, tableId: Int!, message: String!): ChatMessage!
 }
 
 type Subscription {
   surveyUpdates(surveyId: Int!): Survey
-  chatUpdates: ChatMessage
+  chatUpdates(eventId: Int!, tableId: Int!): ChatMessage
 }
+
+scalar Date
 
 #wrote manually
 input EventInput {
-  startTime: String!
-  endTime: String!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
-  eventName: String!
+  name: String!
   orgName: String!
   description: String!
 }
 
 #wrote manually, overlaps with input above
 type Event {
-  #id: Int!
-  startTime: String!
-  endTime: String!
-  capacity: Int!
-  eventName: String!
+  id: Int!
+  startTime: Date!
+  endTime: Date!
+  userCapacity: Int!
+  name: String!
   orgName: String!
   description: String!
 }
@@ -132,6 +137,11 @@ type ChatMessage {
   id: Int!
   user: User!
   message: String!
-  # event: Event!
-  # table: EventTable!
+  event: Event!
+  table: EventTable!
+}
+
+type EventTable {
+  id: Int!
+  # head: User!
 }
