@@ -10,3 +10,12 @@ export const fetchUser = gql`
     }
   }
 `
+
+export const fragmentUser = gql`
+  fragment User on User {
+    id
+    userType
+    email
+    name
+  }
+`
