@@ -1,0 +1,47 @@
+body {
+  font: 14px "Century Gothic", Futura, sans-serif;
+  margin: 20px;
+}
+
+ol, ul {
+  padding-left: 30px;
+}
+
+.empty {
+  opacity: 0;
+  border-radius: 50%;
+  height: 36px;
+  margin: 8px;
+  width: 36px;
+}
+
+.seat {
+  display: inline-block;
+  background: #000000;
+  opacity: 0.2;
+  border-radius: 50%;
+  height: 36px;
+  width: 36px;
+  margin: 6px;
+}
+
+.square-row {
+  margin: 10px;
+}
+
+.square-group {
+  display: inline-block;
+  text-align: center;
+  margin: 10px 20px;
+}
+
+.square-group label {
+  display: block;
+}
+
+.square {
+  background: #fbc02d;
+  height: 180px;
+  width: 180px;
+  margin: 10px;
+}
