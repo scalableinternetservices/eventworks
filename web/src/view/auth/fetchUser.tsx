@@ -6,6 +6,16 @@ export const fetchUser = gql`
       id
       name
       userType
+      email
     }
+  }
+`
+
+export const fragmentUser = gql`
+  fragment User on User {
+    id
+    userType
+    email
+    name
   }
 `

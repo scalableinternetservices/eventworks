@@ -12,10 +12,67 @@ export interface FetchUserContext_self {
   id: number;
   name: string;
   userType: UserType;
+  email: string;
 }
 
 export interface FetchUserContext {
   self: FetchUserContext_self | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchChatMessage
+// ====================================================
+
+export interface FetchChatMessage_chatMessages_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
+export interface FetchChatMessage_chatMessages {
+  __typename: "ChatMessage";
+  id: number;
+  user: FetchChatMessage_chatMessages_user;
+  message: string;
+}
+
+export interface FetchChatMessage {
+  chatMessages: FetchChatMessage_chatMessages[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL subscription operation: ChatSubscription
+// ====================================================
+
+export interface ChatSubscription_chatUpdates_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
+export interface ChatSubscription_chatUpdates {
+  __typename: "ChatMessage";
+  id: number;
+  user: ChatSubscription_chatUpdates_user;
+  message: string;
+}
+
+export interface ChatSubscription {
+  chatUpdates: ChatSubscription_chatUpdates | null;
 }
 
 /* tslint:disable */
@@ -137,6 +194,39 @@ export interface FetchSurveyVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: SendChatMessage
+// ====================================================
+
+export interface SendChatMessage_sendMessage_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
+export interface SendChatMessage_sendMessage {
+  __typename: "ChatMessage";
+  id: number;
+  user: SendChatMessage_sendMessage_user;
+  message: string;
+}
+
+export interface SendChatMessage {
+  sendMessage: SendChatMessage_sendMessage;
+}
+
+export interface SendChatMessageVariables {
+  senderId: number;
+  message: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: AnswerSurveyQuestion
 // ====================================================
 
@@ -193,6 +283,30 @@ export interface NextSurveyQuestionVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: ChatMessage
+// ====================================================
+
+export interface ChatMessage_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
+export interface ChatMessage {
+  __typename: "ChatMessage";
+  id: number;
+  user: ChatMessage_user;
+  message: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: Survey
 // ====================================================
 
@@ -238,6 +352,23 @@ export interface SurveyQuestion {
   prompt: string;
   choices: string[] | null;
   answers: SurveyQuestion_answers[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: User
+// ====================================================
+
+export interface User {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
 }
 
 /* tslint:disable */

@@ -19,7 +19,8 @@ type Query {
   self: User
 
   surveys: [Survey!]!
-  survey(surveyId: Int!): Survey
+  survey (surveyId: Int!): Survey
+  chatMessages: [ChatMessage!]!
 }
 
 type Mutation {
@@ -32,17 +33,20 @@ type Mutation {
   createEvent(input: EventInput!): String!
   #below is to update an event
   #updateEvent(id: ID!, input: EventInput!): Event!
+
+  sendMessage(senderId: Int!, message: String!): ChatMessage!
 }
 
 type Subscription {
   surveyUpdates(surveyId: Int!): Survey
+  chatUpdates: ChatMessage
 }
 
 #wrote manually
 input EventInput {
   startTime: String!
   endTime: String!
-  capacity: Int!
+  userCapacity: Int!
   eventName: String!
   orgName: String!
   description: String!
@@ -122,4 +126,12 @@ type SurveyAnswer {
 input SurveyInput {
   questionId: Int!
   answer: String!
+}
+
+type ChatMessage {
+  id: Int!
+  user: User!
+  message: String!
+  # event: Event!
+  # table: EventTable!
 }
