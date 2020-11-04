@@ -1,15 +1,17 @@
 import { RouteComponentProps } from '@reach/router';
 import * as React from 'react';
+import { getApolloClient } from '../../graphql/apolloClient';
+import { createEvent } from '../../graphql/mutateEventCreateForm';
 import { Button } from '../../style/button';
 import { Input } from '../../style/input';
 import { AppRouteParams } from '../nav/route';
-
+import { toast } from '../toast/toast';
 
 interface EventCreateForm extends RouteComponentProps, AppRouteParams {}
 
 export function EventCreateForm(props: EventCreateForm) {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [startTime, setStartTime] = React.useState("");
+  const [endTime, setEndTime] = React.useState("");
   const [orgName, setOrgName] = React.useState("");
   const [capacity, setCapacity] = React.useState("");
   const [description, setDescription] = React.useState("");
@@ -17,16 +19,25 @@ export function EventCreateForm(props: EventCreateForm) {
 
   const handleSubmit = (event: { preventDefault: () => void; }) => {
     console.log(`
-      Email: ${email}
-      Password: ${password}
+      Start Time: ${startTime}
+      End Time: ${endTime}
       Organization Name: ${orgName}
       Capacity: ${capacity}
       Description: ${description}
       Event Name: ${eventName}
     `);
 
+    createEvent(getApolloClient(), {
+    eventName: eventName,
+    description: description,
+    orgName: orgName,
+    startTime: startTime,
+    endTime: endTime,
+    userCapacity: capacity
+    }).then(() => {
+      toast('submitted!')
+    })
 
-    event.preventDefault();
   }
 
   return (
@@ -99,15 +110,15 @@ export function EventCreateForm(props: EventCreateForm) {
     <>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="email">
-          Email address
+          Start Time of Event
         </label>
-        <Input $onChange={setEmail}  name="email" type="email" />
+        <Input $onChange={setStartTime}  name="startTime" type="startTime" />
       </div>
       <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="password">
-          Password
+        <label className="db fw4 lh-copy f6" htmlFor="setEndTime">
+          End Time of Event
         </label>
-        <Input  $onChange={setPassword}  name="password" type="password" />
+        <Input  $onChange={setEndTime}  name="setEndTime" type="setEndTime" />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="orgName">

@@ -32,7 +32,7 @@ export class Event extends BaseEntity {
   endTime: Date
 
   @Column('int')
-  userCapacity: number
+  userCapacity: string
 
   // deal with this later
   @Column({ default: false })

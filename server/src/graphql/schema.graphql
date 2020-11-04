@@ -19,7 +19,7 @@ type Query {
   self: User
 
   surveys: [Survey!]!
-  survey (surveyId: Int!): Survey
+  survey(surveyId: Int!): Survey
   chatMessages: [ChatMessage!]!
 }
 
@@ -46,7 +46,7 @@ type Subscription {
 input EventInput {
   startTime: String!
   endTime: String!
-  userCapacity: Int!
+  userCapacity: String!
   eventName: String!
   orgName: String!
   description: String!
@@ -57,7 +57,7 @@ type Event {
   #id: Int!
   startTime: String!
   endTime: String!
-  capacity: Int!
+  userCapacity: String!
   eventName: String!
   orgName: String!
   description: String!

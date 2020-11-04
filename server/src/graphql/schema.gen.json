@@ -1212,7 +1212,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1303,7 +1303,7 @@
             "deprecationReason": null
           },
           {
-            "name": "capacity",
+            "name": "userCapacity",
             "description": null,
             "args": [],
             "type": {
@@ -1311,7 +1311,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "String",
                 "ofType": null
               }
             },

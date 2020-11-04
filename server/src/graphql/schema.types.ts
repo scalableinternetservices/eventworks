@@ -62,7 +62,7 @@ export interface SubscriptionSurveyUpdatesArgs {
 export interface EventInput {
   startTime: Scalars['String']
   endTime: Scalars['String']
-  userCapacity: Scalars['Int']
+  userCapacity: Scalars['String']
   eventName: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
@@ -72,7 +72,7 @@ export interface Event {
   __typename?: 'Event'
   startTime: Scalars['String']
   endTime: Scalars['String']
-  capacity: Scalars['Int']
+  userCapacity: Scalars['String']
   eventName: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
@@ -314,7 +314,7 @@ export type EventResolvers<
 > = {
   startTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   endTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  capacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  userCapacity?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   eventName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
