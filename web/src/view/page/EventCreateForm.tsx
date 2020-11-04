@@ -3,7 +3,7 @@ import * as React from 'react';
 import { Button } from '../../style/button';
 import { Input } from '../../style/input';
 import { AppRouteParams } from '../nav/route';
-
+import { Page } from './Page';
 
 interface EventCreateForm extends RouteComponentProps, AppRouteParams {}
 
@@ -95,7 +95,7 @@ export function EventCreateForm(props: EventCreateForm) {
 
     //   <button>Submit</button>
     // </form>
-
+    <Page>
     <>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="email">
@@ -137,6 +137,7 @@ export function EventCreateForm(props: EventCreateForm) {
         <Button onClick={handleSubmit}>Submit</Button>
       </div>
     </>
+    </Page>
   );
 
 

@@ -10,12 +10,21 @@ export enum Route {
   PROJECTS = 'app/projects',
   PLAYGROUND = 'app/playground',
   PLAYGROUND_APP = 'app/playground/:app',
-  CREATE_FORM = 'app/createevent'
+  CREATE_FORM = 'app/createevent',
+  MAP = 'app/event',
+  LOGIN_SIGNUP = 'app/account/',
+  LOGIN_SIGNUP_APP = 'app/account/:form',
 }
 
 export enum PlaygroundApp {
   SURVEYS = 'surveys',
   LOGIN = 'login',
+  SIGNUP = 'signup'
+}
+
+export enum AccountApp {
+  LOGIN = 'login',
+  SIGNUP = 'signup'
 }
 
 export function getSurveyPath(surveyId?: number) {
@@ -25,6 +34,18 @@ export function getSurveyPath(surveyId?: number) {
 
 export function getLoginPath() {
   return getPath(Route.PLAYGROUND_APP, { app: PlaygroundApp.LOGIN })
+}
+
+export function getSignupPath() {
+  return getPath(Route.PLAYGROUND_APP, { app: PlaygroundApp.SIGNUP })
+}
+
+export function getLoginPathTwo() {
+  return getPath(Route.LOGIN_SIGNUP_APP, { form: AccountApp.LOGIN })
+}
+
+export function getSignupPathTwo() {
+  return getPath(Route.LOGIN_SIGNUP_APP, { form: AccountApp.SIGNUP })
 }
 
 export function getPlaygroundPath() {
@@ -67,6 +88,7 @@ export function getPath(route: Route, arg?: Partial<ReturnType<typeof routeParam
 export interface AppRouteParams {
   userId?: string
   app?: PlaygroundApp
+  form?: AccountApp
 }
 
 /**
@@ -76,5 +98,6 @@ export function routeParams(params: AppRouteParams) {
   return {
     userId: Number(params.userId || 0),
     app: params.app,
+    form: params.form
   }
 }

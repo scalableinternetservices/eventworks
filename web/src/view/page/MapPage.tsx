@@ -1,10 +1,19 @@
+import { RouteComponentProps } from '@reach/router';
 import * as React from 'react';
+import { AppRouteParams } from '../nav/route';
+import { Page } from './Page';
 
-export function MapPage(props: React.PropsWithChildren<JSX.IntrinsicElements['div']>) {
+interface MapUI extends RouteComponentProps, AppRouteParams {}
+
+export function MapPage(props: MapUI) {
   return (
-    <Room />
+    <Page>
+      <Room />
+    </Page>
   )
 }
+
+//,React.PropsWithChildren<JSX.IntrinsicElements['div']>
 
 //////////////////////////////////////////////// Room
 

@@ -1,6 +1,6 @@
 import { useLocation } from '@reach/router'
 import * as React from 'react'
-import { useContext, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { useMediaQuery } from 'react-responsive'
 import { breakpoints } from '../../style/breakpoints'
@@ -9,16 +9,16 @@ import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
-import { getLoginPath, getPath, getSurveyPath, Route } from './route'
+import { getLoginPath, getLoginPathTwo, getPath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
 
 const title = {
-  name: 'CS188',
+  name: 'EventWorks',
   path: getPath(Route.HOME),
   title: true,
 }
 
 const otherTabs = [
-  {
+  /*{
     name: 'lectures',
     path: getPath(Route.LECTURES),
   },
@@ -29,10 +29,18 @@ const otherTabs = [
   {
     name: 'playground',
     path: getPath(Route.PLAYGROUND),
-  },
+  },*/
   {
     name: 'create event',
     path: getPath(Route.CREATE_FORM),
+  },
+  {
+    name: 'account',
+    path: getPath(Route.LOGIN_SIGNUP),
+  },
+  {
+    name: 'event',
+    path: getPath(Route.MAP),
   },
 ]
 
@@ -107,16 +115,24 @@ function NavMenu(props: { show: boolean; onClick: () => void }) {
 function SubNav() {
   const location = useLocation()
   const { user } = useContext(UserContext)
-  if (!location.pathname.startsWith(getPath(Route.PLAYGROUND))) {
-    // only playground has subnav
-    return null
+  if (location.pathname.startsWith(getPath(Route.PLAYGROUND))) {
+    return (
+      <Nav $isSubNav>
+        <NavItem name="surveys" path={getSurveyPath()} />
+        {!user && <NavItem name="signup" path={getSignupPath()} />}
+        <NavItem name={user ? 'logout' : 'login'} path={getLoginPath()} />
+      </Nav>
+    )
   }
-  return (
-    <Nav $isSubNav>
-      <NavItem name="surveys" path={getSurveyPath()} />
-      <NavItem name={user ? 'logout' : 'login'} path={getLoginPath()} />
-    </Nav>
-  )
+  else if (location.pathname.startsWith(getPath(Route.LOGIN_SIGNUP))) {
+    return (
+      <Nav $isSubNav>
+        {!user && <NavItem name="signup" path={getSignupPathTwo()} />}
+        <NavItem name={user ? 'logout' : 'login'} path={getLoginPathTwo()} />
+      </Nav>
+    )
+  }
+  return null
 }
 
 const Nav = style(
