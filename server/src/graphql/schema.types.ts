@@ -16,11 +16,13 @@ export interface Scalars {
 export interface Query {
   __typename?: 'Query'
   self?: Maybe<User>
+  users: Array<User>
   surveys: Array<Survey>
   survey?: Maybe<Survey>
   chatMessages: Array<ChatMessage>
   events: Array<Event>
-  tables: Array<EventTable>
+  event: Event
+  table: EventTable
 }
 
 export interface QuerySurveyArgs {
@@ -32,16 +34,20 @@ export interface QueryChatMessagesArgs {
   tableId: Scalars['Int']
 }
 
-export interface QueryTablesArgs {
+export interface QueryEventArgs {
   eventId: Scalars['Int']
+}
+
+export interface QueryTableArgs {
+  tableId: Scalars['Int']
 }
 
 export interface Mutation {
   __typename?: 'Mutation'
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
-  createEvent: Scalars['String']
-  createTable: Scalars['Boolean']
+  createEvent: Event
+  createTable: EventTable
   sendMessage: ChatMessage
 }
 
@@ -58,7 +64,7 @@ export interface MutationCreateEventArgs {
 }
 
 export interface MutationCreateTableArgs {
-  tableId: Scalars['Int']
+  input: EventTableInput
 }
 
 export interface MutationSendMessageArgs {
@@ -101,6 +107,7 @@ export interface Event {
   name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
+  eventTables?: Maybe<Array<EventTable>>
 }
 
 export interface User {
@@ -166,6 +173,19 @@ export interface ChatMessage {
 export interface EventTable {
   __typename?: 'EventTable'
   id: Scalars['Int']
+  head: User
+  name: Scalars['String']
+  description: Scalars['String']
+  userCapacity: Scalars['Int']
+  chatMessages: Array<ChatMessage>
+}
+
+export interface EventTableInput {
+  eventId: Scalars['Int']
+  head: Scalars['Int']
+  name: Scalars['String']
+  description: Scalars['String']
+  userCapacity?: Maybe<Scalars['Int']>
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T
@@ -263,6 +283,7 @@ export type ResolversTypes = {
   SurveyInput: SurveyInput
   ChatMessage: ResolverTypeWrapper<ChatMessage>
   EventTable: ResolverTypeWrapper<EventTable>
+  EventTableInput: EventTableInput
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -283,6 +304,7 @@ export type ResolversParentTypes = {
   SurveyInput: SurveyInput
   ChatMessage: ChatMessage
   EventTable: EventTable
+  EventTableInput: EventTableInput
 }
 
 export type QueryResolvers<
@@ -290,6 +312,7 @@ export type QueryResolvers<
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
   self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>
   surveys?: Resolver<Array<ResolversTypes['Survey']>, ParentType, ContextType>
   survey?: Resolver<
     Maybe<ResolversTypes['Survey']>,
@@ -304,12 +327,8 @@ export type QueryResolvers<
     RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId'>
   >
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
-  tables?: Resolver<
-    Array<ResolversTypes['EventTable']>,
-    ParentType,
-    ContextType,
-    RequireFields<QueryTablesArgs, 'eventId'>
-  >
+  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
+  table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType, RequireFields<QueryTableArgs, 'tableId'>>
 }
 
 export type MutationResolvers<
@@ -329,16 +348,16 @@ export type MutationResolvers<
     RequireFields<MutationNextSurveyQuestionArgs, 'surveyId'>
   >
   createEvent?: Resolver<
-    ResolversTypes['String'],
+    ResolversTypes['Event'],
     ParentType,
     ContextType,
     RequireFields<MutationCreateEventArgs, 'input'>
   >
   createTable?: Resolver<
-    ResolversTypes['Boolean'],
+    ResolversTypes['EventTable'],
     ParentType,
     ContextType,
-    RequireFields<MutationCreateTableArgs, 'tableId'>
+    RequireFields<MutationCreateTableArgs, 'input'>
   >
   sendMessage?: Resolver<
     ResolversTypes['ChatMessage'],
@@ -383,6 +402,7 @@ export type EventResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  eventTables?: Resolver<Maybe<Array<ResolversTypes['EventTable']>>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -449,6 +469,11 @@ export type EventTableResolvers<
   ParentType extends ResolversParentTypes['EventTable'] = ResolversParentTypes['EventTable']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  head?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  chatMessages?: Resolver<Array<ResolversTypes['ChatMessage']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

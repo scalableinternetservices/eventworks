@@ -4,6 +4,81 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchEvent
+// ====================================================
+
+export interface FetchEvent_event_eventTables_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchEvent_event_eventTables {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: FetchEvent_event_eventTables_head;
+}
+
+export interface FetchEvent_event {
+  __typename: "Event";
+  id: number;
+  endTime: any;
+  startTime: any;
+  description: string;
+  name: string;
+  orgName: string;
+  eventTables: FetchEvent_event_eventTables[] | null;
+}
+
+export interface FetchEvent {
+  event: FetchEvent_event;
+}
+
+export interface FetchEventVariables {
+  eventId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchTable
+// ====================================================
+
+export interface FetchTable_table_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchTable_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: FetchTable_table_head;
+}
+
+export interface FetchTable {
+  table: FetchTable_table;
+}
+
+export interface FetchTableVariables {
+  tableId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchUserContext
 // ====================================================
 
@@ -287,6 +362,30 @@ export interface NextSurveyQuestion {
 
 export interface NextSurveyQuestionVariables {
   surveyId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL fragment: EventTable
+// ====================================================
+
+export interface EventTable_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface EventTable {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: EventTable_head;
 }
 
 /* tslint:disable */
