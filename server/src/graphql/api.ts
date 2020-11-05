@@ -1,13 +1,16 @@
 import { readFileSync } from 'fs'
+import { GraphQLScalarType, Kind } from 'graphql'
 import { PubSub } from 'graphql-yoga'
 import path from 'path'
 import { check } from '../../../common/src/util'
+import { ChatMessage } from '../entities/ChatMessage'
 import { Event } from '../entities/Event'
+import { EventTable } from '../entities/EventTable'
 import { Survey } from '../entities/Survey'
 import { SurveyAnswer } from '../entities/SurveyAnswer'
 import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
-import { ChatMessage, Resolvers } from './schema.types'
+import { Resolvers } from './schema.types'
 
 export const pubsub = new PubSub()
 
@@ -23,14 +26,23 @@ interface Context {
  pubsub: PubSub
 }
 
-const chats: Array<ChatMessage> = []
+const DEFAULT_USER_CAPACITY = 10
 
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
+    users: async (_, args, ctx) => check(await User.find()),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
-    chatMessages: (root, args, context) => chats
+    chatMessages: async (root, { eventId, tableId }, context) => await ChatMessage.find({
+        where: {
+          event: check(await Event.findOne({ where: { id: eventId } })),
+          table: check(await EventTable.findOne({ where: { id: tableId } }))
+        }
+      }),
+    events: async (_, {}, ctx) => (await Event.find()),
+    event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId } })),
+    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
   },
   Mutation: {
     createEvent: async (_, { input }, ctx) => {
@@ -40,9 +52,20 @@ export const graphqlRoot: Resolvers<Context> = {
       newEvent.startTime = new Date(input.startTime)
       newEvent.endTime = new Date(input.endTime)
       newEvent.orgName = input.orgName
-      newEvent.name = input.eventName
+      newEvent.name = input.name
       await newEvent.save()
-      return "success"
+      return newEvent
+    },
+    createTable: async (_, { input }, ctx) => {
+      const newTable = new EventTable()
+      newTable.chatMessages = []
+      newTable.description = input.description
+      newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
+      newTable.name = input.name
+      newTable.head = check(await User.findOne({ where: { id: input.head } }))
+      newTable.event = check(await Event.findOne({ where: { id: input.eventId } }))
+      await newTable.save()
+      return newTable
     },
     answerSurvey: async (_, { input }, ctx) => {
       const { answer, questionId } = input
@@ -66,13 +89,14 @@ export const graphqlRoot: Resolvers<Context> = {
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
     },
-    sendMessage: async (root, { senderId, message }, { pubsub }) => {
-      const user = check(await User.findOne({ where: { id: senderId } }))
-      const chat: ChatMessage = { id: chats.length + 1, user, message }
-
-      chats.push(chat)
-      pubsub.publish('CHAT_CHANNEL', chat)
-
+    sendMessage: async (root, { senderId, eventId, tableId, message }, { pubsub }) => {
+      const chat = new ChatMessage()
+      chat.user = check(await User.findOne({ where: { id: senderId } }))
+      chat.event = check(await Event.findOne({ where: { id: eventId } }))
+      chat.table = check(await EventTable.findOne({ where: { id: tableId } }))
+      chat.message = message
+      await chat.save()
+      pubsub.publish(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`, chat)
       return chat
     }
   },
@@ -82,10 +106,22 @@ export const graphqlRoot: Resolvers<Context> = {
       resolve: (payload: any) => payload,
     },
     chatUpdates: {
-      subscribe: (root, args, { pubsub }) => {
-        return pubsub.asyncIterator('CHAT_CHANNEL')
+      subscribe: (root, { eventId, tableId }, { pubsub }) => {
+        return pubsub.asyncIterator(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`)
       },
       resolve: (payload: any) => payload,
     }
   },
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    description: 'Custom date scalar type',
+    parseValue: (value) => new Date(value),
+    serialize: (value) => value.getTime(),
+    parseLiteral: (ast) => {
+      if (ast.kind === Kind.INT) {
+        return new Date(ast.value)
+      }
+      return null
+    }
+  })
 }

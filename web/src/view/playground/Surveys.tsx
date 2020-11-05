@@ -40,7 +40,7 @@ function SurveyList() {
     return <div>no surveys</div>
   }
   return (
-    <div className="mw6">
+    <div style={{ width: '50vw' }}>
       {/* {data.surveys.map((s, i) => (
         <div key={i} className="pa3 br2 mb2 bg-black-10 flex items-center">
           <HeaderLink className="link dim pointer" $color="sky" to={getSurveyPath(s.id)}>
@@ -50,7 +50,14 @@ function SurveyList() {
           <BodyText $color={s.isStarted && !s.isCompleted ? 'coral' : undefined}>{surveyLabel(s)}</BodyText>
         </div>
       ))} */}
-      <ChatBox />
+      <div style={{
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-around'
+      }}>
+        <ChatBox eventId={1} tableId={1} />
+        <ChatBox eventId={1} tableId={2} />
+      </div>
     </div>
   )
 }
