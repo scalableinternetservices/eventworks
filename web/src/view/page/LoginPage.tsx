@@ -4,6 +4,7 @@ import { Login } from '../auth/Login'
 import { Signup } from '../auth/SignUp'
 import { AccountApp, AppRouteParams } from '../nav/route'
 import { Page } from './Page'
+import { Profile } from './ProfilePage'
 
 interface LoginPageProps extends RouteComponentProps, AppRouteParams {}
 
@@ -16,6 +17,8 @@ function getLoginApp(form?: AccountApp) {
     return <div>choose an app</div>
   }
   switch (form) {
+    case AccountApp.PROFILE:
+      return <Profile />
     case AccountApp.SIGNUP:
       return <Signup />
     case AccountApp.LOGIN:

@@ -1,6 +1,6 @@
 import { useLocation } from '@reach/router'
 import * as React from 'react'
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { useMediaQuery } from 'react-responsive'
 import { breakpoints } from '../../style/breakpoints'
@@ -9,7 +9,7 @@ import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
-import { getLoginPath, getLoginPathTwo, getPath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
+import { getLoginPath, getLoginPathTwo, getPath, getProfilePath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
 
 const title = {
   name: 'EventWorks',
@@ -127,6 +127,7 @@ function SubNav() {
   else if (location.pathname.startsWith(getPath(Route.LOGIN_SIGNUP))) {
     return (
       <Nav $isSubNav>
+        {!user && <NavItem name="profile" path={getProfilePath()} />}
         {!user && <NavItem name="signup" path={getSignupPathTwo()} />}
         <NavItem name={user ? 'logout' : 'login'} path={getLoginPathTwo()} />
       </Nav>
@@ -149,9 +150,11 @@ const Nav = style(
 
 function NavItem(props: { name: string; path: string; title?: boolean }) {
   const location = useLocation()
+  const { user } = useContext(UserContext)
+
   return (
     <NavLink $title={props.title} $bold={props.title || location.pathname.startsWith(props.path)} to={props.path}>
-      {props.name}
+      {!user ? ((props.name == "create event") ? "" : props.name) : props.name}
     </NavLink>
   )
 }
