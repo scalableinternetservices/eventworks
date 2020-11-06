@@ -9,7 +9,7 @@ import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
-import { getLoginPath, getLoginPathTwo, getPath, getProfilePath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
+import { getChatPath, getLoginPath, getLoginPathTwo, getPath, getProfilePath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
 
 const title = {
   name: 'EventWorks',
@@ -127,7 +127,8 @@ function SubNav() {
   else if (location.pathname.startsWith(getPath(Route.LOGIN_SIGNUP))) {
     return (
       <Nav $isSubNav>
-        {!user && <NavItem name="profile" path={getProfilePath()} />}
+        {user && <NavItem name="chat" path={getChatPath()} />}
+        {user && <NavItem name="profile" path={getProfilePath()} />}
         {!user && <NavItem name="signup" path={getSignupPathTwo()} />}
         <NavItem name={user ? 'logout' : 'login'} path={getLoginPathTwo()} />
       </Nav>
