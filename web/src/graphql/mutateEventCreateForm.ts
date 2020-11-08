@@ -6,13 +6,6 @@ import { CreateEvent, CreateEventVariables, EventInput } from './query.gen'
 const createEventMutation = gql`
  mutation CreateEvent($input: EventInput!){
     createEvent(input: $input) {
-      id
-      name
-      description
-      startTime
-      endTime
-      orgName
-      userCapacity
       ...Event
     }
   }

@@ -139,12 +139,12 @@ export interface CreateEvent_createEvent_eventTables {
 export interface CreateEvent_createEvent {
   __typename: "Event";
   id: number;
-  name: string;
-  description: string;
   startTime: string;
   endTime: string;
-  orgName: string;
   userCapacity: number;
+  name: string;
+  orgName: string;
+  description: string;
   eventTables: CreateEvent_createEvent_eventTables[] | null;
 }
 
