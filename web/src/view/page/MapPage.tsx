@@ -1,15 +1,10 @@
-import { RouteComponentProps } from '@reach/router';
 import * as React from 'react';
-import { AppRouteParams } from '../nav/route';
-import { Page } from './Page';
 
-interface MapUI extends RouteComponentProps, AppRouteParams {}
+//interface MapUI extends RouteComponentProps, AppRouteParams {}
 
-export function MapPage(props: MapUI) {
+export function MapPage(/*props: MapUI*/) {
   return (
-    <Page>
       <Room />
-    </Page>
   )
 }
 

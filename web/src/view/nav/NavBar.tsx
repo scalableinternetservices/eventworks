@@ -31,17 +31,21 @@ const otherTabs = [
     path: getPath(Route.PLAYGROUND),
   },*/
   {
+    name: 'find event',
+    path: getPath(Route.FIND_EVENT),
+  },
+  {
     name: 'create event',
     path: getPath(Route.CREATE_FORM),
   },
   {
     name: 'account',
     path: getPath(Route.LOGIN_SIGNUP),
-  },
-  {
+  }
+  /*{
     name: 'event',
     path: getPath(Route.MAP),
-  },
+  },*/
 ]
 
 export function NavBar() {

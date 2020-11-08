@@ -4,6 +4,45 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchAllEvent
+// ====================================================
+
+export interface FetchAllEvent_events_eventTables_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchAllEvent_events_eventTables {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: FetchAllEvent_events_eventTables_head;
+}
+
+export interface FetchAllEvent_events {
+  __typename: "Event";
+  id: number;
+  endTime: string;
+  startTime: string;
+  description: string;
+  name: string;
+  orgName: string;
+  eventTables: FetchAllEvent_events_eventTables[] | null;
+}
+
+export interface FetchAllEvent {
+  events: FetchAllEvent_events[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchEvent
 // ====================================================
 
@@ -25,8 +64,8 @@ export interface FetchEvent_event_eventTables {
 export interface FetchEvent_event {
   __typename: "Event";
   id: number;
-  endTime: any;
-  startTime: any;
+  endTime: string;
+  startTime: string;
   description: string;
   name: string;
   orgName: string;
@@ -71,6 +110,50 @@ export interface FetchTable {
 
 export interface FetchTableVariables {
   tableId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: CreateEvent
+// ====================================================
+
+export interface CreateEvent_createEvent_eventTables_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface CreateEvent_createEvent_eventTables {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: CreateEvent_createEvent_eventTables_head;
+}
+
+export interface CreateEvent_createEvent {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: string;
+  endTime: string;
+  orgName: string;
+  userCapacity: number;
+  eventTables: CreateEvent_createEvent_eventTables[] | null;
+}
+
+export interface CreateEvent {
+  createEvent: CreateEvent_createEvent;
+}
+
+export interface CreateEventVariables {
+  input: EventInput;
 }
 
 /* tslint:disable */
@@ -370,6 +453,42 @@ export interface NextSurveyQuestionVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL fragment: Event
+// ====================================================
+
+export interface Event_eventTables_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface Event_eventTables {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: Event_eventTables_head;
+}
+
+export interface Event {
+  __typename: "Event";
+  id: number;
+  startTime: string;
+  endTime: string;
+  userCapacity: number;
+  name: string;
+  orgName: string;
+  description: string;
+  eventTables: Event_eventTables[] | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL fragment: EventTable
 // ====================================================
 
@@ -494,6 +613,15 @@ export interface SurveyQuestion {
 export enum UserType {
   ADMIN = "ADMIN",
   USER = "USER",
+}
+
+export interface EventInput {
+  startTime: string;
+  endTime: string;
+  userCapacity: number;
+  eventName: string;
+  orgName: string;
+  description: string;
 }
 
 export interface SurveyInput {

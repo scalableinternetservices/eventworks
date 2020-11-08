@@ -14,6 +14,7 @@ export enum Route {
   MAP = 'app/event',
   LOGIN_SIGNUP = 'app/account/',
   LOGIN_SIGNUP_APP = 'app/account/:form',
+  FIND_EVENT = 'app/findevent'
 }
 
 export enum PlaygroundApp {
@@ -27,6 +28,11 @@ export enum AccountApp {
   SIGNUP = 'signup',
   PROFILE = 'profile',
   CHAT = 'chat'
+}
+
+export function getEventPath(eventID?: number) {
+  const path = getPath(Route.FIND_EVENT)
+  return path + (eventID ? `?eventID=${eventID}` : '')
 }
 
 export function getSurveyPath(surveyId?: number) {
