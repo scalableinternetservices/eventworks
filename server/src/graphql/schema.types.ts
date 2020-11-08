@@ -90,10 +90,10 @@ export interface SubscriptionChatUpdatesArgs {
 }
 
 export interface EventInput {
-  startTime: Scalars['Date']
-  endTime: Scalars['Date']
+  startTime: Scalars['String']
+  endTime: Scalars['String']
   userCapacity: Scalars['Int']
-  name: Scalars['String']
+  eventName: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
 }
@@ -101,8 +101,8 @@ export interface EventInput {
 export interface Event {
   __typename?: 'Event'
   id: Scalars['Int']
-  startTime: Scalars['Date']
-  endTime: Scalars['Date']
+  startTime: Scalars['String']
+  endTime: Scalars['String']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
@@ -396,8 +396,8 @@ export type EventResolvers<
   ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  startTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
-  endTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
+  startTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>

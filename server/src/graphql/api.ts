@@ -49,10 +49,10 @@ export const graphqlRoot: Resolvers<Context> = {
       const newEvent = new Event()
       newEvent.userCapacity = input.userCapacity
       newEvent.description = input.description
-      newEvent.startTime = new Date(input.startTime)
-      newEvent.endTime = new Date(input.endTime)
+      newEvent.startTime = input.startTime
+      newEvent.endTime = input.endTime
       newEvent.orgName = input.orgName
-      newEvent.name = input.name
+      newEvent.name = input.eventName
       await newEvent.save()
       return newEvent
     },

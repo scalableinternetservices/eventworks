@@ -9,16 +9,16 @@ import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
-import { getLoginPath, getPath, getSurveyPath, Route } from './route'
+import { getChatPath, getLoginPath, getLoginPathTwo, getPath, getProfilePath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
 
 const title = {
-  name: 'CS188',
+  name: 'EventWorks',
   path: getPath(Route.HOME),
   title: true,
 }
 
 const otherTabs = [
-  {
+  /*{
     name: 'lectures',
     path: getPath(Route.LECTURES),
   },
@@ -29,11 +29,23 @@ const otherTabs = [
   {
     name: 'playground',
     path: getPath(Route.PLAYGROUND),
+  },*/
+  {
+    name: 'find event',
+    path: getPath(Route.FIND_EVENT),
   },
   {
     name: 'create event',
     path: getPath(Route.CREATE_FORM),
   },
+  {
+    name: 'account',
+    path: getPath(Route.LOGIN_SIGNUP),
+  }
+  /*{
+    name: 'event',
+    path: getPath(Route.MAP),
+  },*/
 ]
 
 export function NavBar() {
@@ -107,16 +119,26 @@ function NavMenu(props: { show: boolean; onClick: () => void }) {
 function SubNav() {
   const location = useLocation()
   const { user } = useContext(UserContext)
-  if (!location.pathname.startsWith(getPath(Route.PLAYGROUND))) {
-    // only playground has subnav
-    return null
+  if (location.pathname.startsWith(getPath(Route.PLAYGROUND))) {
+    return (
+      <Nav $isSubNav>
+        <NavItem name="surveys" path={getSurveyPath()} />
+        {!user && <NavItem name="signup" path={getSignupPath()} />}
+        <NavItem name={user ? 'logout' : 'login'} path={getLoginPath()} />
+      </Nav>
+    )
   }
-  return (
-    <Nav $isSubNav>
-      <NavItem name="surveys" path={getSurveyPath()} />
-      <NavItem name={user ? 'logout' : 'login'} path={getLoginPath()} />
-    </Nav>
-  )
+  else if (location.pathname.startsWith(getPath(Route.LOGIN_SIGNUP))) {
+    return (
+      <Nav $isSubNav>
+        {user && <NavItem name="chat" path={getChatPath()} />}
+        {user && <NavItem name="profile" path={getProfilePath()} />}
+        {!user && <NavItem name="signup" path={getSignupPathTwo()} />}
+        <NavItem name={user ? 'logout' : 'login'} path={getLoginPathTwo()} />
+      </Nav>
+    )
+  }
+  return null
 }
 
 const Nav = style(
@@ -133,9 +155,11 @@ const Nav = style(
 
 function NavItem(props: { name: string; path: string; title?: boolean }) {
   const location = useLocation()
+  const { user } = useContext(UserContext)
+
   return (
     <NavLink $title={props.title} $bold={props.title || location.pathname.startsWith(props.path)} to={props.path}>
-      {props.name}
+      {!user ? ((props.name == "create event") ? "" : props.name) : props.name}
     </NavLink>
   )
 }

@@ -52,10 +52,10 @@ scalar Date
 
 #wrote manually
 input EventInput {
-  startTime: Date!
-  endTime: Date!
+  startTime: String!
+  endTime: String!
   userCapacity: Int!
-  name: String!
+  eventName: String!
   orgName: String!
   description: String!
 }
@@ -63,8 +63,8 @@ input EventInput {
 #wrote manually, overlaps with input above
 type Event {
   id: Int!
-  startTime: Date!
-  endTime: Date!
+  startTime: String!
+  endTime: String!
   userCapacity: Int!
   name: String!
   orgName: String!

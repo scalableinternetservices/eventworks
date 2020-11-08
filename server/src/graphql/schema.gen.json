@@ -1421,7 +1421,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Date",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1435,7 +1435,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Date",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1456,7 +1456,7 @@
             "defaultValue": null
           },
           {
-            "name": "name",
+            "name": "eventName",
             "description": null,
             "type": {
               "kind": "NON_NULL",
@@ -1532,7 +1532,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Date",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -1548,7 +1548,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Date",
+                "name": "String",
                 "ofType": null
               }
             },

@@ -1,5 +1,27 @@
 import { gql } from '@apollo/client'
 
+export const fragmentEvent = gql`
+  fragment Event on Event {
+    id
+    startTime
+    endTime
+    userCapacity
+    name
+    orgName
+    description
+    eventTables {
+      id
+      name
+      description
+      userCapacity
+      head {
+        id
+        name
+      }
+    }
+  }
+`
+
 const fragmentEventTable = gql`
   fragment EventTable on EventTable {
     id
@@ -11,6 +33,22 @@ const fragmentEventTable = gql`
       name
     }
   }
+`
+export const fetchAllEvent = gql`
+  query FetchAllEvent {
+    events {
+      id
+      endTime
+      startTime
+      description
+      name
+      orgName
+      eventTables {
+        ...EventTable
+      }
+    }
+  }
+  ${fragmentEventTable}
 `
 
 export const fetchEvent = gql`
