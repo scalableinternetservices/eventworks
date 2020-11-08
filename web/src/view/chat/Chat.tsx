@@ -1,30 +1,48 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
-import { ChatMessage, ChatSubscription, FetchChatMessage } from '../../graphql/query.gen'
+import { fetchTable } from '../../graphql/fetchEvent'
+import { ChatMessage, ChatSubscription, FetchChatMessage, FetchTable } from '../../graphql/query.gen'
+import { H2 } from '../../style/header'
 import { UserContext } from '../auth/user'
 import { fetchChatMessage, subscribeChat } from './fetchChat'
 import { sendChatMessage } from './mutateChat'
 
-export const ChatBox = () => {
+interface ChatBoxProps {
+  eventId: number
+  tableId: number
+}
+
+export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   const user = useContext(UserContext)
-  const { loading, data } = useQuery<FetchChatMessage>(fetchChatMessage)
-  const sub = useSubscription<ChatSubscription>(subscribeChat)
+  const {
+    loading: tableLoading,
+    data: tableData,
+    error: tableError
+  } = useQuery<FetchTable>(fetchTable, {
+    variables: { tableId }
+  })
+  const { loading: chatLoading, data: chatData } = useQuery<FetchChatMessage>(fetchChatMessage, {
+    variables: { eventId, tableId }
+  })
+  const sub = useSubscription<ChatSubscription>(subscribeChat, {
+    variables: { eventId, tableId }
+  })
   const [messages, setMessages] = useState<Array<ChatMessage>>([])
   const [currentMessage, setCurrentMessage] = useState('')
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter' && user?.user) {
-      sendChatMessage(user.user.id, currentMessage)
+      sendChatMessage(user.user.id, eventId, tableId, currentMessage)
         .then(() => setCurrentMessage(''))
     }
   }
 
   useEffect(() => {
-    if (data?.chatMessages) {
-      setMessages(data.chatMessages)
+    if (chatData?.chatMessages) {
+      setMessages(chatData.chatMessages)
     }
-  }, [loading])
+  }, [chatLoading])
 
   useEffect(() => {
     if (sub.data?.chatUpdates) {
@@ -33,15 +51,21 @@ export const ChatBox = () => {
   }, [sub.data])
 
   if (!user?.user) {
-    return null
+    return <div>Log in to view chat</div>
   }
 
-  if (loading) {
+  if (tableLoading || chatLoading) {
     return <div>Loading chat...</div>
+  }
+
+  if (!tableData?.table) {
+    console.error(tableError)
+    return <div>Error loading chat. Please try again.</div>
   }
 
   return (
     <div>
+      <H2 style={{ marginBottom: 10 }}>{tableData.table.name}</H2>
       {!messages.length ?
         <div style={{ marginBottom: 7 }}>The chat room is open, start chatting!</div> :
         messages.map(msg => (
@@ -54,7 +78,7 @@ export const ChatBox = () => {
         value={currentMessage}
         onKeyDown={handleKeyDown}
         onChange={e => setCurrentMessage(e.target.value)}
-        style={{ marginTop: 5, border: '2px solid black', width: '100%' }}
+        style={{ marginTop: 5, border: '1px solid black', width: '100%' }}
       />
     </div>
   )

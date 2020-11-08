@@ -4,6 +4,7 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+ EventCreationAndMutation
 // GraphQL mutation operation: CreateEvent
 // ====================================================
 
@@ -18,6 +19,75 @@ export interface CreateEventVariables {
   eventName: string;
   orgName: string;
   description: string;
+
+// GraphQL query operation: FetchEvent
+// ====================================================
+
+export interface FetchEvent_event_eventTables_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchEvent_event_eventTables {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: FetchEvent_event_eventTables_head;
+}
+
+export interface FetchEvent_event {
+  __typename: "Event";
+  id: number;
+  endTime: any;
+  startTime: any;
+  description: string;
+  name: string;
+  orgName: string;
+  eventTables: FetchEvent_event_eventTables[] | null;
+}
+
+export interface FetchEvent {
+  event: FetchEvent_event;
+}
+
+export interface FetchEventVariables {
+  eventId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchTable
+// ====================================================
+
+export interface FetchTable_table_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchTable_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: FetchTable_table_head;
+}
+
+export interface FetchTable {
+  table: FetchTable_table;
+}
+
+export interface FetchTableVariables {
+  tableId: number;
+ 
 }
 
 /* tslint:disable */
@@ -69,6 +139,11 @@ export interface FetchChatMessage {
   chatMessages: FetchChatMessage_chatMessages[];
 }
 
+export interface FetchChatMessageVariables {
+  eventId: number;
+  tableId: number;
+}
+
 /* tslint:disable */
 /* eslint-disable */
 // @generated
@@ -95,6 +170,46 @@ export interface ChatSubscription_chatUpdates {
 
 export interface ChatSubscription {
   chatUpdates: ChatSubscription_chatUpdates | null;
+}
+
+export interface ChatSubscriptionVariables {
+  eventId: number;
+  tableId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: SendChatMessage
+// ====================================================
+
+export interface SendChatMessage_sendMessage_user {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+}
+
+export interface SendChatMessage_sendMessage {
+  __typename: "ChatMessage";
+  id: number;
+  user: SendChatMessage_sendMessage_user;
+  message: string;
+}
+
+export interface SendChatMessage {
+  sendMessage: SendChatMessage_sendMessage;
+}
+
+export interface SendChatMessageVariables {
+  senderId: number;
+  eventId: number;
+  tableId: number;
+  message: string;
 }
 
 /* tslint:disable */
@@ -305,6 +420,32 @@ export interface NextSurveyQuestionVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+ EventCreationAndMutation
+=======
+// GraphQL fragment: EventTable
+// ====================================================
+
+export interface EventTable_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface EventTable {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: EventTable_head;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+
 // GraphQL fragment: User
 // ====================================================
 

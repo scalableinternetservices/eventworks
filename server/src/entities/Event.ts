@@ -1,5 +1,6 @@
 import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { ChatMessage } from './ChatMessage'
+import { EventTable } from './EventTable'
 import { EventUserConfig } from './EventUserConfig'
 
 @Entity()
@@ -43,4 +44,7 @@ export class Event extends BaseEntity {
 
   @OneToMany(() => ChatMessage, msg => msg.event)
   chatMessages: ChatMessage[]
+
+  @OneToMany(() => EventTable, tbl => tbl.event, { nullable: false, eager: true })
+  eventTables: EventTable[]
 }
