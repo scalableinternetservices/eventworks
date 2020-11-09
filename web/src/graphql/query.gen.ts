@@ -183,6 +183,32 @@ export interface FetchUserContext {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: UpdateUser
+// ====================================================
+
+export interface UpdateUser_updateUser {
+  __typename: "User";
+  name: string;
+  email: string;
+  title: string;
+  id: number;
+  userType: UserType;
+}
+
+export interface UpdateUser {
+  updateUser: UpdateUser_updateUser;
+}
+
+export interface UpdateUserVariables {
+  input: UserInput;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL query operation: FetchChatMessage
 // ====================================================
 
@@ -627,6 +653,12 @@ export interface EventInput {
 export interface SurveyInput {
   questionId: number;
   answer: string;
+}
+
+export interface UserInput {
+  email: string;
+  name: string;
+  title: string;
 }
 
 //==============================================================
