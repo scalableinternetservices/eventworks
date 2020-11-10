@@ -20,7 +20,7 @@ type Query {
   users: [User!]!
 
   surveys: [Survey!]!
-  survey (surveyId: Int!): Survey
+  survey(surveyId: Int!): Survey
   chatMessages(eventId: Int!, tableId: Int!): [ChatMessage!]!
   events: [Event!]!
   event(eventId: Int!): Event!
@@ -39,6 +39,7 @@ type Mutation {
   createTable(input: EventTableInput!): EventTable!
   #below is to update an event
   #updateEvent(id: ID!, input: EventInput!): Event!
+  updateUser(input: UserInput!): User!
 
   sendMessage(senderId: Int!, eventId: Int!, tableId: Int!, message: String!): ChatMessage!
 }
@@ -71,12 +72,19 @@ type Event {
   description: String!
   eventTables: [EventTable!]
 }
-
+input UserInput {
+  email: String!
+  name: String!
+  title: String!
+  linkedinLink: String!
+}
 type User {
   id: Int!
   userType: UserType!
   email: String!
   name: String!
+  title: String!
+  linkedinLink: String!
 }
 
 enum UserType {

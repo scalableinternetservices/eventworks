@@ -1,135 +1,70 @@
 import { RouteComponentProps } from '@reach/router';
 import * as React from 'react';
+import { getApolloClient } from '../../graphql/apolloClient';
 import { Button } from '../../style/button';
 import { Input } from '../../style/input';
+import { updateUser } from '../../view/auth/mutateUser';
 import { AppRouteParams } from '../nav/route';
+import { handleError } from '../toast/error';
+import { toast } from '../toast/toast';
 
 interface ProfileForm extends RouteComponentProps, AppRouteParams {}
 
 export function Profile(props: ProfileForm) {
+  const [name, setName] = React.useState("");
+  const [linkedin, setLinkedin] = React.useState("");
+  const [title, setTitle] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [orgName, setOrgName] = React.useState("");
-  const [capacity, setCapacity] = React.useState("");
-  const [description, setDescription] = React.useState("");
-  const [eventName, setEventName] = React.useState("");
 
   const handleSubmit = (event: { preventDefault: () => void; }) => {
     console.log(`
+      Name: ${name}
+      Linkedin: ${linkedin}
+      Title: ${title}
       Email: ${email}
-      Password: ${password}
-      Organization Name: ${orgName}
-      Capacity: ${capacity}
-      Description: ${description}
-      Event Name: ${eventName}
     `);
 
-
+    updateUser(getApolloClient(), {
+      name: name,
+      title: title,
+      email: email,
+      linkedinLink: linkedin
+    }).then(() => {
+      toast('submitted!')
+    }).catch(err => {
+      handleError(err)
+    })
     event.preventDefault();
   }
-
+  //User goes to profile page
+  //queries for user data to autodisplay
+  //if none, show none
+  //if successful, show user data and allow user to change their profile
   return (
-    // <form onSubmit={handleSubmit}>
-    //   <h1>Create Event</h1>
-
-    //   <label>
-    //     Email:
-    //     <input
-    //       name="email"
-    //       type="email"
-    //       value={email}
-    //       onChange={e => setEmail(e.target.value)}
-    //       required />
-    //   </label>
-
-    //   <label>
-    //     Password:
-    //     <input
-    //       name="password"
-    //       type="password"
-    //       value={password}
-    //       onChange={e => setPassword(e.target.value)}
-    //       required />
-    //   </label>
-
-    //   <label>
-    //     orgName:
-    //     <input
-    //       name="orgName"
-    //       type="orgName"
-    //       value={orgName}
-    //       onChange={e => setOrgName(e.target.value)}
-    //       required />
-    //   </label>
-
-    //   <label>
-    //     capacity:
-    //     <input
-    //       name="capacity"
-    //       type="capacity"
-    //       value={capacity}
-    //       onChange={e => setCapacity(e.target.value)}
-    //       required />
-    //   </label>
-
-    //   <label>
-    //     description:
-    //     <input
-    //       name="description"
-    //       type="description"
-    //       value={description}
-    //       onChange={e => setDescription(e.target.value)}
-    //       required />
-    //   </label>
-
-    //   <label>
-    //     eventName:
-    //     <input
-    //       name="eventName"
-    //       type="eventName"
-    //       value={eventName}
-    //       onChange={e => setEventName(e.target.value)}
-    //       required />
-    //   </label>
-
-    //   <button>Submit</button>
-    // </form>
     <>
       <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="email">
-          Email address
+        <label className="db fw4 lh-copy f6" htmlFor="name">
+          Name
         </label>
-        <Input $onChange={setEmail}  name="email" type="email" />
+        <Input $onChange={setName}  name="name" type="name" />
       </div>
       <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="password">
-          Password
+        <label className="db fw4 lh-copy f6" htmlFor="title">
+          Email
         </label>
-        <Input  $onChange={setPassword}  name="password" type="password" />
+        <Input  $onChange={setEmail}  name="email" type="email" />
       </div>
       <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="orgName">
-          Organization Name
+        <label className="db fw4 lh-copy f6" htmlFor="linkedin">
+          Linkedin Link (Optional)
         </label>
-        <Input  $onChange={setOrgName}  name="orgName" type="orgName" />
+        <Input  $onChange={setLinkedin}  name="linkedin" type="linkedin" />
       </div>
       <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="capacity">
-          Estimated Capacity
+        <label className="db fw4 lh-copy f6" htmlFor="title">
+          Title
         </label>
-        <Input  $onChange={setCapacity}  name="capacity" type="capacity" />
-      </div>
-      <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="description">
-          Brief Description
-        </label>
-        <Input  $onChange={setDescription}  name="description" type="description" />
-      </div>
-      <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="eventName">
-          Event Name
-        </label>
-        <Input  $onChange={setEventName}  name="eventName" type="eventName" />
+        <Input  $onChange={setTitle}  name="title" type="title" />
       </div>
       <div className="mt3">
         <Button onClick={handleSubmit}>Submit</Button>

@@ -20,10 +20,18 @@ export class User extends BaseEntity implements GraphqlUser {
   })
   name: string
 
+  @Column()
+  title: string
+
   @Column({
     length: 100,
   })
   email: string
+
+  @Column({
+    length: 100,
+  })
+  linkedinLink: string
 
   @Column({
     type: 'enum',

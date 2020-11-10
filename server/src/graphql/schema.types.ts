@@ -48,6 +48,7 @@ export interface Mutation {
   nextSurveyQuestion?: Maybe<Survey>
   createEvent: Event
   createTable: EventTable
+  updateUser: User
   sendMessage: ChatMessage
 }
 
@@ -65,6 +66,10 @@ export interface MutationCreateEventArgs {
 
 export interface MutationCreateTableArgs {
   input: EventTableInput
+}
+
+export interface MutationUpdateUserArgs {
+  input: UserInput
 }
 
 export interface MutationSendMessageArgs {
@@ -110,12 +115,21 @@ export interface Event {
   eventTables?: Maybe<Array<EventTable>>
 }
 
+export interface UserInput {
+  email: Scalars['String']
+  name: Scalars['String']
+  title: Scalars['String']
+  linkedinLink: Scalars['String']
+}
+
 export interface User {
   __typename?: 'User'
   id: Scalars['Int']
   userType: UserType
   email: Scalars['String']
   name: Scalars['String']
+  title: Scalars['String']
+  linkedinLink: Scalars['String']
 }
 
 export enum UserType {
@@ -274,6 +288,7 @@ export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>
   EventInput: EventInput
   Event: ResolverTypeWrapper<Event>
+  UserInput: UserInput
   User: ResolverTypeWrapper<User>
   UserType: UserType
   EventUserPerm: EventUserPerm
@@ -297,6 +312,7 @@ export type ResolversParentTypes = {
   Date: Scalars['Date']
   EventInput: EventInput
   Event: Event
+  UserInput: UserInput
   User: User
   Survey: Survey
   SurveyQuestion: SurveyQuestion
@@ -359,6 +375,7 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateTableArgs, 'input'>
   >
+  updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input'>>
   sendMessage?: Resolver<
     ResolversTypes['ChatMessage'],
     ParentType,
@@ -414,6 +431,8 @@ export type UserResolvers<
   userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  linkedinLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

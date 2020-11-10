@@ -171,10 +171,39 @@ export interface FetchUserContext_self {
   name: string;
   userType: UserType;
   email: string;
+  title: string;
+  linkedinLink: string;
 }
 
 export interface FetchUserContext {
   self: FetchUserContext_self | null;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL mutation operation: UpdateUser
+// ====================================================
+
+export interface UpdateUser_updateUser {
+  __typename: "User";
+  name: string;
+  title: string;
+  email: string;
+  linkedinLink: string;
+  id: number;
+  userType: UserType;
+}
+
+export interface UpdateUser {
+  updateUser: UpdateUser_updateUser;
+}
+
+export interface UpdateUserVariables {
+  input: UserInput;
 }
 
 /* tslint:disable */
@@ -192,6 +221,8 @@ export interface FetchChatMessage_chatMessages_user {
   userType: UserType;
   email: string;
   name: string;
+  title: string;
+  linkedinLink: string;
 }
 
 export interface FetchChatMessage_chatMessages {
@@ -225,6 +256,8 @@ export interface ChatSubscription_chatUpdates_user {
   userType: UserType;
   email: string;
   name: string;
+  title: string;
+  linkedinLink: string;
 }
 
 export interface ChatSubscription_chatUpdates {
@@ -258,6 +291,8 @@ export interface SendChatMessage_sendMessage_user {
   userType: UserType;
   email: string;
   name: string;
+  title: string;
+  linkedinLink: string;
 }
 
 export interface SendChatMessage_sendMessage {
@@ -522,6 +557,8 @@ export interface User {
   userType: UserType;
   email: string;
   name: string;
+  title: string;
+  linkedinLink: string;
 }
 
 /* tslint:disable */
@@ -539,6 +576,8 @@ export interface ChatMessage_user {
   userType: UserType;
   email: string;
   name: string;
+  title: string;
+  linkedinLink: string;
 }
 
 export interface ChatMessage {
@@ -627,6 +666,13 @@ export interface EventInput {
 export interface SurveyInput {
   questionId: number;
   answer: string;
+}
+
+export interface UserInput {
+  email: string;
+  name: string;
+  title: string;
+  linkedinLink: string;
 }
 
 //==============================================================
