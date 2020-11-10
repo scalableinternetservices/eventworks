@@ -32,7 +32,7 @@ export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   const [currentMessage, setCurrentMessage] = useState('')
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == 'Enter' && user?.user) {
+    if (e.key == 'Enter' && currentMessage && user?.user) {
       sendChatMessage(user.user.id, eventId, tableId, currentMessage)
         .then(() => setCurrentMessage(''))
     }
