@@ -29,6 +29,11 @@ export class User extends BaseEntity implements GraphqlUser {
   email: string
 
   @Column({
+    length: 100,
+  })
+  linkedinLink: string
+
+  @Column({
     type: 'enum',
     enum: UserType,
     default: UserType.User,

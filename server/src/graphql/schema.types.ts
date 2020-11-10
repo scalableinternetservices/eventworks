@@ -119,6 +119,7 @@ export interface UserInput {
   email: Scalars['String']
   name: Scalars['String']
   title: Scalars['String']
+  linkedinLink: Scalars['String']
 }
 
 export interface User {
@@ -128,6 +129,7 @@ export interface User {
   email: Scalars['String']
   name: Scalars['String']
   title: Scalars['String']
+  linkedinLink: Scalars['String']
 }
 
 export enum UserType {
@@ -430,6 +432,7 @@ export type UserResolvers<
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  linkedinLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

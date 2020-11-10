@@ -7,6 +7,8 @@ export const fetchUser = gql`
       name
       userType
       email
+      title
+      linkedinLink
     }
   }
 `
@@ -17,5 +19,7 @@ export const fragmentUser = gql`
     userType
     email
     name
+    title
+    linkedinLink
   }
 `

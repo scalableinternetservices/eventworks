@@ -50,6 +50,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newUser.title = input.title
       newUser.name = input.name
       newUser.email = input.email
+      newUser.linkedinLink = input.linkedinLink
       await newUser.save()
       return newUser
     },

@@ -76,6 +76,7 @@ input UserInput {
   email: String!
   name: String!
   title: String!
+  linkedinLink: String!
 }
 type User {
   id: Int!
@@ -83,6 +84,7 @@ type User {
   email: String!
   name: String!
   title: String!
+  linkedinLink: String!
 }
 
 enum UserType {

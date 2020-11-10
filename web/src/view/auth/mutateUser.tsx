@@ -7,8 +7,9 @@ const updateUserMutation = gql `
 mutation UpdateUser($input: UserInput!) {
   updateUser(input: $input){
     name
-    email
     title
+    email
+    linkedinLink
     ...User
   }
 }
