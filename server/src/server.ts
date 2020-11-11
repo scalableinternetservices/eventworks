@@ -62,6 +62,8 @@ server.express.post(
     let user = new User()
     user.email = req.body.email
     user.name = req.body.name
+    user.title = req.body.title
+    user.linkedinLink = req.body.linkedinLink
     user.userType = UserType.User
 
     // save the User model to the database, refresh `user` to get ID
