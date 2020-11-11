@@ -1,4 +1,4 @@
-import { Redirect } from '@reach/router'
+import { Redirect, RouteComponentProps } from '@reach/router'
 import * as React from 'react'
 import { useContext, useState } from 'react'
 import { Button } from '../../style/button'
@@ -6,11 +6,13 @@ import { H1 } from '../../style/header'
 import { Spacer } from '../../style/spacer'
 import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
-import { Route } from '../nav/route'
+import { AppRouteParams, Route } from '../nav/route'
 import { Page } from './Page'
 
+interface HomePageProps extends RouteComponentProps, AppRouteParams {}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const HomePage = () => {
+export const HomePage = (props: HomePageProps) => {
   const user = useContext(UserContext)
   const [eventId, setEventId] = useState('')
   const [jumpToEvent, setJumpToEvent] = useState(false)
