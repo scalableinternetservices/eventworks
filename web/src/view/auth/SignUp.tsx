@@ -8,6 +8,8 @@ import { toastErr } from '../toast/toast'
 export function Signup() {
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
+  const [title, ] = useState('temp')
+  const [linkedinLink, ] = useState('temp')
   const [err, setError] = useState({ email: false, name: false })
 
   // reset error when email/name change
@@ -23,7 +25,7 @@ export function Signup() {
     fetch('/auth/createUser', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, name }),
+      body: JSON.stringify({ email, name, title, linkedinLink }),
     })
       .then(res => {
         check(res.ok, 'response status ' + res.status)

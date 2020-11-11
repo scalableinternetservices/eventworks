@@ -20,7 +20,7 @@ export class User extends BaseEntity implements GraphqlUser {
   })
   name: string
 
-  @Column()
+  @Column({nullable: true})
   title: string
 
   @Column({
@@ -29,7 +29,7 @@ export class User extends BaseEntity implements GraphqlUser {
   email: string
 
   @Column({
-    length: 100,
+    length: 100, nullable: true
   })
   linkedinLink: string
 
