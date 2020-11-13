@@ -20,7 +20,7 @@ export function EventMapPage(props: SearchEvent) {
   const [, eventID] = (location.search || '').split('?eventID=')
   return (
     <Page>
-      {eventID ? <MapPage /> : <SearchEventsPage />}
+      {eventID ? <MapPage eventId = {parseInt(eventID)}  /> : <SearchEventsPage />}
     </Page>
   )
 }
@@ -29,7 +29,7 @@ const ButtonLink = link(Button)
 
 export function SearchEventsPage() {
   const [userQuery, setUserQuery] = useState('')
-  const { loading, data } = useQuery<FetchAllEvent>(fetchAllEvent)
+  const { loading, data, refetch } = useQuery<FetchAllEvent>(fetchAllEvent)
 
   if (loading) {
     return <div>loading...</div>
@@ -37,6 +37,8 @@ export function SearchEventsPage() {
   if (!data || data.events.length === 0) {
     return <div>no events</div>
   }
+
+  refetch()
 
   return (
       <div className="mw6">

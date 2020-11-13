@@ -76,6 +76,39 @@ export const graphqlRoot: Resolvers<Context> = {
       await newTable.save()
       return newTable
     },
+    joinTable: async (_, { input }, ctx) => {
+      const table = check(await EventTable.findOne({ where: { id: input.eventTableId }}));
+      const user = check(await User.findOne({ where: { id: input.participantId }}));
+
+      table.participants.push(user)
+      user.seated = true
+
+      await table.save()
+      await user.save()
+
+      return user
+    },
+    leaveTable: async (_, { input }, ctx) => {
+      const table = check(await EventTable.findOne({ where: { id: input.eventTableId }}));
+      const user = check(await User.findOne({ where: { id: input.participantId }}));
+
+      let index = 0;
+      for (let i = 0; i < table.participants.length; i++) {
+        if (table.participants[i].id == user.id) {
+          break;
+        }
+        index ++;
+      }
+      table.participants.splice(index, 0)
+      user.seated = false
+
+      console.log(table.participants.length)
+
+      await table.save()
+      await user.save()
+
+      return user
+    },
     answerSurvey: async (_, { input }, ctx) => {
       const { answer, questionId } = input
       const question = check(await SurveyQuestion.findOne({ where: { id: questionId }, relations: ['survey'] }))
@@ -118,6 +151,10 @@ export const graphqlRoot: Resolvers<Context> = {
       subscribe: (root, { eventId, tableId }, { pubsub }) => {
         return pubsub.asyncIterator(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`)
       },
+      resolve: (payload: any) => payload,
+    },
+    tableUpdates: {
+      subscribe: (_, { eventTableId }, context) => context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId),
       resolve: (payload: any) => payload,
     }
   },

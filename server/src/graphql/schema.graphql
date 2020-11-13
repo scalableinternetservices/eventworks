@@ -42,14 +42,23 @@ type Mutation {
   updateUser(input: UserInput!): User!
 
   sendMessage(senderId: Int!, eventId: Int!, tableId: Int!, message: String!): ChatMessage!
+
+  joinTable(input: JoinTableInput!): User!
+  leaveTable(input: JoinTableInput!): User!
 }
 
 type Subscription {
   surveyUpdates(surveyId: Int!): Survey
   chatUpdates(eventId: Int!, tableId: Int!): ChatMessage
+  tableUpdates(eventTableId: Int!): EventTable
 }
 
 scalar Date
+
+input JoinTableInput {
+  eventTableId: Int!
+  participantId: Int!
+}
 
 #wrote manually
 input EventInput {
@@ -85,6 +94,7 @@ type User {
   name: String!
   title: String!
   linkedinLink: String!
+  seated: Boolean!
 }
 
 enum UserType {
@@ -160,6 +170,7 @@ type EventTable {
   description: String!
   userCapacity: Int!
   chatMessages: [ChatMessage!]!
+  participants: [User!]!
 }
 
 input EventTableInput {

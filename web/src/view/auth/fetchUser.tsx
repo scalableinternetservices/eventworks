@@ -9,6 +9,7 @@ export const fetchUser = gql`
       email
       title
       linkedinLink
+      seated
     }
   }
 `
@@ -21,5 +22,6 @@ export const fragmentUser = gql`
     name
     title
     linkedinLink
+    seated
   }
 `

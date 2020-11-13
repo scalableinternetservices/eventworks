@@ -50,6 +50,8 @@ export interface Mutation {
   createTable: EventTable
   updateUser: User
   sendMessage: ChatMessage
+  joinTable: User
+  leaveTable: User
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -79,10 +81,19 @@ export interface MutationSendMessageArgs {
   message: Scalars['String']
 }
 
+export interface MutationJoinTableArgs {
+  input: JoinTableInput
+}
+
+export interface MutationLeaveTableArgs {
+  input: JoinTableInput
+}
+
 export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
   chatUpdates?: Maybe<ChatMessage>
+  tableUpdates?: Maybe<EventTable>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -92,6 +103,15 @@ export interface SubscriptionSurveyUpdatesArgs {
 export interface SubscriptionChatUpdatesArgs {
   eventId: Scalars['Int']
   tableId: Scalars['Int']
+}
+
+export interface SubscriptionTableUpdatesArgs {
+  eventTableId: Scalars['Int']
+}
+
+export interface JoinTableInput {
+  eventTableId: Scalars['Int']
+  participantId: Scalars['Int']
 }
 
 export interface EventInput {
@@ -130,6 +150,7 @@ export interface User {
   name: Scalars['String']
   title: Scalars['String']
   linkedinLink: Scalars['String']
+  seated: Scalars['Boolean']
 }
 
 export enum UserType {
@@ -192,6 +213,7 @@ export interface EventTable {
   description: Scalars['String']
   userCapacity: Scalars['Int']
   chatMessages: Array<ChatMessage>
+  participants: Array<User>
 }
 
 export interface EventTableInput {
@@ -286,6 +308,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>
   Subscription: ResolverTypeWrapper<{}>
   Date: ResolverTypeWrapper<Scalars['Date']>
+  JoinTableInput: JoinTableInput
   EventInput: EventInput
   Event: ResolverTypeWrapper<Event>
   UserInput: UserInput
@@ -310,6 +333,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']
   Subscription: {}
   Date: Scalars['Date']
+  JoinTableInput: JoinTableInput
   EventInput: EventInput
   Event: Event
   UserInput: UserInput
@@ -382,6 +406,8 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationSendMessageArgs, 'senderId' | 'eventId' | 'tableId' | 'message'>
   >
+  joinTable?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationJoinTableArgs, 'input'>>
+  leaveTable?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLeaveTableArgs, 'input'>>
 }
 
 export type SubscriptionResolvers<
@@ -401,6 +427,13 @@ export type SubscriptionResolvers<
     ParentType,
     ContextType,
     RequireFields<SubscriptionChatUpdatesArgs, 'eventId' | 'tableId'>
+  >
+  tableUpdates?: SubscriptionResolver<
+    Maybe<ResolversTypes['EventTable']>,
+    'tableUpdates',
+    ParentType,
+    ContextType,
+    RequireFields<SubscriptionTableUpdatesArgs, 'eventTableId'>
   >
 }
 
@@ -433,6 +466,7 @@ export type UserResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   linkedinLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  seated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -493,6 +527,7 @@ export type EventTableResolvers<
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   chatMessages?: Resolver<Array<ResolversTypes['ChatMessage']>, ParentType, ContextType>
+  participants?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

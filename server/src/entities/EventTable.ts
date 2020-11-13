@@ -28,4 +28,7 @@ export class EventTable extends BaseEntity {
 
   @ManyToOne(() => Event, evt => evt.eventTables)
   event: Event
+
+  @OneToMany(() => User, user => user.table, { nullable: true, eager: true })
+  participants: User[]
 }
