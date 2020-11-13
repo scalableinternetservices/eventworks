@@ -47,10 +47,10 @@ export const graphqlRoot: Resolvers<Context> = {
   Mutation: {
     updateUser: async (_, { input }, ctx) => {
       const newUser = new User()
-      newUser.title = input.title
+      newUser.title = input.title || ''
       newUser.name = input.name
       newUser.email = input.email
-      newUser.linkedinLink = input.linkedinLink
+      newUser.linkedinLink = input.linkedinLink || ''
       await newUser.save()
       return newUser
     },
@@ -61,7 +61,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newEvent.startTime = input.startTime
       newEvent.endTime = input.endTime
       newEvent.orgName = input.orgName
-      newEvent.name = input.eventName
+      newEvent.name = input.name
       await newEvent.save()
       return newEvent
     },
@@ -81,7 +81,6 @@ export const graphqlRoot: Resolvers<Context> = {
       const user = check(await User.findOne({ where: { id: input.participantId }}));
 
       table.participants.push(user)
-      user.seated = true
 
       await table.save()
       await user.save()
@@ -100,7 +99,6 @@ export const graphqlRoot: Resolvers<Context> = {
         index ++;
       }
       table.participants.splice(index, 0)
-      user.seated = false
 
       console.log(table.participants.length)
 

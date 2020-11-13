@@ -115,10 +115,10 @@ export interface JoinTableInput {
 }
 
 export interface EventInput {
-  startTime: Scalars['String']
-  endTime: Scalars['String']
+  startTime: Scalars['Int']
+  endTime: Scalars['Int']
   userCapacity: Scalars['Int']
-  eventName: Scalars['String']
+  name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
 }
@@ -126,8 +126,8 @@ export interface EventInput {
 export interface Event {
   __typename?: 'Event'
   id: Scalars['Int']
-  startTime: Scalars['String']
-  endTime: Scalars['String']
+  startTime: Scalars['Int']
+  endTime: Scalars['Int']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
@@ -138,8 +138,8 @@ export interface Event {
 export interface UserInput {
   email: Scalars['String']
   name: Scalars['String']
-  title: Scalars['String']
-  linkedinLink: Scalars['String']
+  title?: Maybe<Scalars['String']>
+  linkedinLink?: Maybe<Scalars['String']>
 }
 
 export interface User {
@@ -148,9 +148,8 @@ export interface User {
   userType: UserType
   email: Scalars['String']
   name: Scalars['String']
-  title: Scalars['String']
-  linkedinLink: Scalars['String']
-  seated: Scalars['Boolean']
+  title?: Maybe<Scalars['String']>
+  linkedinLink?: Maybe<Scalars['String']>
 }
 
 export enum UserType {
@@ -446,8 +445,8 @@ export type EventResolvers<
   ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  startTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  endTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  startTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
@@ -464,9 +463,8 @@ export type UserResolvers<
   userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  linkedinLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  seated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

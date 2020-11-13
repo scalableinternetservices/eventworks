@@ -32,8 +32,8 @@ export interface FetchAllEvent_events_eventTables {
 export interface FetchAllEvent_events {
   __typename: "Event";
   id: number;
-  endTime: string;
-  startTime: string;
+  endTime: number;
+  startTime: number;
   description: string;
   name: string;
   orgName: string;
@@ -78,8 +78,8 @@ export interface FetchEvent_event_eventTables {
 export interface FetchEvent_event {
   __typename: "Event";
   id: number;
-  endTime: string;
-  startTime: string;
+  endTime: number;
+  startTime: number;
   description: string;
   name: string;
   orgName: string;
@@ -206,8 +206,8 @@ export interface CreateEvent_createEvent_eventTables {
 export interface CreateEvent_createEvent {
   __typename: "Event";
   id: number;
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
   userCapacity: number;
   name: string;
   orgName: string;
@@ -238,9 +238,8 @@ export interface FetchUserContext_self {
   name: string;
   userType: UserType;
   email: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface FetchUserContext {
@@ -259,12 +258,11 @@ export interface FetchUserContext {
 export interface UpdateUser_updateUser {
   __typename: "User";
   name: string;
-  title: string;
+  title: string | null;
   email: string;
-  linkedinLink: string;
+  linkedinLink: string | null;
   id: number;
   userType: UserType;
-  seated: boolean;
 }
 
 export interface UpdateUser {
@@ -290,9 +288,8 @@ export interface FetchChatMessage_chatMessages_user {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface FetchChatMessage_chatMessages {
@@ -326,9 +323,8 @@ export interface ChatSubscription_chatUpdates_user {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface ChatSubscription_chatUpdates {
@@ -362,9 +358,8 @@ export interface SendChatMessage_sendMessage_user {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface SendChatMessage_sendMessage {
@@ -439,9 +434,8 @@ export interface JoinTable_joinTable {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface JoinTable {
@@ -467,9 +461,8 @@ export interface LeaveTable_leaveTable {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface LeaveTable {
@@ -683,8 +676,8 @@ export interface Event_eventTables {
 export interface Event {
   __typename: "Event";
   id: number;
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
   userCapacity: number;
   name: string;
   orgName: string;
@@ -738,9 +731,8 @@ export interface User {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 /* tslint:disable */
@@ -758,9 +750,8 @@ export interface ChatMessage_user {
   userType: UserType;
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
-  seated: boolean;
+  title: string | null;
+  linkedinLink: string | null;
 }
 
 export interface ChatMessage {
@@ -838,10 +829,10 @@ export enum UserType {
 }
 
 export interface EventInput {
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
   userCapacity: number;
-  eventName: string;
+  name: string;
   orgName: string;
   description: string;
 }
@@ -867,8 +858,8 @@ export interface SurveyInput {
 export interface UserInput {
   email: string;
   name: string;
-  title: string;
-  linkedinLink: string;
+  title?: string | null;
+  linkedinLink?: string | null;
 }
 
 //==============================================================

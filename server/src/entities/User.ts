@@ -46,9 +46,6 @@ export class User extends BaseEntity implements GraphqlUser {
   })
   photoLink: string
 
-  @Column({default: false})
-  seated: boolean
-
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.user)
   eventUserConfigs: EventUserConfig[]
 

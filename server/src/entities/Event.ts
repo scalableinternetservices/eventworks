@@ -27,10 +27,10 @@ export class Event extends BaseEntity {
   timeUpdated: Date
 
   @Column()
-  startTime: string
+  startTime: number
 
   @Column()
-  endTime: string
+  endTime: number
 
   @Column('int')
   userCapacity: number

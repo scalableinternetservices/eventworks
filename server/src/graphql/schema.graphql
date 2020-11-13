@@ -62,10 +62,10 @@ input JoinTableInput {
 
 #wrote manually
 input EventInput {
-  startTime: String!
-  endTime: String!
+  startTime: Int!
+  endTime: Int!
   userCapacity: Int!
-  eventName: String!
+  name: String!
   orgName: String!
   description: String!
 }
@@ -73,8 +73,8 @@ input EventInput {
 #wrote manually, overlaps with input above
 type Event {
   id: Int!
-  startTime: String!
-  endTime: String!
+  startTime: Int!
+  endTime: Int!
   userCapacity: Int!
   name: String!
   orgName: String!
@@ -84,17 +84,16 @@ type Event {
 input UserInput {
   email: String!
   name: String!
-  title: String!
-  linkedinLink: String!
+  title: String
+  linkedinLink: String
 }
 type User {
   id: Int!
   userType: UserType!
   email: String!
   name: String!
-  title: String!
-  linkedinLink: String!
-  seated: Boolean!
+  title: String
+  linkedinLink: String
 }
 
 enum UserType {

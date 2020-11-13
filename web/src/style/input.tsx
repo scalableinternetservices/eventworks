@@ -7,8 +7,8 @@ import { style } from './styled'
 interface InputProps {
   $hasError?: boolean
   $hasSuccess?: boolean
-  $onChange?: (val: string) => void
-  $onSubmit?: (val: string) => void
+  $onChange?: (val: any) => void
+  $onSubmit?: (val: any) => void
 }
 
 const InputBase = style('input', 'pa2 input-reset ba bg-transparent w-100 measure', (p: InputProps) => ({

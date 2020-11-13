@@ -149,6 +149,8 @@ export function Square ({ eventId, eventTableId }: { eventId: number, eventTable
       top: "12.5%"
     } as React.CSSProperties;
 
+    const seated = true
+
     if (x) {
       return (
         <div className={"seat " + i} style={i == 4 ? sitStyleAdjusted : sitStyle} >
@@ -157,9 +159,14 @@ export function Square ({ eventId, eventTableId }: { eventId: number, eventTable
       )
     } else {
       return (
-        <div className={"seat " + i} style={userData?.self?.seated ? (i == 4 ? sitStyleAdjusted : sitStyle) : (i == 4 ? seatStyleAdjusted : seatStyle)} onClick={userData?.self?.seated ? handleLeave : handleJoin} >
+        <div className={"seat " + i}
+          style={seated ?
+            (i == 4 ? sitStyleAdjusted : sitStyle) :
+            (i == 4 ? seatStyleAdjusted : seatStyle)}
+            onClick={seated ? handleLeave : handleJoin}
+        >
           <div className='horizontalPlus' style={horizontalPlus}></div>
-          <div className='verticalPlus' style={userData?.self?.seated ? {display: "none"} : verticalPlus }></div>
+          <div className='verticalPlus' style={seated ? {display: "none"} : verticalPlus }></div>
         </div>
       )
     }

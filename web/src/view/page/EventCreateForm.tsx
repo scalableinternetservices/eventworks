@@ -16,82 +16,73 @@ import { Page } from './Page';
 interface EventCreateForm extends RouteComponentProps, AppRouteParams {}
 
 export function EventCreateForm(props: EventCreateForm) {
-  const [startTime, setStartTime] = React.useState("");
-  const [endTime, setEndTime] = React.useState("");
+  const [startTime, setStartTime] = React.useState(0);
+  const [endTime, setEndTime] = React.useState(0);
   const [orgName, setOrgName] = React.useState("");
-  const [capacity, setCapacity] = React.useState<number>(0);
+  const [userCapacity, setUserCapacity] = React.useState(0);
   const [description, setDescription] = React.useState("");
-  const [eventName, setEventName] = React.useState("");
+  const [name, setName] = React.useState("");
   const {data} = useQuery<FetchUserContext, User>(fetchUser);
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    console.log(startTime)
-    console.log(endTime)
-    console.log(orgName)
-    console.log(capacity)
-    console.log(description)
-    console.log(eventName)
 
-    let eventIdTemp:number = 0;
-    let userIdTemp:number = 0;
+    let eventIdTemp: number = 0;
+    let userIdTemp: number = 0;
 
     if (data?.self?.id) {
       userIdTemp = data?.self?.id;
     }
 
     createEvent(getApolloClient(), {
-      eventName: eventName,
-      description: description,
-      orgName: orgName,
-      startTime: startTime,
-      endTime: endTime,
-      userCapacity: capacity
-      }).then((result) => {
-        Array.from(document.querySelectorAll("input")).forEach(
-          input => (input.value = "")
-        );
+      name,
+      description,
+      orgName,
+      startTime,
+      endTime,
+      userCapacity
+    }).then((result) => {
+      Array.from(document.querySelectorAll("input")).forEach(
+        input => (input.value = "")
+      );
 
-        if  (result.data?.createEvent.id) {
-          eventIdTemp = result.data?.createEvent.id;
-        }
+      if  (result.data?.createEvent.id) {
+        eventIdTemp = result.data?.createEvent.id;
+      }
 
-        toast('Event Created! Your event id is ' + result.data?.createEvent.id)
-      }).then(() => {
-        createTable(getApolloClient(), {
-          eventId: eventIdTemp,
-          head: userIdTemp,
-          name: 'Event ' + eventIdTemp,
-          description: description,
-          userCapacity: capacity
-        })
-      }).catch(err => {
-        handleError(err)
+      toast('Event Created! Your event id is ' + result.data?.createEvent.id)
+    }).then(() => {
+      createTable(getApolloClient(), {
+        eventId: eventIdTemp,
+        head: userIdTemp,
+        name: 'Event ' + eventIdTemp,
+        description,
+        userCapacity
       })
-
-
+    }).catch(err => {
+      handleError(err)
+    })
   }
 
   return (
     <Page>
-      <>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="startTime">
           Start Time
         </label>
-        <Input $onChange={setStartTime} className="input" name="startTime" type="startTime" />
+        <Input $onChange={e => setStartTime(Number(e))} className="input" name="startTime" type="startTime" />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="endTime">
           End Time
         </label>
-        <Input $onChange={setEndTime} className="input" name="endTime" type="endTime" />
+        <Input $onChange={e => setEndTime(Number(e))} className="input" name="endTime" type="endTime" />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="capacity">
           Estimated Capacity
         </label>
-        <Input $onChange={e => setCapacity(Number(e))} className="input" name="capacity" type="capacity" />
+        <Input $onChange={e => setUserCapacity(Number(e))} className="input" name="capacity" type="capacity" />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="orgName">
@@ -100,10 +91,10 @@ export function EventCreateForm(props: EventCreateForm) {
         <Input $onChange={setOrgName} className="input" name="orgName" type="orgName" />
       </div>
       <div className="mt3">
-        <label className="db fw4 lh-copy f6" htmlFor="eventName">
+        <label className="db fw4 lh-copy f6" htmlFor="name">
           Event Name
         </label>
-        <Input $onChange={setEventName} className="input" name="eventName" type="eventName" />
+        <Input $onChange={setName} className="input" name="name" type="name" />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="description">
@@ -115,35 +106,6 @@ export function EventCreateForm(props: EventCreateForm) {
       <div className="mt3">
         <Button onClick={handleSubmit}>Create Event</Button>
       </div>
-    </>
     </Page>
   );
 }
-
-  /*<form onSubmit={handleSubmit}>
-        <label>
-          Start Time
-          <input type="text" value={startTime} onChange={e => setStartTime(e.target.value)} />
-        </label>
-        <label>
-          End Time
-          <input type="text" value={endTime} onChange={e => setEndTime(e.target.value)} />
-        </label>
-        <label>
-          Organization Name
-          <input type="text" value={orgName} onChange={e => setOrgName(e.target.value)} />
-        </label>
-        <label>
-          Event Name
-          <input type="text" value={eventName} onChange={e => setEventName(e.target.value)} />
-        </label>
-        <label>
-          Estimated Capcity
-          <input type="text" value={capacity} onChange={e => setCapacity(e.target.valueAsNumber)} />
-        </label>
-        <label>
-          Description
-          <input type="text" value={description} onChange={e => setDescription(e.target.value)} />
-        </label>
-      <input type="submit" value="Submit" />
-    </form>*/
