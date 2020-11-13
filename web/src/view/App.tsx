@@ -12,6 +12,7 @@ import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
 import { EventCreateForm } from './page/EventCreateForm'
 import { HomePage } from './page/HomePage'
+import { LandingPage } from './page/LandingPage'
 import { LecturesPage } from './page/LecturesPage'
 import { LoginPage } from './page/LoginPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
@@ -66,6 +67,7 @@ export function AppBody() {
         <LoginPage path={Route.LOGIN_SIGNUP} />
         <LoginPage path={Route.LOGIN_SIGNUP_APP} />
         <EventMapPage path={Route.FIND_EVENT} />
+        <LandingPage path={Route.LANDING}/>
       </Router>
       <Footer>
         <FooterText>© 2020 John Rothfels</FooterText>

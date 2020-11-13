@@ -41,6 +41,10 @@ const otherTabs = [
   {
     name: 'account',
     path: getPath(Route.LOGIN_SIGNUP),
+  },
+  {
+    name: "temp-landing",
+    path: getPath(Route.LANDING),
   }
   /*{
     name: 'event',
@@ -141,7 +145,7 @@ function SubNav() {
   return null
 }
 
-const Nav = style(
+const Nav = style (
   'nav',
   'flex white items-center list pa2 ph4 ph5-ns ph7-l avenir f4',
   (p: { $isSubNav?: boolean }) => ({
