@@ -47,10 +47,10 @@ export const graphqlRoot: Resolvers<Context> = {
   Mutation: {
     updateUser: async (_, { input }, ctx) => {
       const newUser = new User()
-      newUser.title = input.title
+      newUser.title = input.title || ''
       newUser.name = input.name
       newUser.email = input.email
-      newUser.linkedinLink = input.linkedinLink
+      newUser.linkedinLink = input.linkedinLink || ''
       await newUser.save()
       return newUser
     },
@@ -61,7 +61,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newEvent.startTime = input.startTime
       newEvent.endTime = input.endTime
       newEvent.orgName = input.orgName
-      newEvent.name = input.eventName
+      newEvent.name = input.name
       await newEvent.save()
       return newEvent
     },
@@ -107,6 +107,33 @@ export const graphqlRoot: Resolvers<Context> = {
       await chat.save()
       pubsub.publish(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`, chat)
       return chat
+    },
+    joinTable: async (_, { input }, ctx) => {
+      const table = check(await EventTable.findOne({ where: { id: input.eventTableId }}));
+      const user = check(await User.findOne({ where: { id: input.participantId }}));
+
+      table.participants.push(user)
+
+      await table.save()
+      await user.save()
+
+      return user
+    },
+    leaveTable: async (_, { input }, ctx) => {
+      const table = check(await EventTable.findOne({ where: { id: input.eventTableId }}));
+      const user = check(await User.findOne({ where: { id: input.participantId }}));
+
+      let index = table.participants.findIndex(participant => participant.id == user.id)
+      if (index >= 0) {
+        table.participants.splice(index, 0)
+      }
+
+      console.log(table.participants.length)
+      user.table = null
+
+      await table.save()
+      await user.save()
+      return user
     }
   },
   Subscription: {
@@ -118,6 +145,10 @@ export const graphqlRoot: Resolvers<Context> = {
       subscribe: (root, { eventId, tableId }, { pubsub }) => {
         return pubsub.asyncIterator(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`)
       },
+      resolve: (payload: any) => payload,
+    },
+    tableUpdates: {
+      subscribe: (_, { eventTableId }, context) => context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId),
       resolve: (payload: any) => payload,
     }
   },

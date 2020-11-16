@@ -22,13 +22,17 @@ export const fragmentEvent = gql`
   }
 `
 
-const fragmentEventTable = gql`
+export const fragmentEventTable = gql`
   fragment EventTable on EventTable {
     id
     name
     description
     userCapacity
     head {
+      id
+      name
+    }
+    participants {
       id
       name
     }
@@ -71,6 +75,15 @@ export const fetchEvent = gql`
 export const fetchTable = gql`
   query FetchTable($tableId: Int!) {
     table(tableId: $tableId) {
+      ...EventTable
+    }
+  }
+  ${fragmentEventTable}
+`
+
+export const subscribeEventTable = gql`
+  subscription EventTableSubscription($eventTableId: Int!) {
+    tableUpdates(eventTableId: $eventTableId) {
       ...EventTable
     }
   }

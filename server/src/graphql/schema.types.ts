@@ -50,6 +50,8 @@ export interface Mutation {
   createTable: EventTable
   updateUser: User
   sendMessage: ChatMessage
+  joinTable: User
+  leaveTable: User
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -79,10 +81,19 @@ export interface MutationSendMessageArgs {
   message: Scalars['String']
 }
 
+export interface MutationJoinTableArgs {
+  input: JoinTableInput
+}
+
+export interface MutationLeaveTableArgs {
+  input: JoinTableInput
+}
+
 export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
   chatUpdates?: Maybe<ChatMessage>
+  tableUpdates?: Maybe<EventTable>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -94,11 +105,20 @@ export interface SubscriptionChatUpdatesArgs {
   tableId: Scalars['Int']
 }
 
+export interface SubscriptionTableUpdatesArgs {
+  eventTableId: Scalars['Int']
+}
+
+export interface JoinTableInput {
+  eventTableId: Scalars['Int']
+  participantId: Scalars['Int']
+}
+
 export interface EventInput {
-  startTime: Scalars['String']
-  endTime: Scalars['String']
+  startTime: Scalars['Int']
+  endTime: Scalars['Int']
   userCapacity: Scalars['Int']
-  eventName: Scalars['String']
+  name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
 }
@@ -106,8 +126,8 @@ export interface EventInput {
 export interface Event {
   __typename?: 'Event'
   id: Scalars['Int']
-  startTime: Scalars['String']
-  endTime: Scalars['String']
+  startTime: Scalars['Int']
+  endTime: Scalars['Int']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
@@ -118,8 +138,8 @@ export interface Event {
 export interface UserInput {
   email: Scalars['String']
   name: Scalars['String']
-  title: Scalars['String']
-  linkedinLink: Scalars['String']
+  title?: Maybe<Scalars['String']>
+  linkedinLink?: Maybe<Scalars['String']>
 }
 
 export interface User {
@@ -128,8 +148,8 @@ export interface User {
   userType: UserType
   email: Scalars['String']
   name: Scalars['String']
-  title: Scalars['String']
-  linkedinLink: Scalars['String']
+  title?: Maybe<Scalars['String']>
+  linkedinLink?: Maybe<Scalars['String']>
 }
 
 export enum UserType {
@@ -192,6 +212,7 @@ export interface EventTable {
   description: Scalars['String']
   userCapacity: Scalars['Int']
   chatMessages: Array<ChatMessage>
+  participants?: Maybe<Array<User>>
 }
 
 export interface EventTableInput {
@@ -286,6 +307,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>
   Subscription: ResolverTypeWrapper<{}>
   Date: ResolverTypeWrapper<Scalars['Date']>
+  JoinTableInput: JoinTableInput
   EventInput: EventInput
   Event: ResolverTypeWrapper<Event>
   UserInput: UserInput
@@ -310,6 +332,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']
   Subscription: {}
   Date: Scalars['Date']
+  JoinTableInput: JoinTableInput
   EventInput: EventInput
   Event: Event
   UserInput: UserInput
@@ -382,6 +405,8 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationSendMessageArgs, 'senderId' | 'eventId' | 'tableId' | 'message'>
   >
+  joinTable?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationJoinTableArgs, 'input'>>
+  leaveTable?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLeaveTableArgs, 'input'>>
 }
 
 export type SubscriptionResolvers<
@@ -402,6 +427,13 @@ export type SubscriptionResolvers<
     ContextType,
     RequireFields<SubscriptionChatUpdatesArgs, 'eventId' | 'tableId'>
   >
+  tableUpdates?: SubscriptionResolver<
+    Maybe<ResolversTypes['EventTable']>,
+    'tableUpdates',
+    ParentType,
+    ContextType,
+    RequireFields<SubscriptionTableUpdatesArgs, 'eventTableId'>
+  >
 }
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -413,8 +445,8 @@ export type EventResolvers<
   ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  startTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  endTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  startTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
@@ -431,8 +463,8 @@ export type UserResolvers<
   userType?: Resolver<ResolversTypes['UserType'], ParentType, ContextType>
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  linkedinLink?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -493,6 +525,7 @@ export type EventTableResolvers<
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   chatMessages?: Resolver<Array<ResolversTypes['ChatMessage']>, ParentType, ContextType>
+  participants?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
