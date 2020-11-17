@@ -121,6 +121,7 @@ export interface EventInput {
   name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
+  hostId: Scalars['Int']
 }
 
 export interface Event {

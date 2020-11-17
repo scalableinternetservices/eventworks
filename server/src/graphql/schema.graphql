@@ -67,6 +67,7 @@ input EventInput {
   name: String!
   orgName: String!
   description: String!
+  hostId: Int! # user id
 }
 
 #wrote manually, overlaps with input above

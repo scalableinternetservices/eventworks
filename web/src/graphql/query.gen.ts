@@ -821,6 +821,7 @@ export interface EventInput {
   name: string;
   orgName: string;
   description: string;
+  hostId: number;
 }
 
 export interface EventTableInput {

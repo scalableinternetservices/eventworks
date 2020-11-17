@@ -63,6 +63,16 @@ export const graphqlRoot: Resolvers<Context> = {
       newEvent.orgName = input.orgName
       newEvent.name = input.name
       await newEvent.save()
+
+      const newTable = new EventTable()
+      newTable.chatMessages = []
+      newTable.description = `${input.name} Main Room`
+      newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
+      newTable.name = `${input.name} Main Room`
+      newTable.head = check(await User.findOne({ where: { id: input.hostId } }))
+      newTable.event = check(await Event.findOne({ where: { id: newEvent.id } }))
+      await newTable.save()
+
       return newEvent
     },
     createTable: async (_, { input }, ctx) => {
