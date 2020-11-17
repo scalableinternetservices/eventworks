@@ -21,8 +21,8 @@ export function EventCreateForm(props: EventCreateForm) {
   const [description, setDescription] = React.useState("");
   const [name, setName] = React.useState("");
 
-  if (!user.user?.id) {
-    return <Redirect to={Route.LOGIN_SIGNUP} />
+  if (!user.user) {
+    return <Redirect to={`/${Route.LOGIN_SIGNUP}`} />
   }
 
   const userId = user.user.id // prevent TS from reading it as nullable in createEvent
