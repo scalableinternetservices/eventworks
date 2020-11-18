@@ -1,11 +1,10 @@
 import * as React from 'react';
-
 //interface MapUI extends RouteComponentProps, AppRouteParams {}
 
 export function MapPage(/*props: MapUI*/) {
   return (
-      <Room />
-  )
+   <Room />
+  );
 }
 
 //,React.PropsWithChildren<JSX.IntrinsicElements['div']>
@@ -54,6 +53,8 @@ export class Room extends React.Component {
     );
   }
 }
+///rectangle
+
 
 //////////////////////////////////////////////// Square
 
