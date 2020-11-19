@@ -41,6 +41,7 @@ export const graphqlRoot: Resolvers<Context> = {
         }
       }),
     events: async (_, {}, ctx) => (await Event.find()),
+    tables: async(_, {}, ctx) => (await EventTable.find()),
     event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId } })),
     table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
   },
@@ -62,6 +63,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newEvent.endTime = input.endTime
       newEvent.orgName = input.orgName
       newEvent.name = input.name
+
       await newEvent.save()
 
       const newTable = new EventTable()
@@ -119,30 +121,22 @@ export const graphqlRoot: Resolvers<Context> = {
       return chat
     },
     joinTable: async (_, { input }, ctx) => {
-      const table = check(await EventTable.findOne({ where: { id: input.eventTableId }}));
+      const table = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
       const user = check(await User.findOne({ where: { id: input.participantId }}));
+      user.table = table;
+      await user.save();
+      const table2 = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
 
-      table.participants.push(user)
-
-      await table.save()
-      await user.save()
-
-      return user
+      pubsub.publish('TABLE_UPDATE' + input.eventTableId, table2)
+      return user;
     },
     leaveTable: async (_, { input }, ctx) => {
-      const table = check(await EventTable.findOne({ where: { id: input.eventTableId }}));
       const user = check(await User.findOne({ where: { id: input.participantId }}));
-
-      let index = table.participants.findIndex(participant => participant.id == user.id)
-      if (index >= 0) {
-        table.participants.splice(index, 0)
-      }
-
-      console.log(table.participants.length)
-      user.table = null
-
-      await table.save()
+      user.table = null;
       await user.save()
+      const table = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
+
+      pubsub.publish('TABLE_UPDATE' + input.eventTableId, table)
       return user
     }
   },
@@ -158,7 +152,9 @@ export const graphqlRoot: Resolvers<Context> = {
       resolve: (payload: any) => payload,
     },
     tableUpdates: {
-      subscribe: (_, { eventTableId }, context) => context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId),
+      subscribe: (_, { eventTableId }, context) => {
+        return context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId)
+      },
       resolve: (payload: any) => payload,
     }
   },

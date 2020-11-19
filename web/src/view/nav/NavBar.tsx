@@ -39,6 +39,10 @@ const otherTabs = [
     path: getPath(Route.CREATE_FORM),
   },
   {
+    name: 'create table',
+    path: getPath(Route.CREATE_TABLE_FORM),
+  },
+  {
     name: 'account',
     path: getPath(Route.LOGIN_SIGNUP),
   }
@@ -159,7 +163,7 @@ function NavItem(props: { name: string; path: string; title?: boolean }) {
 
   return (
     <NavLink $title={props.title} $bold={props.title || location.pathname.startsWith(props.path)} to={props.path}>
-      {!user ? ((props.name == "create event" || props.name == "find event") ? "" : props.name) : props.name}
+      {!user ? ((props.name == "create event" || props.name == "find event" || props.name == "create table") ? "" : props.name) : props.name}
     </NavLink>
   )
 }

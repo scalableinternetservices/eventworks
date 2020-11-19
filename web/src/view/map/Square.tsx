@@ -1,77 +1,73 @@
 import { useQuery, useSubscription } from '@apollo/client';
 import * as React from 'react';
 import { getApolloClient } from '../../graphql/apolloClient';
-import { fetchEvent, fetchTable, subscribeEventTable } from '../../graphql/fetchEvent';
-import { EventTableSubscription, EventTableSubscriptionVariables, FetchEvent, FetchEventVariables, FetchTable, FetchTableVariables, FetchUserContext, User } from '../../graphql/query.gen';
+import { fetchTable } from '../../graphql/fetchEvent';
+import { EventTableSubscription, EventTableSubscriptionVariables, FetchTable, FetchTableVariables, FetchUserContext, User } from '../../graphql/query.gen';
 import { fetchUser } from '../auth/fetchUser';
+import { subscribeEventTable } from '../event/fetchEventTable';
 import { joinTable } from '../event/mutateJoinTable';
 import { leaveTable } from '../event/mutateLeaveTable';
 import { handleError } from '../toast/error';
 import { toast } from '../toast/toast';
+import { TakenSeat } from './TakenSeat';
+import { UntakenSeat } from './UntakenSeat';
+
 
 export function Square ({ eventId, eventTableId }: { eventId: number, eventTableId: number }) {
   const {data: eventTableData, refetch: refetchTableData} = useQuery<FetchTable, FetchTableVariables>(fetchTable, {
     variables: { tableId: eventTableId }
   });
-  const {data: userData, refetch: refetchUserData} = useQuery<FetchUserContext, User>(fetchUser);
-  const {data: eventData, refetch} = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
-    variables: { eventId }
-  });
-  const [takenSeats, setTakenSeats] = React.useState<number>(0)
+
+  const {data: userData, } = useQuery<FetchUserContext, User>(fetchUser);
+
+  //const [tables, setTables] = React.useState<Array<EventTable>>([])
 
   const sub = useSubscription<EventTableSubscription, EventTableSubscriptionVariables>(subscribeEventTable, {
     variables: { eventTableId },
   })
+
   React.useEffect(() => {
     if (sub.data?.tableUpdates) {
-      setTakenSeats((sub.data.tableUpdates.participants || []).length)
+
     }
-    console.log(sub.data?.tableUpdates)
   }, [sub.data])
 
-  let userIdTemp:number = 0;
-
-  if (userData?.self?.id) {
-    userIdTemp = userData.self.id;
-  }
-
-  const handleJoin = (event: any) => {
-    event.preventDefault();
+  const handleJoin = (e: any) => {
+    e.preventDefault()
 
     joinTable(getApolloClient(), {
-      eventTableId: eventTableId,
-      participantId: userIdTemp
-    }).then((result) => {
-      refetch
-      refetchUserData
-      console.log(eventData)
-      toast('Joined Table!');
-    }).then(() => {
-      refetchTableData
-      console.log(eventTableData)
-    }).catch(err => {
-      handleError(err)
-    })
-  }
+        eventTableId: eventTableId,
+        participantId: userData?.self?.id || 0
+        }).then(result => {
+          console.log(result)
+          if  (!result.data?.joinTable.id) {
+            throw Error('Error joining table!')
+          }
+          toast('Joined Table!')
+          refetchTableData()
 
-  const handleLeave = (event: any) => {
-    event.preventDefault();
+        }).catch(err => {
+          handleError(err)
+        })
+      }
+
+  const handleLeave = (e: any) => {
+    e.preventDefault()
 
     leaveTable(getApolloClient(), {
-      eventTableId: eventTableId,
-      participantId: userIdTemp
-    }).then((result) => {
-      refetch
-      refetchUserData
+        eventTableId: eventTableId,
+        participantId: userData?.self?.id || 0
+        }).then(result => {
+          if  (!result.data?.leaveTable.id) {
+            throw Error('Error leaving table!')
+          }
+          toast('Left Table!')
+          refetchTableData()
 
-      toast('Left Table!');
-    }).then(() => {
-      refetchTableData
-      console.log(eventTableData)
-    }).catch(err => {
-      handleError(err)
-    })
-  }
+        }).catch(err => {
+          handleError(err)
+        })
+      }
 
   const tableStyle = {
     background: "#fbc02d",
@@ -82,88 +78,25 @@ export function Square ({ eventId, eventTableId }: { eventId: number, eventTable
     flexWrap: "wrap",
   } as React.CSSProperties;
 
+  const emptySeat = {
+    display: "inline-block",
+    opacity: "0",
+    borderRadius: "50%",
+    height: "36px",
+    margin: "6px",
+    width: "36px"
+  }
+
   let seatPosition = 0;
 
   return (
     <div className="square" style={tableStyle}>
-      {[...Array(takenSeats)].map((e, i) =>
-        renderSeat(seatPosition++, true)
+      {[...Array(eventTableData?.table ? eventTableData.table.participants?.length : 0)].map((e, i) =>
+        (seatPosition == 4 ? <><div className={"seat " + seatPosition++} style={emptySeat} /> <button onClick={handleLeave}><TakenSeat tableSeat={seatPosition++}/></button></> : <button onClick={handleLeave}><TakenSeat tableSeat={seatPosition++}/></button>)
       )}
-      {[...Array(8 - takenSeats)].map((e, i) =>
-        renderSeat(seatPosition++, false)
+      {[...Array(8 - seatPosition)].map((e, i) =>
+        (seatPosition == 4 ? <><div className={"seat " + seatPosition++} style={emptySeat} />  <button onClick={handleJoin}><UntakenSeat tableSeat={seatPosition++}/> </button> </>: <button onClick={handleJoin}><UntakenSeat tableSeat={seatPosition++}/></button>)
       )}
     </div>
   );
-
-  function renderSeat(i: number, x: boolean) {
-    const seatStyle = {
-      display: "inline-block",
-      backgroundColor: "#000000",
-      opacity: "0.2",
-      borderRadius: "50%",
-      height: "36px",
-      width: "36px",
-      margin: "10px 6px"
-    };
-    const seatStyleAdjusted = {
-      display: "inline-block",
-      backgroundColor: "#000000",
-      opacity: "0.2",
-      borderRadius: "50%",
-      height: "36px",
-      width: "36px",
-      margin: "10px 6px 10px 50px"
-    };
-    const sitStyle = {
-      display: "inline-block",
-      backgroundColor: "#000000",
-      opacity: "1",
-      borderRadius: "50%",
-      height: "36px",
-      width: "36px",
-      margin: "10px 6px"
-    }
-    const sitStyleAdjusted = {
-      display: "inline-block",
-      backgroundColor: "#000000",
-      opacity: "1",
-      borderRadius: "50%",
-      height: "36px",
-      width: "36px",
-      margin: "10px 6px 10px 50px"
-    }
-    const horizontalPlus = {
-      position: "relative",
-      backgroundColor: "#ffffff",
-      width: "50%",
-      height: "12.5%",
-      left: "25%",
-      top: "43.75%"
-    } as React.CSSProperties;
-    const verticalPlus = {
-      position: "relative",
-      backgroundColor: "#ffffff",
-      width: "12.5%",
-      height: "50%",
-      left: "43.75%",
-      top: "12.5%"
-    } as React.CSSProperties;
-
-    const seated = true // temp stub
-
-    if (x) {
-      return (
-        <div className={"seat " + i} style={i == 4 ? sitStyleAdjusted : sitStyle} >
-        </div>
-
-      )
-    } else {
-      return (
-        <div className={"seat " + i} style={seated ? (i == 4 ? sitStyleAdjusted : sitStyle) : (i == 4 ? seatStyleAdjusted : seatStyle)} onClick={seated ? handleLeave : handleJoin} >
-          <div className='horizontalPlus' style={horizontalPlus}></div>
-          <div className='verticalPlus' style={seated ? {display: "none"} : verticalPlus }></div>
-        </div>
-      )
-    }
-  }
 }

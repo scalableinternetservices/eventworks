@@ -23,6 +23,7 @@ type Query {
   survey(surveyId: Int!): Survey
   chatMessages(eventId: Int!, tableId: Int!): [ChatMessage!]!
   events: [Event!]!
+  tables: [EventTable!]!
   event(eventId: Int!): Event!
   table(tableId: Int!): EventTable!
 }
@@ -94,6 +95,7 @@ type User {
   name: String!
   title: String
   linkedinLink: String
+  table: EventTable
 }
 
 enum UserType {

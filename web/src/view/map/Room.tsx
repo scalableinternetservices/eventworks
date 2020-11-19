@@ -1,13 +1,23 @@
 import { useQuery } from '@apollo/client';
 import * as React from 'react';
 import { fetchEvent } from '../../graphql/fetchEvent';
-import { FetchEvent, FetchEventVariables } from '../../graphql/query.gen';
+import { EventTable, FetchEvent, FetchEventVariables } from '../../graphql/query.gen';
 import { Square } from './Square';
 
 export function Room ({ eventId }: { eventId: number }) {
   const {data, refetch} = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
     variables: { eventId }
   });
+  const [tables, setTables] = React.useState<Array<EventTable>>(data?.event.eventTables ? data?.event.eventTables : [])
+
+  React.useEffect(() => {
+    if (data?.event && data.event.eventTables) {
+      if (tables.length != data.event.eventTables.length) {
+        refetch()
+        setTables(data.event.eventTables)
+      }
+    }
+  })
 
   const seatRow = {
     width: "240px",
@@ -23,15 +33,14 @@ export function Room ({ eventId }: { eventId: number }) {
 
   let tableNum = 0;
 
-  refetch
-
   return (
     <div className="room" style={roomStyle}>
-      {data?.event.eventTables ? (data.event.eventTables).map((e, i) =>
+      {tables.map((e, i) =>
+        i != 0 ?
         <div className="square-row" style={seatRow}>
           {renderSquare(tableNum++, eventId, e.id)}
-        </div>
-      ) : <div className="empty"/> }
+        </div> : ""
+      )}
     </div>
   );
 }

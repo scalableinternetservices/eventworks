@@ -13,7 +13,6 @@ export const joinTableMutation = gql`
 `
 
 export function joinTable(client: ApolloClient<any>, input: JoinTableInput) {
-  console.log(input)
   return getApolloClient().mutate<JoinTable, JoinTableVariables>({
     mutation: joinTableMutation,
     variables: { input }

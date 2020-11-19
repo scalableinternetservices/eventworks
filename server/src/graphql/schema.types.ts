@@ -21,6 +21,7 @@ export interface Query {
   survey?: Maybe<Survey>
   chatMessages: Array<ChatMessage>
   events: Array<Event>
+  tables: Array<EventTable>
   event: Event
   table: EventTable
 }
@@ -151,6 +152,7 @@ export interface User {
   name: Scalars['String']
   title?: Maybe<Scalars['String']>
   linkedinLink?: Maybe<Scalars['String']>
+  table?: Maybe<EventTable>
 }
 
 export enum UserType {
@@ -367,6 +369,7 @@ export type QueryResolvers<
     RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId'>
   >
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
+  tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
   table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType, RequireFields<QueryTableArgs, 'tableId'>>
 }
@@ -466,6 +469,7 @@ export type UserResolvers<
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
+  table?: Resolver<Maybe<ResolversTypes['EventTable']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

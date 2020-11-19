@@ -11,6 +11,7 @@ import { fetchUser } from './auth/fetchUser'
 import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
 import { EventCreateForm } from './page/EventCreateForm'
+import { EventTableCreateForm } from './page/EventTableCreateForm'
 import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
 import { LoginPage } from './page/LoginPage'
@@ -66,6 +67,7 @@ export function AppBody() {
         <LoginPage path={Route.LOGIN_SIGNUP} />
         <LoginPage path={Route.LOGIN_SIGNUP_APP} />
         <EventMapPage path={Route.FIND_EVENT} />
+        <EventTableCreateForm path={Route.CREATE_TABLE_FORM} />
       </Router>
       <Footer>
         <FooterText>© 2020 John Rothfels</FooterText>
