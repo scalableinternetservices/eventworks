@@ -24,3 +24,7 @@ export function appContext(): AppContext {
 
   return {} as AppContext
 }
+
+export function isClientSideRendered(): boolean {
+  return typeof window !== 'undefined'
+}

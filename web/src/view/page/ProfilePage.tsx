@@ -1,17 +1,27 @@
-import { RouteComponentProps } from '@reach/router';
+import { useQuery } from '@apollo/client';
 import * as React from 'react';
-import { getApolloClient } from '../../graphql/apolloClient';
-import { Button } from '../../style/button';
-import { Input } from '../../style/input';
-import { updateUser } from '../../view/auth/mutateUser';
-import { AppRouteParams } from '../nav/route';
-import { handleError } from '../toast/error';
-import { toast } from '../toast/toast';
+import { FetchUserContext } from '../../graphql/query.gen';
+import { H1 } from '../../style/header';
+import { fetchUser } from '../auth/fetchUser';
 
-interface ProfileForm extends RouteComponentProps, AppRouteParams {}
+export function Profile() {
+  const { loading, data } = useQuery<FetchUserContext>(fetchUser);
 
-export function Profile(props: ProfileForm) {
-  const [name, setName] = React.useState("");
+  if (loading) {
+    return (<div>loading...</div>)
+  }
+  if (!data) {
+    return (<div>no user information</div>)
+  }
+
+  return (
+    <div className="mw8">
+      <H1>ID: {data.self?.id ? data.self?.id : "None"} </H1>
+      <H1>Name: {data.self?.name ? data.self?.name : "None"}</H1>
+      <H1>Email: {data.self?.email ? data.self?.email : "None"}</H1>
+    </div>
+  )
+  /*const [name, setName] = React.useState("");
   const [linkedin, setLinkedin] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -70,7 +80,5 @@ export function Profile(props: ProfileForm) {
         <Button onClick={handleSubmit}>Submit</Button>
       </div>
     </>
-  );
-
-
-}
+  );*/
+};

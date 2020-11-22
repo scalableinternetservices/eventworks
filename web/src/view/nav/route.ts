@@ -14,7 +14,8 @@ export enum Route {
   MAP = 'app/event',
   LOGIN_SIGNUP = 'app/account/',
   LOGIN_SIGNUP_APP = 'app/account/:form',
-  FIND_EVENT = 'app/findevent'
+  FIND_EVENT = 'app/findevent',
+  CREATE_TABLE_FORM = 'app/createtable'
 }
 
 export enum PlaygroundApp {
@@ -70,6 +71,10 @@ export function getPlaygroundPath() {
 
 export function getEventCreateFormPath() {
   return getPath(Route.CREATE_FORM)
+}
+
+export function getEventTableCreateFormPath() {
+  return getPath(Route.CREATE_TABLE_FORM)
 }
 /**
  * Example: getPath(ROUTES.TASK) returns "/leasing/tasks" while getPath(ROUTES.TASK, {taskId: 5}) returns "leasing/tasks/task/5".

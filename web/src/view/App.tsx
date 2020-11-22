@@ -11,13 +11,13 @@ import { fetchUser } from './auth/fetchUser'
 import { UserContext, UserCtx } from './auth/user'
 import { Route } from './nav/route'
 import { EventCreateForm } from './page/EventCreateForm'
+import { EventTableCreateForm } from './page/EventTableCreateForm'
 import { HomePage } from './page/HomePage'
 import { LecturesPage } from './page/LecturesPage'
 import { LoginPage } from './page/LoginPage'
+import { EventMapPage } from './page/MapPage'
 import { PlaygroundPage } from './page/PlaygroundPage'
 import { ProjectsPage } from './page/ProjectsPage'
-import { EventMapPage } from './page/SearchEventPage'
-
 
 const Styletron = require('styletron-engine-monolithic')
 
@@ -62,10 +62,10 @@ export function AppBody() {
         <PlaygroundPage path={Route.PLAYGROUND} />
         <PlaygroundPage path={Route.PLAYGROUND_APP} />
         <EventCreateForm path={Route.CREATE_FORM} />
-        {/*<MapPage path={Route.MAP} />*/}
+        <EventMapPage path={Route.FIND_EVENT} />
+        <EventTableCreateForm path={Route.CREATE_TABLE_FORM} />
         <LoginPage path={Route.LOGIN_SIGNUP} />
         <LoginPage path={Route.LOGIN_SIGNUP_APP} />
-        <EventMapPage path={Route.FIND_EVENT} />
       </Router>
       <Footer>
         <FooterText>© 2020 John Rothfels</FooterText>

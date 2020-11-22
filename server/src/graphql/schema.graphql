@@ -23,6 +23,7 @@ type Query {
   survey(surveyId: Int!): Survey
   chatMessages(eventId: Int!, tableId: Int!): [ChatMessage!]!
   events: [Event!]!
+  tables: [EventTable!]!
   event(eventId: Int!): Event!
   table(tableId: Int!): EventTable!
 }
@@ -42,8 +43,7 @@ type Mutation {
   updateUser(input: UserInput!): User!
 
   sendMessage(senderId: Int!, eventId: Int!, tableId: Int!, message: String!): ChatMessage!
-  joinTable(input: JoinTableInput!): User!
-  leaveTable(input: JoinTableInput!): User!
+  switchTable(input: SwitchTableInput!): User! # move from one table to another "atomically". Setting to table id to null will leave table.
 }
 
 type Subscription {
@@ -54,8 +54,8 @@ type Subscription {
 
 scalar Date
 
-input JoinTableInput {
-  eventTableId: Int!
+input SwitchTableInput {
+  eventTableId: Int
   participantId: Int!
 }
 
@@ -94,6 +94,7 @@ type User {
   name: String!
   title: String
   linkedinLink: String
+  table: EventTable
 }
 
 enum UserType {

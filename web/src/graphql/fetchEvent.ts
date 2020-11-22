@@ -80,12 +80,3 @@ export const fetchTable = gql`
   }
   ${fragmentEventTable}
 `
-
-export const subscribeEventTable = gql`
-  subscription EventTableSubscription($eventTableId: Int!) {
-    tableUpdates(eventTableId: $eventTableId) {
-      ...EventTable
-    }
-  }
-  ${fragmentEventTable}
-`

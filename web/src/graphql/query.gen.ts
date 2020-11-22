@@ -139,45 +139,6 @@ export interface FetchTableVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL subscription operation: EventTableSubscription
-// ====================================================
-
-export interface EventTableSubscription_tableUpdates_head {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
-export interface EventTableSubscription_tableUpdates_participants {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
-export interface EventTableSubscription_tableUpdates {
-  __typename: "EventTable";
-  id: number;
-  name: string;
-  description: string;
-  userCapacity: number;
-  head: EventTableSubscription_tableUpdates_head;
-  participants: EventTableSubscription_tableUpdates_participants[] | null;
-}
-
-export interface EventTableSubscription {
-  tableUpdates: EventTableSubscription_tableUpdates | null;
-}
-
-export interface EventTableSubscriptionVariables {
-  eventTableId: number;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL mutation operation: CreateEvent
 // ====================================================
 
@@ -225,6 +186,12 @@ export interface CreateEventVariables {
 // GraphQL query operation: FetchUserContext
 // ====================================================
 
+export interface FetchUserContext_self_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface FetchUserContext_self {
   __typename: "User";
   id: number;
@@ -233,6 +200,7 @@ export interface FetchUserContext_self {
   email: string;
   title: string | null;
   linkedinLink: string | null;
+  table: FetchUserContext_self_table | null;
 }
 
 export interface FetchUserContext {
@@ -248,6 +216,12 @@ export interface FetchUserContext {
 // GraphQL mutation operation: UpdateUser
 // ====================================================
 
+export interface UpdateUser_updateUser_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface UpdateUser_updateUser {
   __typename: "User";
   name: string;
@@ -256,6 +230,7 @@ export interface UpdateUser_updateUser {
   linkedinLink: string | null;
   id: number;
   userType: UserType;
+  table: UpdateUser_updateUser_table | null;
 }
 
 export interface UpdateUser {
@@ -275,6 +250,12 @@ export interface UpdateUserVariables {
 // GraphQL query operation: FetchChatMessage
 // ====================================================
 
+export interface FetchChatMessage_chatMessages_user_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface FetchChatMessage_chatMessages_user {
   __typename: "User";
   id: number;
@@ -283,6 +264,7 @@ export interface FetchChatMessage_chatMessages_user {
   name: string;
   title: string | null;
   linkedinLink: string | null;
+  table: FetchChatMessage_chatMessages_user_table | null;
 }
 
 export interface FetchChatMessage_chatMessages {
@@ -310,6 +292,12 @@ export interface FetchChatMessageVariables {
 // GraphQL subscription operation: ChatSubscription
 // ====================================================
 
+export interface ChatSubscription_chatUpdates_user_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface ChatSubscription_chatUpdates_user {
   __typename: "User";
   id: number;
@@ -318,6 +306,7 @@ export interface ChatSubscription_chatUpdates_user {
   name: string;
   title: string | null;
   linkedinLink: string | null;
+  table: ChatSubscription_chatUpdates_user_table | null;
 }
 
 export interface ChatSubscription_chatUpdates {
@@ -345,6 +334,12 @@ export interface ChatSubscriptionVariables {
 // GraphQL mutation operation: SendChatMessage
 // ====================================================
 
+export interface SendChatMessage_sendMessage_user_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface SendChatMessage_sendMessage_user {
   __typename: "User";
   id: number;
@@ -353,6 +348,7 @@ export interface SendChatMessage_sendMessage_user {
   name: string;
   title: string | null;
   linkedinLink: string | null;
+  table: SendChatMessage_sendMessage_user_table | null;
 }
 
 export interface SendChatMessage_sendMessage {
@@ -371,6 +367,80 @@ export interface SendChatMessageVariables {
   eventId: number;
   tableId: number;
   message: string;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchAllEventTables
+// ====================================================
+
+export interface FetchAllEventTables_tables_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchAllEventTables_tables_participants {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchAllEventTables_tables {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: FetchAllEventTables_tables_head;
+  participants: FetchAllEventTables_tables_participants[] | null;
+}
+
+export interface FetchAllEventTables {
+  tables: FetchAllEventTables_tables[];
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL subscription operation: EventTableSubscription
+// ====================================================
+
+export interface EventTableSubscription_tableUpdates_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface EventTableSubscription_tableUpdates_participants {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface EventTableSubscription_tableUpdates {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+  description: string;
+  userCapacity: number;
+  head: EventTableSubscription_tableUpdates_head;
+  participants: EventTableSubscription_tableUpdates_participants[] | null;
+}
+
+export interface EventTableSubscription {
+  tableUpdates: EventTableSubscription_tableUpdates | null;
+}
+
+export interface EventTableSubscriptionVariables {
+  eventTableId: number;
 }
 
 /* tslint:disable */
@@ -418,10 +488,16 @@ export interface CreateTableVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: JoinTable
+// GraphQL mutation operation: SwitchTable
 // ====================================================
 
-export interface JoinTable_joinTable {
+export interface SwitchTable_switchTable_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
+export interface SwitchTable_switchTable {
   __typename: "User";
   id: number;
   userType: UserType;
@@ -429,41 +505,15 @@ export interface JoinTable_joinTable {
   name: string;
   title: string | null;
   linkedinLink: string | null;
+  table: SwitchTable_switchTable_table | null;
 }
 
-export interface JoinTable {
-  joinTable: JoinTable_joinTable;
+export interface SwitchTable {
+  switchTable: SwitchTable_switchTable;
 }
 
-export interface JoinTableVariables {
-  input: JoinTableInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: LeaveTable
-// ====================================================
-
-export interface LeaveTable_leaveTable {
-  __typename: "User";
-  id: number;
-  userType: UserType;
-  email: string;
-  name: string;
-  title: string | null;
-  linkedinLink: string | null;
-}
-
-export interface LeaveTable {
-  leaveTable: LeaveTable_leaveTable;
-}
-
-export interface LeaveTableVariables {
-  input: JoinTableInput;
+export interface SwitchTableVariables {
+  input: SwitchTableInput;
 }
 
 /* tslint:disable */
@@ -711,6 +761,12 @@ export interface EventTable {
 // GraphQL fragment: User
 // ====================================================
 
+export interface User_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface User {
   __typename: "User";
   id: number;
@@ -719,6 +775,7 @@ export interface User {
   name: string;
   title: string | null;
   linkedinLink: string | null;
+  table: User_table | null;
 }
 
 /* tslint:disable */
@@ -730,6 +787,12 @@ export interface User {
 // GraphQL fragment: ChatMessage
 // ====================================================
 
+export interface ChatMessage_user_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
 export interface ChatMessage_user {
   __typename: "User";
   id: number;
@@ -738,6 +801,7 @@ export interface ChatMessage_user {
   name: string;
   title: string | null;
   linkedinLink: string | null;
+  table: ChatMessage_user_table | null;
 }
 
 export interface ChatMessage {
@@ -832,14 +896,14 @@ export interface EventTableInput {
   userCapacity?: number | null;
 }
 
-export interface JoinTableInput {
-  eventTableId: number;
-  participantId: number;
-}
-
 export interface SurveyInput {
   questionId: number;
   answer: string;
+}
+
+export interface SwitchTableInput {
+  eventTableId?: number | null;
+  participantId: number;
 }
 
 export interface UserInput {
