@@ -1,51 +1,52 @@
+import { useQuery } from '@apollo/client';
+import { Redirect, RouteComponentProps, useLocation } from '@reach/router';
 import * as React from 'react';
+import { useContext } from 'react';
+import { fetchEvent } from '../../graphql/fetchEvent';
+import { FetchEvent, FetchEventVariables } from '../../graphql/query.gen';
+import { LoggedInUserCtx, UserContext } from '../auth/user';
 import { Room } from '../map/Room';
+import { AppRouteParams, Route } from '../nav/route';
+import { Page } from './Page';
+import { SearchEventsPage } from './SearchEventPage';
 
-export function MapPage({ eventId }: { eventId: number }) {
-  /*const {data: userData} = useQuery<FetchUserContext>(fetchUser)
-  const {data: singleEventData } = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
-    variables: {eventId: eventId}
-  })
+interface EventMapPageProps extends RouteComponentProps, AppRouteParams {}
 
-  React.useEffect(() => {
-    if (singleEventData?.event.eventTables?.length) {
-      if (singleEventData?.event.eventTables[0].id != 0) {
-        joinTable(getApolloClient(), {
-          eventTableId: singleEventData?.event ? (singleEventData.event.eventTables?.length ? singleEventData.event.eventTables[0].id : 0) : 0,
-          participantId: userData?.self?.id || 0
-          }).then(result => {
-            if  (!result.data?.joinTable.id) {
-              throw Error('User does not exist')
-            }
-            toast('Welcome to the event!')
+export function EventMapPage(props: EventMapPageProps) {
+  const user = useContext(UserContext)
+  const location = useLocation()
+  const [, eventIdStr] = (location.search || '').split('?eventID=')
 
-          }).catch(err => {
-            handleError(err)
-          })
-      }
-    }
+  const eventId = Number(eventIdStr)
 
-    return () => {
-      if (singleEventData?.event.eventTables?.length) {
-        if (singleEventData?.event.eventTables[0].id != 0) {
-          leaveTable(getApolloClient(), {
-            eventTableId: singleEventData?.event ? (singleEventData.event.eventTables?.length ? singleEventData.event.eventTables[0].id : 0) : 0,
-            participantId: userData?.self?.id || 0
-            }).then(result => {
-              if  (!result.data?.leaveTable.id) {
-                throw Error('User does not exist')
-              }
-              toast('Left the event!')
-
-            }).catch(err => {
-              handleError(err)
-            })
-        }
-      }
-    }
-  });*/
+  if (!user.user?.id) {
+    return <Redirect to={`/${Route.HOME}`} />
+  }
 
   return (
-      <Room eventId={eventId}/>
+    <Page>
+      {eventId > 0 ? <MapPage eventId={eventId} user={user as LoggedInUserCtx} /> : <SearchEventsPage />}
+    </Page>
+  )
+}
+
+interface MapPageProps {
+  user: LoggedInUserCtx
+  eventId: number
+}
+
+export function MapPage({ user, eventId }: MapPageProps) {
+  const { data } = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
+    variables: { eventId }
+  })
+
+  if (!data?.event) {
+    return <div>Could no longer find event.</div>
+  }
+
+  return (
+    <Page>
+      <Room event={data} user={user} />
+    </Page>
   )
 }

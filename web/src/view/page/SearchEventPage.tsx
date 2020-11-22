@@ -1,5 +1,4 @@
 import { useQuery } from '@apollo/client'
-import { RouteComponentProps, useLocation } from '@reach/router'
 import * as React from 'react'
 import { useState } from 'react'
 import { fetchAllEvent } from '../../graphql/fetchEvent'
@@ -9,22 +8,7 @@ import { H1 } from '../../style/header'
 import { Input } from '../../style/input'
 import { Spacer } from '../../style/spacer'
 import { link } from '../nav/Link'
-import { AppRouteParams, getEventPath } from '../nav/route'
-import { MapPage } from '../page/MapPage'
-import { Page } from './Page'
-
-interface SearchEvent extends RouteComponentProps, AppRouteParams {}
-
-export function EventMapPage(props: SearchEvent) {
-  const location = useLocation()
-  const [, eventID] = (location.search || '').split('?eventID=')
-
-  return (
-    <Page>
-      {eventID ? <MapPage eventId={parseInt(eventID)} /> : <SearchEventsPage />}
-    </Page>
-  )
-}
+import { getEventPath } from '../nav/route'
 
 const ButtonLink = link(Button)
 

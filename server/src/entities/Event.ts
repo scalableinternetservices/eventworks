@@ -45,6 +45,6 @@ export class Event extends BaseEntity {
   @OneToMany(() => ChatMessage, msg => msg.event)
   chatMessages: ChatMessage[]
 
-  @OneToMany(() => EventTable, tbl => tbl.event, { nullable: false, eager: true })
+  @OneToMany(() => EventTable, tbl => tbl.event, { nullable: false })
   eventTables: EventTable[]
 }

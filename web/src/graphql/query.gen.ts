@@ -488,16 +488,16 @@ export interface CreateTableVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL mutation operation: JoinTable
+// GraphQL mutation operation: SwitchTable
 // ====================================================
 
-export interface JoinTable_joinTable_table {
+export interface SwitchTable_switchTable_table {
   __typename: "EventTable";
   id: number;
   name: string;
 }
 
-export interface JoinTable_joinTable {
+export interface SwitchTable_switchTable {
   __typename: "User";
   id: number;
   userType: UserType;
@@ -505,49 +505,15 @@ export interface JoinTable_joinTable {
   name: string;
   title: string | null;
   linkedinLink: string | null;
-  table: JoinTable_joinTable_table | null;
+  table: SwitchTable_switchTable_table | null;
 }
 
-export interface JoinTable {
-  joinTable: JoinTable_joinTable;
+export interface SwitchTable {
+  switchTable: SwitchTable_switchTable;
 }
 
-export interface JoinTableVariables {
-  input: JoinTableInput;
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
-// GraphQL mutation operation: LeaveTable
-// ====================================================
-
-export interface LeaveTable_leaveTable_table {
-  __typename: "EventTable";
-  id: number;
-  name: string;
-}
-
-export interface LeaveTable_leaveTable {
-  __typename: "User";
-  id: number;
-  userType: UserType;
-  email: string;
-  name: string;
-  title: string | null;
-  linkedinLink: string | null;
-  table: LeaveTable_leaveTable_table | null;
-}
-
-export interface LeaveTable {
-  leaveTable: LeaveTable_leaveTable;
-}
-
-export interface LeaveTableVariables {
-  input: JoinTableInput;
+export interface SwitchTableVariables {
+  input: SwitchTableInput;
 }
 
 /* tslint:disable */
@@ -930,14 +896,14 @@ export interface EventTableInput {
   userCapacity?: number | null;
 }
 
-export interface JoinTableInput {
-  eventTableId: number;
-  participantId: number;
-}
-
 export interface SurveyInput {
   questionId: number;
   answer: string;
+}
+
+export interface SwitchTableInput {
+  eventTableId?: number | null;
+  participantId: number;
 }
 
 export interface UserInput {

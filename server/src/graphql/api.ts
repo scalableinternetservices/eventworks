@@ -40,10 +40,10 @@ export const graphqlRoot: Resolvers<Context> = {
           table: check(await EventTable.findOne({ where: { id: tableId } }))
         }
       }),
-    events: async (_, {}, ctx) => (await Event.find()),
+    events: async (_, {}, ctx) => (await Event.find({ relations: ['eventTables'] })),
     tables: async(_, {}, ctx) => (await EventTable.find()),
-    event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId } })),
-    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
+    event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables'] })),
+    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
   },
   Mutation: {
     updateUser: async (_, { input }, ctx) => {
@@ -120,24 +120,25 @@ export const graphqlRoot: Resolvers<Context> = {
       pubsub.publish(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`, chat)
       return chat
     },
-    joinTable: async (_, { input }, ctx) => {
-      const table = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
-      const user = check(await User.findOne({ where: { id: input.participantId }}));
-      user.table = table;
-      await user.save();
-      const table2 = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
+    switchTable: async (_, { input }, ctx) => {
+      const user = check(await User.findOne({ where: { id: input.participantId }, relations: ['table'] }));
+      const oldTable = user.table
+      if (input.eventTableId) { // join or switch to a new table
+        const newTable = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
+        user.table = newTable;
+        await user.save();
+        const newTableUpdated = check(await EventTable.findOne({ where: { id : input.eventTableId }, relations: ['participants'] }));
+        pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdated)
+      } else { // leave table
+        user.table = null
+        await user.save();
+      }
+      if (oldTable) {
+        const oldTableUpdated = check(await EventTable.findOne({ where: { id: oldTable.id }, relations: ['participants'] }))
+        pubsub.publish('TABLE_UPDATE' + oldTable.id, oldTableUpdated)
+      }
 
-      pubsub.publish('TABLE_UPDATE' + input.eventTableId, table2)
       return user;
-    },
-    leaveTable: async (_, { input }, ctx) => {
-      const user = check(await User.findOne({ where: { id: input.participantId }}));
-      user.table = null;
-      await user.save()
-      const table = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
-
-      pubsub.publish('TABLE_UPDATE' + input.eventTableId, table)
-      return user
     }
   },
   Subscription: {
@@ -156,6 +157,7 @@ export const graphqlRoot: Resolvers<Context> = {
         return context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId)
       },
       resolve: (payload: any) => payload,
+
     }
   },
   Date: new GraphQLScalarType({

@@ -2,72 +2,56 @@ import { useQuery, useSubscription } from '@apollo/client';
 import * as React from 'react';
 import { getApolloClient } from '../../graphql/apolloClient';
 import { fetchTable } from '../../graphql/fetchEvent';
-import { EventTableSubscription, EventTableSubscriptionVariables, FetchTable, FetchTableVariables, FetchUserContext, User } from '../../graphql/query.gen';
-import { fetchUser } from '../auth/fetchUser';
+import { EventTable, EventTableSubscription, EventTableSubscriptionVariables, FetchTable, FetchTableVariables } from '../../graphql/query.gen';
+import { LoggedInUserCtx } from '../auth/user';
 import { subscribeEventTable } from '../event/fetchEventTable';
-import { joinTable } from '../event/mutateJoinTable';
-import { leaveTable } from '../event/mutateLeaveTable';
+import { switchTable } from '../event/mutateSwitchTable';
 import { handleError } from '../toast/error';
 import { toast } from '../toast/toast';
 import { TakenSeat } from './TakenSeat';
 import { UntakenSeat } from './UntakenSeat';
 
+interface SquareProps {
+  mainEventTableId: number
+  table: EventTable
+  user: LoggedInUserCtx
+}
 
-export function Square ({ eventId, eventTableId }: { eventId: number, eventTableId: number }) {
-  const {data: eventTableData, refetch: refetchTableData} = useQuery<FetchTable, FetchTableVariables>(fetchTable, {
-    variables: { tableId: eventTableId }
+export function Square ({
+  mainEventTableId,
+  table,
+  user,
+}: SquareProps) {
+  const  {data: eventTableData, refetch: refetchTableData } = useQuery<FetchTable, FetchTableVariables>(fetchTable, {
+    variables: { tableId: table.id },
+    fetchPolicy: 'no-cache'
   });
 
-  const {data: userData, } = useQuery<FetchUserContext, User>(fetchUser);
-
-  //const [tables, setTables] = React.useState<Array<EventTable>>([])
-
   const sub = useSubscription<EventTableSubscription, EventTableSubscriptionVariables>(subscribeEventTable, {
-    variables: { eventTableId },
+    variables: { eventTableId: table.id },
   })
 
   React.useEffect(() => {
     if (sub.data?.tableUpdates) {
-
+      refetchTableData()
     }
   }, [sub.data])
 
-  const handleJoin = (e: any) => {
+  const handleSwitch = (e: any, eventTableId: number | null) => {
     e.preventDefault()
 
-    joinTable(getApolloClient(), {
-        eventTableId: eventTableId,
-        participantId: userData?.self?.id || 0
-        }).then(result => {
-          console.log(result)
-          if  (!result.data?.joinTable.id) {
-            throw Error('Error joining table!')
-          }
-          toast('Joined Table!')
-          refetchTableData()
-
-        }).catch(err => {
-          handleError(err)
-        })
+    switchTable(getApolloClient(), {
+      eventTableId,
+      participantId: user.user.id
+    }).then(result => {
+      const table = result.data?.switchTable
+      if (!table) {
+        throw Error('Error joining table!')
       }
-
-  const handleLeave = (e: any) => {
-    e.preventDefault()
-
-    leaveTable(getApolloClient(), {
-        eventTableId: eventTableId,
-        participantId: userData?.self?.id || 0
-        }).then(result => {
-          if  (!result.data?.leaveTable.id) {
-            throw Error('Error leaving table!')
-          }
-          toast('Left Table!')
-          refetchTableData()
-
-        }).catch(err => {
-          handleError(err)
-        })
-      }
+      toast(`Switched to table ${eventTableId}!`)
+      refetchTableData()
+    }).catch(handleError)
+  }
 
   const tableStyle = {
     background: "#fbc02d",
@@ -92,11 +76,33 @@ export function Square ({ eventId, eventTableId }: { eventId: number, eventTable
   return (
     <div className="square" style={tableStyle}>
       {[...Array(eventTableData?.table ? eventTableData.table.participants?.length : 0)].map((e, i) =>
-        (seatPosition == 4 ? <><div className={"seat " + seatPosition++} style={emptySeat} /> <button onClick={handleLeave}><TakenSeat tableSeat={seatPosition++}/></button></> : <button onClick={handleLeave}><TakenSeat tableSeat={seatPosition++}/></button>)
-      )}
+        (seatPosition == 4 ? (
+          <>
+            <div className={"seat " + seatPosition++} style={emptySeat} />
+            <button onClick={e => handleSwitch(e, mainEventTableId)}>
+              <TakenSeat tableSeat={seatPosition++}/>
+            </button>
+          </>
+        ) : (
+          <button onClick={e => handleSwitch(e, mainEventTableId)}>
+            <TakenSeat tableSeat={seatPosition++}/>
+          </button>
+        )
+      ))}
       {[...Array(8 - seatPosition)].map((e, i) =>
-        (seatPosition == 4 ? <><div className={"seat " + seatPosition++} style={emptySeat} />  <button onClick={handleJoin}><UntakenSeat tableSeat={seatPosition++}/> </button> </>: <button onClick={handleJoin}><UntakenSeat tableSeat={seatPosition++}/></button>)
-      )}
+        (seatPosition == 4 ? (
+          <>
+            <div className={"seat " + seatPosition++} style={emptySeat} />
+            <button onClick={e => handleSwitch(e, table.id)}>
+              <UntakenSeat tableSeat={seatPosition++}/>
+            </button>
+          </>
+        ) : (
+          <button onClick={e => handleSwitch(e, table.id)}>
+            <UntakenSeat tableSeat={seatPosition++}/>
+          </button>
+        )
+      ))}
     </div>
   );
 }

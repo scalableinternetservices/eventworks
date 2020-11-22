@@ -51,8 +51,7 @@ export interface Mutation {
   createTable: EventTable
   updateUser: User
   sendMessage: ChatMessage
-  joinTable: User
-  leaveTable: User
+  switchTable: User
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -82,12 +81,8 @@ export interface MutationSendMessageArgs {
   message: Scalars['String']
 }
 
-export interface MutationJoinTableArgs {
-  input: JoinTableInput
-}
-
-export interface MutationLeaveTableArgs {
-  input: JoinTableInput
+export interface MutationSwitchTableArgs {
+  input: SwitchTableInput
 }
 
 export interface Subscription {
@@ -110,8 +105,8 @@ export interface SubscriptionTableUpdatesArgs {
   eventTableId: Scalars['Int']
 }
 
-export interface JoinTableInput {
-  eventTableId: Scalars['Int']
+export interface SwitchTableInput {
+  eventTableId?: Maybe<Scalars['Int']>
   participantId: Scalars['Int']
 }
 
@@ -310,7 +305,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>
   Subscription: ResolverTypeWrapper<{}>
   Date: ResolverTypeWrapper<Scalars['Date']>
-  JoinTableInput: JoinTableInput
+  SwitchTableInput: SwitchTableInput
   EventInput: EventInput
   Event: ResolverTypeWrapper<Event>
   UserInput: UserInput
@@ -335,7 +330,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']
   Subscription: {}
   Date: Scalars['Date']
-  JoinTableInput: JoinTableInput
+  SwitchTableInput: SwitchTableInput
   EventInput: EventInput
   Event: Event
   UserInput: UserInput
@@ -409,8 +404,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationSendMessageArgs, 'senderId' | 'eventId' | 'tableId' | 'message'>
   >
-  joinTable?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationJoinTableArgs, 'input'>>
-  leaveTable?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationLeaveTableArgs, 'input'>>
+  switchTable?: Resolver<
+    ResolversTypes['User'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationSwitchTableArgs, 'input'>
+  >
 }
 
 export type SubscriptionResolvers<

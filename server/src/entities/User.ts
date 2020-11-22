@@ -55,6 +55,6 @@ export class User extends BaseEntity implements GraphqlUser {
   @OneToMany(() => EventTable, tbl => tbl.head)
   headOfTables: EventTable[]
 
-  @ManyToOne(() => EventTable, tbl => tbl.participants, { nullable: true})
+  @ManyToOne(() => EventTable, tbl => tbl.participants, { nullable: true })
   table: EventTable | null
 }

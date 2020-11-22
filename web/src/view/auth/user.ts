@@ -9,3 +9,7 @@ export class UserCtx {
 }
 
 export const UserContext = React.createContext<UserCtx>(new UserCtx(null))
+
+export interface LoggedInUserCtx {
+  user: FetchUserContext_self
+}
