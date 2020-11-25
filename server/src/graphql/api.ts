@@ -31,7 +31,13 @@ const DEFAULT_USER_CAPACITY = 10
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
-    users: async (_, args, ctx) => check(await User.find()),
+    usersAtTable: async (_, { tableId }, ctx) => check(await User.find({
+      relations: ['table'],
+      where: { table: { id: tableId } }
+    })),
+    users: async (_, args, ctx) => check(await User.find({
+      relations: ['table']
+    })),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     chatMessages: async (root, { eventId, tableId }, context) => await ChatMessage.find({

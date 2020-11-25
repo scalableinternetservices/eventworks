@@ -17,6 +17,7 @@ schema {
 type Query {
   # Returns the logged-in user making the query, or null if anonymous.
   self: User
+  usersAtTable(tableId: Int!): [User!]!
   users: [User!]!
 
   surveys: [Survey!]!

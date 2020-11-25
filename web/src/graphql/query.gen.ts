@@ -213,6 +213,29 @@ export interface FetchUserContext {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchUsersAtTable
+// ====================================================
+
+export interface FetchUsersAtTable_usersAtTable {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchUsersAtTable {
+  usersAtTable: FetchUsersAtTable_usersAtTable[];
+}
+
+export interface FetchUsersAtTableVariables {
+  tableId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: UpdateUser
 // ====================================================
 

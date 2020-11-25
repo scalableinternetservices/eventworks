@@ -4,6 +4,7 @@ import { getApolloClient } from '../../graphql/apolloClient';
 import { FetchEvent } from '../../graphql/query.gen';
 import { LoggedInUserCtx } from '../auth/user';
 import { switchTable } from '../event/mutateSwitchTable';
+import { Sidebar } from './Sidebar';
 import { Square } from './Square';
 
 const seatRow = {
@@ -11,11 +12,12 @@ const seatRow = {
   margin: "none"
 };
 const roomStyle = {
-  width: "75%",
+  width: "50vw",
   display: "flex",
   flexWrap: "wrap",
   justifyContent: "center",
-  margin: "auto"
+  margin: "auto",
+  transform: "translateX(-10vw)"
 } as React.CSSProperties;
 
 const arrangementStyle = {
@@ -38,6 +40,7 @@ export function Room ({ event, user }: RoomProps) {
 
   const sortedTables = [...tables].sort((tbl1, tbl2) => tbl1.id - tbl2.id)
   const mainEventTableId = sortedTables[0].id
+  console.log(mainEventTableId)
 
   const leaveTableOnUnmount = () => {
     switchTable(getApolloClient(), {
@@ -57,6 +60,7 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   React.useEffect(() => {
+    console.log(mainEventTableId)
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,
       participantId: user.user.id
@@ -64,21 +68,25 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   return (
-    <div className="room" style={roomStyle}>
-      {(sortedTables || []).map((table, i) =>
-        i != 0 ? (
-          <div className="square-row" style={seatRow}>
-            <div className="square-group" style={arrangementStyle}>
-              <Square
-                mainEventTableId={mainEventTableId}
-                table={table}
-                user={user}
-              />
-              <label style={{display: "block"}}>Table {i}</label>
+    <>
+      <div className="room" style={roomStyle}>
+        {(sortedTables || []).map((table, i) =>
+          i != 0 ? (
+            <div className="square-row" style={seatRow}>
+              <div className="square-group" style={arrangementStyle}>
+                <Square
+                  mainEventTableId={mainEventTableId}
+                  table={table}
+                  user={user}
+                  clientTableId={i}
+                />
+                <label style={{display: "block"}}>Table {i}</label>
+              </div>
             </div>
-          </div>
-        ) : null
-      )}
-    </div>
+          ) : null
+        )}
+      </div>
+      <Sidebar event={event} user={user}/>
+    </>
   );
 }

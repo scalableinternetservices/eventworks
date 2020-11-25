@@ -13,6 +13,12 @@ interface ChatBoxProps {
   tableId: number
 }
 
+const chatMessagesView = {
+  height: "80vh",
+  width: "100%",
+  overflow: "scroll"
+} as React.CSSProperties
+
 export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   const user = useContext(UserContext)
   const {
@@ -64,15 +70,16 @@ export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   }
 
   return (
-    <div>
+    <div style={{ marginTop: 15, height: "100%"}}>
       <H2 style={{ marginBottom: 10 }}>{tableData.table.name}</H2>
       {!messages.length ?
         <div style={{ marginBottom: 7 }}>The chat room is open, start chatting!</div> :
-        messages.map(msg => (
+        <div style={chatMessagesView}> {messages.map(msg => (
           <div style={{ marginBottom: 7 }}>
             <b>{`${msg?.user.name}`}:</b> {msg?.message}
-          </div>)
-        )}
+          </div>))}
+        </div>
+      }
       <input type="text"
         placeholder="Type your message..."
         value={currentMessage}
