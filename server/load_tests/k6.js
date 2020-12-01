@@ -65,21 +65,21 @@ check(resp, { 'created lobby': (r) => r.status == 200 });
     }
   );
   check(findAllEvents, { 'find all events': (r) => r.status == 200 });
-  let findEvent = `
-  query FetchEvent{
-    fetchEvent(input: {}) {
-   	events{
-       id
-       name
-       description
-     }
-  }
-}
-`;
-let eventResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: findEvent }),{
-  headers: {
-  'Content-Type': 'application/json',
- },
+//   let findEvent = `
+//   query FetchEvent{
+//     fetchEvent(input: {}) {
+//    	events{
+//        id
+//        name
+//        description
+//      }
+//   }
+// }
+// `;
+// let eventResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: findEvent }),{
+//   headers: {
+//   'Content-Type': 'application/json',
+//  },
   // let chatResponse = http.post(
   //   'http://localhost:3000/graphql',
   //   '{"operationName":"SendChatMessage","variables":{"senderID":1,"eventID":1,"tableID":1,"message":"Ronald"},"query":"mutation SendChatMessage($senderId: Int!, $eventId: Int!, $tableId: Int!, $message: String!) { sendMessage(senderId: $senderId, eventId: $eventId, tableId: $tableId, message: $message)}"}',
@@ -90,8 +90,11 @@ let eventResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ 
   //   }
   // )
   // check(chatResponse, { 'mutated chat': (r) => r.status === 200 });
-   })
-   check(eventResponse, { 'found event': (r) => r.status == 200 });
+   //})
+   //check(eventResponse, { 'found event': (r) => r.status == 200 });
+
+   //Join Event
+   //pass in event table id and user id
   }
 const count200 = new Counter('status_code_2xx')
 const count300 = new Counter('status_code_3xx')
