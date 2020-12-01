@@ -6,7 +6,7 @@ export const options = {
   scenarios: {
     example_scenario: {
       executor: 'constant-vus',
-      vus: 20,
+      vus: 10,
       duration: '5s',
     },
   },
@@ -17,8 +17,10 @@ export default function () {
   //Create random Signup users
   var randomNumber = '' + Math.random(1) * 100
   var payload = JSON.stringify({
-    email: 'something@gmail.com' + randomNumber,
-    name: 'rando',
+    // email: 'something@gmail.com' + randomNumber,
+    // name: 'rando',
+    email: 'lele2lulu@yahoo.com',
+    //password: 'password',
   })
   var params = {
     headers: {
@@ -27,14 +29,16 @@ export default function () {
   }
   var email = 'temp@gmaik.com'
   var name = 'bob'
-  //http.get('http://localhost:3000/')
-  http.post('http://localhost:3000/auth/createUser', payload, params)
+  http.get('http://localhost:3000/')
+  //http.post('http://localhost:3000/auth/createUser', payload, params)
+  //http.post('http://localhost:3000/auth/login', payload, params)
+
 
   sleep(Math.random() * 3)
-
-  let mutationTest = `
+  //Create an Event
+  let eventCreation = `
   mutation CreateEvents{
-    createEvent(input: {startTime:2, endTime:4, userCapacity:30, name:"Ronald", orgName:"Red Cross", description:"load test", hostId:1}) {
+    createEvent(input: {startTime:2, endTime:4, userCapacity:30, name:"Juicy", orgName:"Red Cross", description:"load test", hostId:1}) {
    		startTime
     	endTime
     	userCapacity
@@ -44,24 +48,38 @@ export default function () {
   }
 }
 `;
-let resp = http.post('http://localhost:3000/graphql', JSON.stringify({ query: mutationTest }),{
+let resp = http.post('http://localhost:3000/graphql', JSON.stringify({ query: eventCreation }),{
   headers: {
   'Content-Type': 'application/json',
  },
 })
-  //Create an Event
-  // http.post(
-  //   'http://localhost:3000/graphql',
-  //   '{"operationName":"CreateEvent","variables":{"input":{"startTime":2,"endTime":4,"userCapacity":30,"name":"Ronald","orgName":"Red Cross","description":"load test","hostId":1}},"query":"mutation CreateEvent($input: EventInput!) { createEvent(input: $input)}"}',
-  //   {
-  //     headers: {
-  //     'Content-Type': 'application/json',
-  //    },
-  //   }
-  // )
+check(resp, { 'created lobby': (r) => r.status == 200 });
   //Find an Event
-
-
+  let findAllEvents = http.post(
+    `http://localhost:3000/graphql`,
+    '{"operationName":"FetchEvent","variables":{},"query":"query FetchEvent{events{id}}"}',
+    {
+      headers: {
+      'Content-Type': 'application/json',
+     },
+    }
+  );
+  check(findAllEvents, { 'find all events': (r) => r.status == 200 });
+  let findEvent = `
+  query FetchEvent{
+    fetchEvent(input: {}) {
+   	events{
+       id
+       name
+       description
+     }
+  }
+}
+`;
+let eventResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: findEvent }),{
+  headers: {
+  'Content-Type': 'application/json',
+ },
   // let chatResponse = http.post(
   //   'http://localhost:3000/graphql',
   //   '{"operationName":"SendChatMessage","variables":{"senderID":1,"eventID":1,"tableID":1,"message":"Ronald"},"query":"mutation SendChatMessage($senderId: Int!, $eventId: Int!, $tableId: Int!, $message: String!) { sendMessage(senderId: $senderId, eventId: $eventId, tableId: $tableId, message: $message)}"}',
@@ -72,7 +90,9 @@ let resp = http.post('http://localhost:3000/graphql', JSON.stringify({ query: mu
   //   }
   // )
   // check(chatResponse, { 'mutated chat': (r) => r.status === 200 });
-   }
+   })
+   check(eventResponse, { 'found event': (r) => r.status == 200 });
+  }
 const count200 = new Counter('status_code_2xx')
 const count300 = new Counter('status_code_3xx')
 const count400 = new Counter('status_code_4xx')
@@ -99,3 +119,5 @@ function recordRates(res) {
     rate500.add(1)
   }
 }
+
+
