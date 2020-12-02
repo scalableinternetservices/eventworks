@@ -1,9 +1,10 @@
-import { useQuery } from '@apollo/client';
+import { useQuery, useSubscription } from '@apollo/client';
 import * as React from 'react';
-import { FetchEvent, FetchUsersAtTable, FetchUsersAtTableVariables } from '../../graphql/query.gen';
+import { EventTableSubscription, EventTableSubscriptionVariables, FetchEvent, FetchUsersAtTable, FetchUsersAtTableVariables } from '../../graphql/query.gen';
 import { fetchUsersAtTable } from '../auth/fetchUser';
 import { LoggedInUserCtx } from '../auth/user';
 import { ChatBox } from '../chat/Chat';
+import { subscribeEventTable } from '../event/fetchEventTable';
 import { UserTab } from './Tab';
 
 interface SidebarProps {
@@ -42,14 +43,30 @@ const buttons = {
 }
 
 export function Sidebar ({ event, user }: SidebarProps) {
-  const {data} = useQuery<FetchUsersAtTable, FetchUsersAtTableVariables>(fetchUsersAtTable, {
+  const {data, refetch} = useQuery<FetchUsersAtTable, FetchUsersAtTableVariables>(fetchUsersAtTable, {
     variables: { tableId: user.user.table ? user.user.table.id : 0 }
   })
   const [userChatOpen, setUserChatOpen] = React.useState(false)
   const [userList, setUserList] = React.useState(data?.usersAtTable ? data.usersAtTable : [])
 
+  const sub = useSubscription<EventTableSubscription, EventTableSubscriptionVariables>(subscribeEventTable, {
+    variables: { eventTableId: user.user.table ? user.user.table.id : 0 },
+  })
+
   React.useEffect(() => {
-    setUserList(data?.usersAtTable ? data.usersAtTable : [])
+    console.log(sub.data)
+    if (sub.data?.tableUpdates) {
+      refetch();
+      console.log(data)
+      setUserList(data?.usersAtTable ? data.usersAtTable : [])
+      console.log(userList)
+    }
+  }, [sub.data])
+
+  React.useEffect(() => {
+    if (data?.usersAtTable) {
+      setUserList(data?.usersAtTable ? data.usersAtTable : [])
+    }
   });
 
   const switchSidebarView = () => {
@@ -75,7 +92,7 @@ export function Sidebar ({ event, user }: SidebarProps) {
         </div>*/
       }
 
-      {userChatOpen ? <ChatBox eventId={event.event.id} tableId={user.user.table ? user.user.table.id : 1} /> : [...Array(userList.length)].map((i,e) => <UserTab name={userList[e].name}/>)}
+      {userChatOpen ? <ChatBox eventId={event.event.id} tableId={user.user.table ? user.user.table.id : 1} user={user} /> : [...Array(userList.length)].map((i,e) => <UserTab name={userList[e].name}/>)}
     </div>
   );
 }

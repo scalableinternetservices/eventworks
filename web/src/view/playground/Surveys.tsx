@@ -19,7 +19,6 @@ import { Input } from '../../style/input'
 import { Spacer } from '../../style/spacer'
 import { SmallText } from '../../style/text'
 import { UserContext } from '../auth/user'
-import { ChatBox } from '../chat/Chat'
 import { handleError } from '../toast/error'
 import { toast } from '../toast/toast'
 import { fetchSurvey, fetchSurveys, subscribeSurveys } from './fetchSurveys'
@@ -41,23 +40,7 @@ function SurveyList() {
   }
   return (
     <div style={{ width: '50vw' }}>
-      {/* {data.surveys.map((s, i) => (
-        <div key={i} className="pa3 br2 mb2 bg-black-10 flex items-center">
-          <HeaderLink className="link dim pointer" $color="sky" to={getSurveyPath(s.id)}>
-            {s.name}
-          </HeaderLink>
-          <Spacer $w5 />
-          <BodyText $color={s.isStarted && !s.isCompleted ? 'coral' : undefined}>{surveyLabel(s)}</BodyText>
-        </div>
-      ))} */}
-      <div style={{
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'space-around'
-      }}>
-        <ChatBox eventId={1} tableId={1} />
-        <ChatBox eventId={1} tableId={2} />
-      </div>
+
     </div>
   )
 }

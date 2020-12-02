@@ -35,6 +35,10 @@ export const graphqlRoot: Resolvers<Context> = {
       relations: ['table'],
       where: { table: { id: tableId } }
     })),
+    user: async (_, {userId}, ctx) => check (await User.findOne({
+      relations: ['table'],
+      where: { id : userId }
+    })),
     users: async (_, args, ctx) => check(await User.find({
       relations: ['table']
     })),
@@ -163,7 +167,6 @@ export const graphqlRoot: Resolvers<Context> = {
         return context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId)
       },
       resolve: (payload: any) => payload,
-
     }
   },
   Date: new GraphQLScalarType({

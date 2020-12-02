@@ -26,6 +26,23 @@ export const fetchUsersAtTable = gql`
   }
 `
 
+export const fetchOneUser = gql`
+  query FetchOneUser ($userId: Int!) {
+    user (userId: $userId) {
+      id
+      name
+      userType
+      email
+      title
+      linkedinLink
+      table {
+        id
+        name
+      }
+    }
+  }
+`
+
 export const fragmentUser = gql`
   fragment User on User {
     id

@@ -236,6 +236,40 @@ export interface FetchUsersAtTableVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL query operation: FetchOneUser
+// ====================================================
+
+export interface FetchOneUser_user_table {
+  __typename: "EventTable";
+  id: number;
+  name: string;
+}
+
+export interface FetchOneUser_user {
+  __typename: "User";
+  id: number;
+  name: string;
+  userType: UserType;
+  email: string;
+  title: string | null;
+  linkedinLink: string | null;
+  table: FetchOneUser_user_table | null;
+}
+
+export interface FetchOneUser {
+  user: FetchOneUser_user;
+}
+
+export interface FetchOneUserVariables {
+  userId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: UpdateUser
 // ====================================================
 

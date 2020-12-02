@@ -12,7 +12,6 @@ const createEventMutation = gql`
   ${fragmentEvent}
 `
 export function createEvent(client: ApolloClient<any>, input: EventInput){
-  console.log(input)
   return getApolloClient().mutate<CreateEvent, CreateEventVariables>({
    mutation: createEventMutation,
    variables: { input },

@@ -1,26 +1,26 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import * as React from 'react'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fetchTable } from '../../graphql/fetchEvent'
 import { ChatMessage, ChatSubscription, FetchChatMessage, FetchTable } from '../../graphql/query.gen'
 import { H2 } from '../../style/header'
-import { UserContext } from '../auth/user'
+import { LoggedInUserCtx } from '../auth/user'
 import { fetchChatMessage, subscribeChat } from './fetchChat'
 import { sendChatMessage } from './mutateChat'
 
 interface ChatBoxProps {
-  eventId: number
-  tableId: number
+  eventId: number,
+  tableId: number,
+  user: LoggedInUserCtx
 }
 
 const chatMessagesView = {
-  height: "80vh",
+  height: "100%",
   width: "100%",
   overflow: "scroll"
 } as React.CSSProperties
 
-export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
-  const user = useContext(UserContext)
+export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
   const {
     loading: tableLoading,
     data: tableData,
@@ -38,7 +38,7 @@ export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   const [currentMessage, setCurrentMessage] = useState('')
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == 'Enter' && currentMessage && user?.user) {
+    if (e.key == 'Enter' && currentMessage && user.user) {
       sendChatMessage(user.user.id, eventId, tableId, currentMessage)
         .then(() => setCurrentMessage(''))
     }
@@ -70,7 +70,7 @@ export const ChatBox = ({ eventId, tableId }: ChatBoxProps) => {
   }
 
   return (
-    <div style={{ marginTop: 15, height: "100%"}}>
+    <div style={{ marginTop: 15, height: "85%"}}>
       <H2 style={{ marginBottom: 10 }}>{tableData.table.name}</H2>
       {!messages.length ?
         <div style={{ marginBottom: 7 }}>The chat room is open, start chatting!</div> :

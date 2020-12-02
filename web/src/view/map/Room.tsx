@@ -40,7 +40,6 @@ export function Room ({ event, user }: RoomProps) {
 
   const sortedTables = [...tables].sort((tbl1, tbl2) => tbl1.id - tbl2.id)
   const mainEventTableId = sortedTables[0].id
-  console.log(mainEventTableId)
 
   const leaveTableOnUnmount = () => {
     switchTable(getApolloClient(), {
@@ -60,7 +59,6 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   React.useEffect(() => {
-    console.log(mainEventTableId)
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,
       participantId: user.user.id

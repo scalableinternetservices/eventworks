@@ -17,6 +17,7 @@ export interface Query {
   __typename?: 'Query'
   self?: Maybe<User>
   usersAtTable: Array<User>
+  user: User
   users: Array<User>
   surveys: Array<Survey>
   survey?: Maybe<Survey>
@@ -29,6 +30,10 @@ export interface Query {
 
 export interface QueryUsersAtTableArgs {
   tableId: Scalars['Int']
+}
+
+export interface QueryUserArgs {
+  userId: Scalars['Int']
 }
 
 export interface QuerySurveyArgs {
@@ -360,6 +365,7 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryUsersAtTableArgs, 'tableId'>
   >
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'userId'>>
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>
   surveys?: Resolver<Array<ResolversTypes['Survey']>, ParentType, ContextType>
   survey?: Resolver<
