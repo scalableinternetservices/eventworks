@@ -17,9 +17,9 @@ export default function () {
   //Create random Signup users
   var randomNumber = '' + Math.random(1) * 100
   var payload = JSON.stringify({
-    // email: 'something@gmail.com' + randomNumber,
-    // name: 'rando',
-    email: 'lele2lulu@yahoo.com',
+    email: 'something@gmail.com' + randomNumber,
+    name: 'rando',
+    // email: 'lele2lulu@yahoo.com',
     //password: 'password',
   })
   var params = {
@@ -30,7 +30,7 @@ export default function () {
   var email = 'temp@gmaik.com'
   var name = 'bob'
   http.get('http://localhost:3000/')
-  //http.post('http://localhost:3000/auth/createUser', payload, params)
+  http.post('http://localhost:3000/auth/createUser', payload, params)
   //http.post('http://localhost:3000/auth/login', payload, params)
 
 
@@ -65,6 +65,17 @@ check(resp, { 'created lobby': (r) => r.status == 200 });
     }
   );
   check(findAllEvents, { 'find all events': (r) => r.status == 200 });
+
+  //Fetch Chat
+  let chatResponse = http.post(`http://localhost:3000/graphql`,
+  '{"operationName":"FetchChat","variables":{"eventID": 1, "tableID": 1},"query":"query FetchChat($eventID: Int!, $tableID: Int!){chatMessages(eventId: $eventID, tableId: $tableID){message}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  });
+  check(chatResponse, { 'Fetch Chat': (r) => r.status == 200 });
+
 //   let findEvent = `
 //   query FetchEvent{
 //     fetchEvent(input: {}) {
