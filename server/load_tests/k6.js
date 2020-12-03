@@ -76,6 +76,21 @@ check(resp, { 'created lobby': (r) => r.status == 200 });
   });
   check(chatResponse, { 'Fetch Chat': (r) => r.status == 200 });
 
+  //Mutate Chat
+  let chatCreation  = `
+  mutation SendChatMessage{
+    sendMessage(senderId: 1, eventId: 1, tableId: 1, message: "testing") {
+    	message
+  }
+}
+  `
+  let chatCreationResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: chatCreation }),{
+  headers: {
+  'Content-Type': 'application/json',
+ },
+})
+//'{"operationName":"SendChatMessage","variables":{"senderId":1,"eventId":1,"tableId":1,"message":"teststs"},"query":"mutation SendChatMessage($senderId: Int!, $eventId: Int!, $tableId: Int!, $message: String!) { sendMessage(senderId: $senderId, eventId: $eventId, tableId: $tableId, message: $message)}"}'
+check(chatCreationResponse, { 'Mutated Chat': (r) => r.status == 200 });
 //   let findEvent = `
 //   query FetchEvent{
 //     fetchEvent(input: {}) {
