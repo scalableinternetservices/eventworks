@@ -80,8 +80,9 @@ export function Room ({ event, user }: RoomProps) {
                   user={user}
                   tableNumber={i}
                   setUserTableId={(id: number) => setUserTableId(id)}
+                  userTableId={userTableId}
                 />
-                <label style={{display: "block"}}>Table {i}</label>
+                <label style={{ display: "block", fontWeight: 600 }}>{table.name}</label>
               </div>
             </div>
           ) : null

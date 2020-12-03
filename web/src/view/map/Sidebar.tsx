@@ -56,21 +56,16 @@ export function Sidebar ({ event, user, userTableId }: SidebarProps) {
     variables: { eventTableId: userTableId },
   })
 
-  console.log(userTableId)
-
   React.useEffect(() => {
-    console.log(sub.data)
     if (sub.data?.tableUpdates) {
       refetch()
         .then(data => {
           setUserList(data?.data.usersAtTable || [])
         })
-      console.log(userList)
     }
   }, [sub.data])
 
   React.useEffect(() => {
-    console.log('b')
     refetch()
       .then(data => {
         setUserList(data?.data.usersAtTable || [])
@@ -78,13 +73,10 @@ export function Sidebar ({ event, user, userTableId }: SidebarProps) {
   }, [userTableId])
 
   const switchSidebarView = () => {
-    console.log('c')
     setUserChatOpen(!userChatOpen);
   }
 
   const doNothing = () => {}
-
-  console.log(userList)
 
   return (
     <div className="sidebar" style={sideBar}>
