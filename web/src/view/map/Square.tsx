@@ -15,14 +15,16 @@ interface SquareProps {
   mainEventTableId: number
   table: EventTable
   user: LoggedInUserCtx
-  clientTableId: number
+  tableNumber: number
+  setUserTableId: Function
 }
 
 export function Square ({
   mainEventTableId,
   table,
   user,
-  clientTableId
+  tableNumber,
+  setUserTableId
 }: SquareProps) {
   const  {data: eventTableData, refetch: refetchTableData } = useQuery<FetchTable, FetchTableVariables>(fetchTable, {
     variables: { tableId: table.id },
@@ -50,7 +52,8 @@ export function Square ({
       if (!table) {
         throw Error('Error joining table!')
       }
-      toast(`Switched to table ${clientTableId}!`)
+      toast(`Switched to another table!`)
+      setUserTableId(eventTableId)
       refetchTableData()
     }).catch(handleError)
   }

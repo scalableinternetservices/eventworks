@@ -40,10 +40,11 @@ export function Room ({ event, user }: RoomProps) {
 
   const sortedTables = [...tables].sort((tbl1, tbl2) => tbl1.id - tbl2.id)
   const mainEventTableId = sortedTables[0].id
+  const [userTableId, setUserTableId] = React.useState(0)
 
   const leaveTableOnUnmount = () => {
     switchTable(getApolloClient(), {
-      eventTableId: null, // leave current table
+      eventTableId: null, // leave event
       participantId: user.user.id
     })
   }
@@ -59,10 +60,11 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   React.useEffect(() => {
+    console.log('bb')
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,
       participantId: user.user.id
-    })
+    }).then(() => setUserTableId(mainEventTableId))
   }, [])
 
   return (
@@ -76,7 +78,8 @@ export function Room ({ event, user }: RoomProps) {
                   mainEventTableId={mainEventTableId}
                   table={table}
                   user={user}
-                  clientTableId={i}
+                  tableNumber={i}
+                  setUserTableId={(id: number) => setUserTableId(id)}
                 />
                 <label style={{display: "block"}}>Table {i}</label>
               </div>
@@ -84,7 +87,7 @@ export function Room ({ event, user }: RoomProps) {
           ) : null
         )}
       </div>
-      <Sidebar event={event} user={user}/>
+      <Sidebar event={event} user={user} userTableId={userTableId} />
     </>
   );
 }

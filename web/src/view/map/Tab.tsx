@@ -5,10 +5,12 @@ interface UserTabProps {
 }
 
 const tabStyle = {
-  height: "10vh",
+  marginBottom: 10,
+  padding: 10,
+  textAlign: 'center',
   width: "100%",
-  border: "2px solid #000",
-  position: "relative"
+  position: "relative",
+  backgroundColor: '#e8e8e8',
 } as React.CSSProperties
 
 export function UserTab ({name}: UserTabProps) {

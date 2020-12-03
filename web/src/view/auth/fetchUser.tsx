@@ -9,10 +9,6 @@ export const fetchUser = gql`
       email
       title
       linkedinLink
-      table {
-        id
-        name
-      }
     }
   }
 `
