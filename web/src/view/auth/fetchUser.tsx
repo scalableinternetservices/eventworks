@@ -9,6 +9,28 @@ export const fetchUser = gql`
       email
       title
       linkedinLink
+    }
+  }
+`
+
+export const fetchUsersAtTable = gql`
+  query FetchUsersAtTable ($tableId: Int!) {
+    usersAtTable (tableId: $tableId) {
+      id
+      name
+    }
+  }
+`
+
+export const fetchOneUser = gql`
+  query FetchOneUser ($userId: Int!) {
+    user (userId: $userId) {
+      id
+      name
+      userType
+      email
+      title
+      linkedinLink
       table {
         id
         name

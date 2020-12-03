@@ -31,7 +31,17 @@ const DEFAULT_USER_CAPACITY = 10
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
-    users: async (_, args, ctx) => check(await User.find()),
+    usersAtTable: async (_, { tableId }, ctx) => check(await User.find({
+      relations: ['table'],
+      where: { table: { id: tableId } }
+    })),
+    user: async (_, {userId}, ctx) => check (await User.findOne({
+      relations: ['table'],
+      where: { id : userId }
+    })),
+    users: async (_, args, ctx) => check(await User.find({
+      relations: ['table']
+    })),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     chatMessages: async (root, { eventId, tableId }, context) => await ChatMessage.find({
@@ -157,7 +167,6 @@ export const graphqlRoot: Resolvers<Context> = {
         return context.pubsub.asyncIterator('TABLE_UPDATE' + eventTableId)
       },
       resolve: (payload: any) => payload,
-
     }
   },
   Date: new GraphQLScalarType({
