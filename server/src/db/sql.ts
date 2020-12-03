@@ -11,7 +11,7 @@ import { SurveyQuestion } from '../entities/SurveyQuestion'
 import { User } from '../entities/User'
 
 const baseConfig = {
-  host: process.env.MYSQL_HOST || '192.168.99.100',
+  host: process.env.MYSQL_HOST || '127.0.0.1',
   port: Number(process.env.MYSQL_PORT || 3307),
   password: process.env.MYSQL_PASSWORD || 'password',
   database: process.env.MYSQL_DATABASE || 'eventworks',

@@ -82,16 +82,16 @@ export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
   }, [tableId])
 
   if (!user?.user) {
-    return <div>Log in to view chat</div>
+    return <div style={chatBoxView}>Log in to view chat</div>
   }
 
   if (tableLoading || chatLoading) {
-    return <div>Loading chat...</div>
+    return <div style={chatBoxView}>Loading chat...</div>
   }
 
   if (!tableData?.table) {
     console.error(tableError)
-    return <div>Error loading chat. Please try again.</div>
+    return <div style={chatBoxView}>Error loading chat. Please try again.</div>
   }
 
   return (

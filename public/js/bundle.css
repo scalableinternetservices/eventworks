@@ -1,0 +1,21 @@
+.join-button {
+  --button-size: 54px;
+  display: 'inline-block';
+  border-radius: 50%;
+  height: var(--button-size);
+  margin: 6px;
+  width: var(--button-size);
+  background-color: 'limegreen';
+  vertical-align: 'middle';
+  line-height: var(--button-size);
+  color: "white";
+  font-weight: "bold";
+  box-shadow: '3px 3px 10px rgba(0, 0, 0, 0.5)';
+  cursor: 'pointer';
+}
+
+.join-button:hover {
+  background-color: 'rgb(118, 245, 118)'
+}
+
+/*# sourceMappingURL=/app/js/bundle.css.map */

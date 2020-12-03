@@ -8,8 +8,34 @@ import { subscribeEventTable } from '../event/fetchEventTable';
 import { switchTable } from '../event/mutateSwitchTable';
 import { handleError } from '../toast/error';
 import { toast } from '../toast/toast';
+import { JoinTableButton } from './JoinTableButton';
 import { TakenSeat } from './TakenSeat';
 import { UntakenSeat } from './UntakenSeat';
+
+const NUM_ROWS = 3
+const NUM_COLS = 3
+const NUM_SEATS_DISPLAY = NUM_ROWS * NUM_COLS
+
+const tableStyle = {
+  background: "#fbc02d",
+  height: 180,
+  width: 180,
+  margin: 10,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  padding: 5,
+  boxShadow: '3px 3px 10px rgba(0, 0, 0, 0.5)',
+  borderRadius: 5
+} as React.CSSProperties;
+
+const rowStyle = {
+  padding: 0,
+  margin: 0,
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center'
+}
 
 interface SquareProps {
   mainEventTableId: number
@@ -17,14 +43,15 @@ interface SquareProps {
   user: LoggedInUserCtx
   tableNumber: number
   setUserTableId: Function
+  userTableId: number
 }
 
 export function Square ({
   mainEventTableId,
   table,
   user,
-  tableNumber,
-  setUserTableId
+  setUserTableId,
+  userTableId
 }: SquareProps) {
   const  {data: eventTableData, refetch: refetchTableData } = useQuery<FetchTable, FetchTableVariables>(fetchTable, {
     variables: { tableId: table.id },
@@ -52,61 +79,37 @@ export function Square ({
       if (!table) {
         throw Error('Error joining table!')
       }
-      toast(`Switched to another table!`)
+      toast(`Switched to ${table.name}!`)
       setUserTableId(eventTableId)
       refetchTableData()
     }).catch(handleError)
   }
 
-  const tableStyle = {
-    background: "#fbc02d",
-    height: "180px",
-    width: "180px",
-    margin: "10px",
-    dispaly: "flex",
-    flexWrap: "wrap",
-  } as React.CSSProperties;
+  let participants = eventTableData?.table?.participants || []
+  let seats: React.ReactNode[] = []
 
-  const emptySeat = {
-    display: "inline-block",
-    opacity: "0",
-    borderRadius: "50%",
-    height: "36px",
-    margin: "6px",
-    width: "36px"
+  for (let seatPosition = 0; seatPosition < NUM_SEATS_DISPLAY; seatPosition++) {
+    const isJoin = userTableId != table.id
+    if (seatPosition == 4) {
+      seats.push(
+        <JoinTableButton
+          onClick={(e: any) => handleSwitch(e, isJoin ? table.id : mainEventTableId)}
+          isJoin={isJoin}
+        />
+      )
+    } else {
+      seats.push(seatPosition < participants.length ?
+        <TakenSeat tableSeat={seatPosition} username={participants[seatPosition].name} /> :
+        <UntakenSeat tableSeat={seatPosition} />)
+    }
   }
-
-  let seatPosition = 0;
 
   return (
     <div className="square" style={tableStyle}>
-      {[...Array(eventTableData?.table ? eventTableData.table.participants?.length : 0)].map((e, i) =>
-        (seatPosition == 4 ? (
-          <>
-            <div className={"seat " + seatPosition++} style={emptySeat} />
-            <button onClick={e => handleSwitch(e, mainEventTableId)}>
-              <TakenSeat tableSeat={seatPosition++}/>
-            </button>
-          </>
-        ) : (
-          <button onClick={e => handleSwitch(e, mainEventTableId)}>
-            <TakenSeat tableSeat={seatPosition++}/>
-          </button>
-        )
-      ))}
-      {[...Array(8 - seatPosition)].map((e, i) =>
-        (seatPosition == 4 ? (
-          <>
-            <div className={"seat " + seatPosition++} style={emptySeat} />
-            <button onClick={e => handleSwitch(e, table.id)}>
-              <UntakenSeat tableSeat={seatPosition++}/>
-            </button>
-          </>
-        ) : (
-          <button onClick={e => handleSwitch(e, table.id)}>
-            <UntakenSeat tableSeat={seatPosition++}/>
-          </button>
-        )
+      {[...Array(NUM_ROWS)].map((_, i) => (
+        <div className="row" style={rowStyle}>
+          {[...Array(NUM_COLS)].map((_, j) => seats[NUM_ROWS*i + j])}
+        </div>
       ))}
     </div>
   );
