@@ -14,7 +14,6 @@ interface SidebarProps {
 }
 
 const sideBar = {
-  position: "absolute",
   right: 0,
   bottom: 0,
   height: "calc(100vh - 66px)",

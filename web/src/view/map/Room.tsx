@@ -7,18 +7,23 @@ import { switchTable } from '../event/mutateSwitchTable';
 import { Sidebar } from './Sidebar';
 import { Square } from './Square';
 
-const seatRow = {
-  width: "240px",
-  margin: "none"
-};
 const roomStyle = {
-  width: "50vw",
-  display: "flex",
-  flexWrap: "wrap",
-  justifyContent: "center",
+  width: "100vw",
+  height: "calc(100vh - 66px)",
+  justifyContent: "space-between",
   margin: "auto",
-  transform: "translateX(-10vw)"
+  position: "absolute",
+  top: 66,
+  left: 0,
+  display: "flex",
 } as React.CSSProperties;
+
+const tablesStyle = {
+  display: "flex",
+  justifyContent: "center",
+  maxWidth: "75vw",
+  flexWrap: "wrap",
+} as React.CSSProperties
 
 const arrangementStyle = {
   display: "inline-block",
@@ -60,35 +65,34 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   React.useEffect(() => {
-    console.log('bb')
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,
       participantId: user.user.id
     }).then(() => setUserTableId(mainEventTableId))
   }, [])
 
+  console.log(sortedTables)
+
   return (
-    <>
-      <div className="room" style={roomStyle}>
+    <div className="room" style={roomStyle}>
+      <div className="tables" style={tablesStyle}>
         {(sortedTables || []).map((table, i) =>
           i != 0 ? (
-            <div className="square-row" style={seatRow}>
-              <div className="square-group" style={arrangementStyle}>
-                <Square
-                  mainEventTableId={mainEventTableId}
-                  table={table}
-                  user={user}
-                  tableNumber={i}
-                  setUserTableId={(id: number) => setUserTableId(id)}
-                  userTableId={userTableId}
-                />
-                <label style={{ display: "block", fontWeight: 600 }}>{table.name}</label>
-              </div>
+            <div className="square-group" style={arrangementStyle}>
+              <Square
+                mainEventTableId={mainEventTableId}
+                table={table}
+                user={user}
+                tableNumber={i}
+                setUserTableId={(id: number) => setUserTableId(id)}
+                userTableId={userTableId}
+              />
+              <label style={{ display: "block", fontWeight: 600 }}>{table.name}</label>
             </div>
           ) : null
         )}
       </div>
       <Sidebar event={event} user={user} userTableId={userTableId} />
-    </>
+    </div>
   );
 }
