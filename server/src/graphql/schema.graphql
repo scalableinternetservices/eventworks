@@ -23,9 +23,8 @@ type Query {
 
   surveys: [Survey!]!
   survey(surveyId: Int!): Survey
-  chatMessages(eventId: Int!, tableId: Int!): [ChatMessage!]!
+  chatMessages(eventId: Int!, tableId: Int!, offset: Int! = 0): [ChatMessage!]!
   events: [Event!]!
-  tables: [EventTable!]!
   event(eventId: Int!): Event!
   table(tableId: Int!): EventTable!
 }

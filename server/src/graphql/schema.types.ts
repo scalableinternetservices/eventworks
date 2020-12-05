@@ -43,6 +43,7 @@ export interface QuerySurveyArgs {
 export interface QueryChatMessagesArgs {
   eventId: Scalars['Int']
   tableId: Scalars['Int']
+  offset?: Scalars['Int']
 }
 
 export interface QueryEventArgs {
@@ -378,7 +379,7 @@ export type QueryResolvers<
     Array<ResolversTypes['ChatMessage']>,
     ParentType,
     ContextType,
-    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId'>
+    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId' | 'offset'>
   >
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
   tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>

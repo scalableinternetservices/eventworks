@@ -186,12 +186,6 @@ export interface CreateEventVariables {
 // GraphQL query operation: FetchUserContext
 // ====================================================
 
-export interface FetchUserContext_self_table {
-  __typename: "EventTable";
-  id: number;
-  name: string;
-}
-
 export interface FetchUserContext_self {
   __typename: "User";
   id: number;
@@ -200,7 +194,6 @@ export interface FetchUserContext_self {
   email: string;
   title: string | null;
   linkedinLink: string | null;
-  table: FetchUserContext_self_table | null;
 }
 
 export interface FetchUserContext {
