@@ -1,6 +1,7 @@
 import { readFileSync } from 'fs'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { PubSub } from 'graphql-yoga'
+import { Redis } from 'ioredis'
 import path from 'path'
 import { check } from '../../../common/src/util'
 import { ChatMessage } from '../entities/ChatMessage'
@@ -24,6 +25,7 @@ interface Context {
  request: Request
  response: Response
  pubsub: PubSub
+ redis: Redis
 }
 
 const DEFAULT_USER_CAPACITY = 10
@@ -31,10 +33,17 @@ const DEFAULT_USER_CAPACITY = 10
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
-    usersAtTable: async (_, { tableId }, ctx) => check(await User.find({
-      relations: ['table'],
-      where: { table: { id: tableId } }
-    })),
+    usersAtTable: async (_, { tableId }, { redis }) => {
+      const userRedis = ( await redis.lrange(tableId.toString(), 0, -1))
+      const userRedisObject = userRedis.map(x => JSON.parse(x));
+
+      /*const user = check(await User.find({
+        relations: ['table'],
+        where: { table: { id: tableId } }
+      }))*/
+
+      return userRedisObject;
+  },
     user: async (_, {userId}, ctx) => check (await User.findOne({
       relations: ['table'],
       where: { id : userId }
@@ -53,7 +62,12 @@ export const graphqlRoot: Resolvers<Context> = {
     events: async (_, {}, ctx) => (await Event.find({ relations: ['eventTables'] })),
     tables: async(_, {}, ctx) => (await EventTable.find()),
     event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables'] })),
-    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
+    table: async (_, { tableId }, {redis}) => {
+      const participantsRedis = await redis.lrange(tableId.toString(), 0, -1)
+      const particpantsRedisObject = participantsRedis.map((x) => JSON.parse(x))
+      return particpantsRedisObject;
+    },
+    tableInfo: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
   },
   Mutation: {
     updateUser: async (_, { input }, ctx) => {
@@ -130,20 +144,26 @@ export const graphqlRoot: Resolvers<Context> = {
       pubsub.publish(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`, chat)
       return chat
     },
-    switchTable: async (_, { input }, ctx) => {
+    switchTable: async (_, { input }, { redis }) => {
       const user = check(await User.findOne({ where: { id: input.participantId }, relations: ['table'] }));
       const oldTable = user.table
+
       if (input.eventTableId) { // join or switch to a new table
         const newTable = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
         user.table = newTable;
         await user.save();
+        await redis.rpush(input.eventTableId.toString(), JSON.stringify({id: user.id, name: user.name}));
+
         const newTableUpdated = check(await EventTable.findOne({ where: { id : input.eventTableId }, relations: ['participants'] }));
         pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdated)
       } else { // leave table
         user.table = null
         await user.save();
       }
+
       if (oldTable) {
+        await redis.lrem(oldTable.id.toString(), -1, JSON.stringify({id: user.id, name: user.name}));
+
         const oldTableUpdated = check(await EventTable.findOne({ where: { id: oldTable.id }, relations: ['participants'] }))
         pubsub.publish('TABLE_UPDATE' + oldTable.id, oldTableUpdated)
       }

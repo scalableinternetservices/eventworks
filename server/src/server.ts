@@ -28,10 +28,13 @@ import { UserType } from './graphql/schema.types'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
 
+const Redis = require('ioredis')
+const my_redis = new Redis()
+
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
-  context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null }),
+  context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null, redis: my_redis }),
 })
 
 server.express.use(cookieParser())

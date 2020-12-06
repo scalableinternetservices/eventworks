@@ -1,8 +1,8 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { fetchTable } from '../../graphql/fetchEvent'
-import { ChatMessage, ChatSubscription, FetchChatMessage, FetchTable } from '../../graphql/query.gen'
+import { fetchTableInfo } from '../../graphql/fetchEvent'
+import { ChatMessage, ChatSubscription, FetchChatMessage, FetchTableInfo, FetchTableInfoVariables } from '../../graphql/query.gen'
 import { H2 } from '../../style/header'
 import { LoggedInUserCtx } from '../auth/user'
 import { fetchChatMessage, subscribeChat } from './fetchChat'
@@ -44,7 +44,7 @@ export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
     loading: tableLoading,
     data: tableData,
     error: tableError
-  } = useQuery<FetchTable>(fetchTable, {
+  } = useQuery<FetchTableInfo, FetchTableInfoVariables>(fetchTableInfo, {
     variables: { tableId }
   })
   const { loading: chatLoading, data: chatData, refetch: refetchChat } = useQuery<FetchChatMessage>(fetchChatMessage, {
@@ -89,7 +89,7 @@ export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
     return <div style={chatBoxView}>Loading chat...</div>
   }
 
-  if (!tableData?.table) {
+  if (!tableData?.tableInfo) {
     console.error(tableError)
     return <div style={chatBoxView}>Error loading chat. Please try again.</div>
   }
@@ -97,7 +97,7 @@ export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
   return (
     <>
       <div style={chatBoxView}>
-        <H2 style={{ marginBottom: 10 }}>{tableData.table.name}</H2>
+        <H2 style={{ marginBottom: 10 }}>{tableData.tableInfo.name}</H2>
         {!messages.length ?
           <div style={{ marginBottom: 7 }}>The chat room is open, start chatting!</div> :
           <div style={chatMessagesView}> {messages.map(msg => (

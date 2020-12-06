@@ -17,9 +17,10 @@ schema {
 type Query {
   # Returns the logged-in user making the query, or null if anonymous.
   self: User
-  usersAtTable(tableId: Int!): [User!]!
+  usersAtTable(tableId: Int!): [TableParticipants!]!
   user(userId: Int!): User!
   users: [User!]!
+
 
   surveys: [Survey!]!
   survey(surveyId: Int!): Survey
@@ -27,7 +28,8 @@ type Query {
   events: [Event!]!
   tables: [EventTable!]!
   event(eventId: Int!): Event!
-  table(tableId: Int!): EventTable!
+  table(tableId: Int!): [TableParticipants!]
+  tableInfo(tableId: Int!): EventTable!
 }
 
 type Mutation {
@@ -181,4 +183,9 @@ input EventTableInput {
   name: String!
   description: String!
   userCapacity: Int
+}
+
+type TableParticipants {
+  id: Int!
+  name: String!
 }

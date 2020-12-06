@@ -103,33 +103,56 @@ export interface FetchEventVariables {
 // GraphQL query operation: FetchTable
 // ====================================================
 
-export interface FetchTable_table_head {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
-export interface FetchTable_table_participants {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
 export interface FetchTable_table {
+  __typename: "TableParticipants";
+  id: number;
+  name: string;
+}
+
+export interface FetchTable {
+  table: FetchTable_table[] | null;
+}
+
+export interface FetchTableVariables {
+  tableId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
+// GraphQL query operation: FetchTableInfo
+// ====================================================
+
+export interface FetchTableInfo_tableInfo_head {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchTableInfo_tableInfo_participants {
+  __typename: "User";
+  id: number;
+  name: string;
+}
+
+export interface FetchTableInfo_tableInfo {
   __typename: "EventTable";
   id: number;
   name: string;
   description: string;
   userCapacity: number;
-  head: FetchTable_table_head;
-  participants: FetchTable_table_participants[] | null;
+  head: FetchTableInfo_tableInfo_head;
+  participants: FetchTableInfo_tableInfo_participants[] | null;
 }
 
-export interface FetchTable {
-  table: FetchTable_table;
+export interface FetchTableInfo {
+  tableInfo: FetchTableInfo_tableInfo;
 }
 
-export interface FetchTableVariables {
+export interface FetchTableInfoVariables {
   tableId: number;
 }
 
@@ -186,12 +209,6 @@ export interface CreateEventVariables {
 // GraphQL query operation: FetchUserContext
 // ====================================================
 
-export interface FetchUserContext_self_table {
-  __typename: "EventTable";
-  id: number;
-  name: string;
-}
-
 export interface FetchUserContext_self {
   __typename: "User";
   id: number;
@@ -200,7 +217,6 @@ export interface FetchUserContext_self {
   email: string;
   title: string | null;
   linkedinLink: string | null;
-  table: FetchUserContext_self_table | null;
 }
 
 export interface FetchUserContext {
@@ -217,7 +233,7 @@ export interface FetchUserContext {
 // ====================================================
 
 export interface FetchUsersAtTable_usersAtTable {
-  __typename: "User";
+  __typename: "TableParticipants";
   id: number;
   name: string;
 }

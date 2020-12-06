@@ -85,7 +85,7 @@ export function Square ({
     }).catch(handleError)
   }
 
-  let participants = eventTableData?.table?.participants || []
+  let participants = eventTableData?.table || []
   let seats: React.ReactNode[] = []
 
   for (let seatPosition = 0; seatPosition < NUM_SEATS_DISPLAY; seatPosition++) {

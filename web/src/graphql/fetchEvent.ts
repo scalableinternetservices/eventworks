@@ -75,8 +75,18 @@ export const fetchEvent = gql`
 export const fetchTable = gql`
   query FetchTable($tableId: Int!) {
     table(tableId: $tableId) {
+      id
+      name
+    }
+  }
+`
+
+export const fetchTableInfo = gql`
+  query FetchTableInfo($tableId: Int!) {
+    tableInfo(tableId: $tableId) {
       ...EventTable
     }
   }
   ${fragmentEventTable}
 `
+

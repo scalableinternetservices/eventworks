@@ -16,7 +16,7 @@ export interface Scalars {
 export interface Query {
   __typename?: 'Query'
   self?: Maybe<User>
-  usersAtTable: Array<User>
+  usersAtTable: Array<TableParticipants>
   user: User
   users: Array<User>
   surveys: Array<Survey>
@@ -25,7 +25,8 @@ export interface Query {
   events: Array<Event>
   tables: Array<EventTable>
   event: Event
-  table: EventTable
+  table?: Maybe<Array<TableParticipants>>
+  tableInfo: EventTable
 }
 
 export interface QueryUsersAtTableArgs {
@@ -50,6 +51,10 @@ export interface QueryEventArgs {
 }
 
 export interface QueryTableArgs {
+  tableId: Scalars['Int']
+}
+
+export interface QueryTableInfoArgs {
   tableId: Scalars['Int']
 }
 
@@ -231,6 +236,12 @@ export interface EventTableInput {
   userCapacity?: Maybe<Scalars['Int']>
 }
 
+export interface TableParticipants {
+  __typename?: 'TableParticipants'
+  id: Scalars['Int']
+  name: Scalars['String']
+}
+
 export type ResolverTypeWrapper<T> = Promise<T> | T
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
@@ -329,6 +340,7 @@ export type ResolversTypes = {
   ChatMessage: ResolverTypeWrapper<ChatMessage>
   EventTable: ResolverTypeWrapper<EventTable>
   EventTableInput: EventTableInput
+  TableParticipants: ResolverTypeWrapper<TableParticipants>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -352,6 +364,7 @@ export type ResolversParentTypes = {
   ChatMessage: ChatMessage
   EventTable: EventTable
   EventTableInput: EventTableInput
+  TableParticipants: TableParticipants
 }
 
 export type QueryResolvers<
@@ -360,7 +373,7 @@ export type QueryResolvers<
 > = {
   self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   usersAtTable?: Resolver<
-    Array<ResolversTypes['User']>,
+    Array<ResolversTypes['TableParticipants']>,
     ParentType,
     ContextType,
     RequireFields<QueryUsersAtTableArgs, 'tableId'>
@@ -383,7 +396,18 @@ export type QueryResolvers<
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
   tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
-  table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType, RequireFields<QueryTableArgs, 'tableId'>>
+  table?: Resolver<
+    Maybe<Array<ResolversTypes['TableParticipants']>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryTableArgs, 'tableId'>
+  >
+  tableInfo?: Resolver<
+    ResolversTypes['EventTable'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryTableInfoArgs, 'tableId'>
+  >
 }
 
 export type MutationResolvers<
@@ -550,6 +574,15 @@ export type EventTableResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
+export type TableParticipantsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TableParticipants'] = ResolversParentTypes['TableParticipants']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
+}
+
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
@@ -562,6 +595,7 @@ export type Resolvers<ContextType = any> = {
   SurveyAnswer?: SurveyAnswerResolvers<ContextType>
   ChatMessage?: ChatMessageResolvers<ContextType>
   EventTable?: EventTableResolvers<ContextType>
+  TableParticipants?: TableParticipantsResolvers<ContextType>
 }
 
 /**
