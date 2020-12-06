@@ -21,14 +21,16 @@ const roomStyle = {
 const tablesStyle = {
   display: "flex",
   justifyContent: "center",
+  alignItems: "center",
   maxWidth: "75vw",
   flexWrap: "wrap",
+  overflow: "auto"
 } as React.CSSProperties
 
 const arrangementStyle = {
   display: "inline-block",
   textAlign: "center",
-  margin: "10px 20px"
+  margin: "10px 20px",
 } as React.CSSProperties;
 
 interface RoomProps {
@@ -70,8 +72,6 @@ export function Room ({ event, user }: RoomProps) {
       participantId: user.user.id
     }).then(() => setUserTableId(mainEventTableId))
   }, [])
-
-  console.log(sortedTables)
 
   return (
     <div className="room" style={roomStyle}>

@@ -28,6 +28,7 @@ interface Context {
 
 const DEFAULT_USER_CAPACITY = 10
 const DEFAULT_TAKE_AMOUNT = 20
+const TABLE_LIMIT_PER_EVENT = 16 // 15 + main room
 
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
@@ -91,6 +92,10 @@ export const graphqlRoot: Resolvers<Context> = {
       return newEvent
     },
     createTable: async (_, { input }, ctx) => {
+      const numExistingTables = check(await EventTable.count({ where: { event: input.eventId } }))
+      if (numExistingTables >= TABLE_LIMIT_PER_EVENT) {
+        return null
+      }
       const newTable = new EventTable()
       newTable.chatMessages = []
       newTable.description = input.description

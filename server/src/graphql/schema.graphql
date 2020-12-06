@@ -38,7 +38,7 @@ type Mutation {
   #Creates Event from form
   createEvent(input: EventInput!): Event!
   # given an event id, creates new table linked to that event
-  createTable(input: EventTableInput!): EventTable!
+  createTable(input: EventTableInput!): EventTable
   #below is to update an event
   #updateEvent(id: ID!, input: EventInput!): Event!
   updateUser(input: UserInput!): User!

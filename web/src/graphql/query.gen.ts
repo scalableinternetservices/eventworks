@@ -331,6 +331,7 @@ export interface FetchChatMessage {
 export interface FetchChatMessageVariables {
   eventId: number;
   tableId: number;
+  offset: number;
 }
 
 /* tslint:disable */
@@ -425,41 +426,6 @@ export interface SendChatMessageVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: FetchAllEventTables
-// ====================================================
-
-export interface FetchAllEventTables_tables_head {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
-export interface FetchAllEventTables_tables_participants {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
-export interface FetchAllEventTables_tables {
-  __typename: "EventTable";
-  id: number;
-  name: string;
-  description: string;
-  userCapacity: number;
-  head: FetchAllEventTables_tables_head;
-  participants: FetchAllEventTables_tables_participants[] | null;
-}
-
-export interface FetchAllEventTables {
-  tables: FetchAllEventTables_tables[];
-}
-
-/* tslint:disable */
-/* eslint-disable */
-// @generated
-// This file was automatically generated and should not be edited.
-
-// ====================================================
 // GraphQL subscription operation: EventTableSubscription
 // ====================================================
 
@@ -525,7 +491,7 @@ export interface CreateTable_createTable {
 }
 
 export interface CreateTable {
-  createTable: CreateTable_createTable;
+  createTable: CreateTable_createTable | null;
 }
 
 export interface CreateTableVariables {

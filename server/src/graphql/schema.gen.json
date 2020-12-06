@@ -1121,30 +1121,6 @@
             "deprecationReason": null
           },
           {
-            "name": "tables",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventTable",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "event",
             "description": null,
             "args": [
@@ -1336,13 +1312,9 @@
               }
             ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EventTable",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "EventTable",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

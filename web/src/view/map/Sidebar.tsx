@@ -21,7 +21,8 @@ const sideBar = {
   backgroundColor: '#f6f6f6',
   borderLeft: "2px solid #e3e3e3",
   padding: 0,
-  overflow: 'hidden'
+  overflow: 'hidden',
+  position: 'relative'
 } as React.CSSProperties;
 
 const tabButton = {
