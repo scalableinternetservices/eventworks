@@ -13,8 +13,8 @@ export const fragmentChatMessage = gql`
 `
 
 export const fetchChatMessage = gql`
-  query FetchChatMessage($eventId: Int!, $tableId: Int!) {
-    chatMessages(eventId: $eventId, tableId: $tableId) {
+  query FetchChatMessage($eventId: Int!, $tableId: Int!, $offset: Int! = 0) {
+    chatMessages(eventId: $eventId, tableId: $tableId, offset: $offset) {
       ...ChatMessage
     }
   }

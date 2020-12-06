@@ -1,6 +1,6 @@
 import { style } from './styled';
 
-const BUTTON_SIZE = 54;
+const BUTTON_SIZE = '54px';
 
 export const JoinButtonBase = style<'div', {}>('div', 'join-button', () => ({
   display: 'flex',

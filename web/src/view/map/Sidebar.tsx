@@ -14,7 +14,6 @@ interface SidebarProps {
 }
 
 const sideBar = {
-  position: "absolute",
   right: 0,
   bottom: 0,
   height: "calc(100vh - 66px)",
@@ -22,7 +21,8 @@ const sideBar = {
   backgroundColor: '#f6f6f6',
   borderLeft: "2px solid #e3e3e3",
   padding: 0,
-  overflow: 'hidden'
+  overflow: 'hidden',
+  position: 'relative'
 } as React.CSSProperties;
 
 const tabButton = {

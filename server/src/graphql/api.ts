@@ -27,6 +27,8 @@ interface Context {
 }
 
 const DEFAULT_USER_CAPACITY = 10
+const DEFAULT_TAKE_AMOUNT = 20
+const TABLE_LIMIT_PER_EVENT = 16 // 15 + main room
 
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
@@ -44,14 +46,16 @@ export const graphqlRoot: Resolvers<Context> = {
     })),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
-    chatMessages: async (root, { eventId, tableId }, context) => await ChatMessage.find({
-        where: {
-          event: check(await Event.findOne({ where: { id: eventId } })),
-          table: check(await EventTable.findOne({ where: { id: tableId } }))
-        }
-      }),
+    chatMessages: async (root, { eventId, tableId, offset }, context) => await ChatMessage.find({
+      where: {
+        event: check(await Event.findOne({ where: { id: eventId } })),
+        table: check(await EventTable.findOne({ where: { id: tableId } }))
+      },
+      order: { timeSent: 'DESC' },
+      skip: offset,
+      take: DEFAULT_TAKE_AMOUNT
+    }).then(messages => messages.reverse()),
     events: async (_, {}, ctx) => (await Event.find({ relations: ['eventTables'] })),
-    tables: async(_, {}, ctx) => (await EventTable.find()),
     event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables'] })),
     table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
   },
@@ -88,6 +92,10 @@ export const graphqlRoot: Resolvers<Context> = {
       return newEvent
     },
     createTable: async (_, { input }, ctx) => {
+      const numExistingTables = check(await EventTable.count({ where: { event: input.eventId } }))
+      if (numExistingTables >= TABLE_LIMIT_PER_EVENT) {
+        return null
+      }
       const newTable = new EventTable()
       newTable.chatMessages = []
       newTable.description = input.description

@@ -23,7 +23,6 @@ export interface Query {
   survey?: Maybe<Survey>
   chatMessages: Array<ChatMessage>
   events: Array<Event>
-  tables: Array<EventTable>
   event: Event
   table: EventTable
 }
@@ -43,6 +42,7 @@ export interface QuerySurveyArgs {
 export interface QueryChatMessagesArgs {
   eventId: Scalars['Int']
   tableId: Scalars['Int']
+  offset?: Scalars['Int']
 }
 
 export interface QueryEventArgs {
@@ -58,7 +58,7 @@ export interface Mutation {
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
   createEvent: Event
-  createTable: EventTable
+  createTable?: Maybe<EventTable>
   updateUser: User
   sendMessage: ChatMessage
   switchTable: User
@@ -378,10 +378,9 @@ export type QueryResolvers<
     Array<ResolversTypes['ChatMessage']>,
     ParentType,
     ContextType,
-    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId'>
+    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId' | 'offset'>
   >
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
-  tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
   table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType, RequireFields<QueryTableArgs, 'tableId'>>
 }
@@ -409,7 +408,7 @@ export type MutationResolvers<
     RequireFields<MutationCreateEventArgs, 'input'>
   >
   createTable?: Resolver<
-    ResolversTypes['EventTable'],
+    Maybe<ResolversTypes['EventTable']>,
     ParentType,
     ContextType,
     RequireFields<MutationCreateTableArgs, 'input'>

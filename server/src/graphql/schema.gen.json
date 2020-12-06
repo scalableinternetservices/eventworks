@@ -1060,6 +1060,20 @@
                   }
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "offset",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "Int",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": "0"
               }
             ],
             "type": {
@@ -1098,30 +1112,6 @@
                   "ofType": {
                     "kind": "OBJECT",
                     "name": "Event",
-                    "ofType": null
-                  }
-                }
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "tables",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "EventTable",
                     "ofType": null
                   }
                 }
@@ -1322,13 +1312,9 @@
               }
             ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "EventTable",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "EventTable",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
