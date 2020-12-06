@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { fetchEvent } from '../../graphql/fetchEvent';
 import { FetchEvent, FetchEventVariables } from '../../graphql/query.gen';
+import { H2 } from '../../style/header';
 import { LoggedInUserCtx, UserContext } from '../auth/user';
 import { Room } from '../map/Room';
 import { AppRouteParams, Route } from '../nav/route';
@@ -41,7 +42,21 @@ export function MapPage({ user, eventId }: MapPageProps) {
   })
 
   if (!data?.event) {
-    return <div>Could no longer find event.</div>
+    return (
+      <Page>
+        <H2>Event does not (or no longer) exist.</H2>
+      </Page>
+    )
+  }
+
+  const startTime = new Date(data.event.startTime)
+
+  if (startTime > new Date()) {
+    return (
+      <Page>
+        <H2>{data.event.name} by {data.event.orgName} will begin at {startTime.toLocaleString()}.</H2>
+      </Page>
+    )
   }
 
   return (
