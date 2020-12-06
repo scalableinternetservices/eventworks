@@ -14,8 +14,8 @@ interface EventCreateForm extends RouteComponentProps, AppRouteParams {}
 
 export function EventCreateForm(props: EventCreateForm) {
   const user = React.useContext(UserContext)
-  const [startTime, setStartTime] = React.useState<number | null>(null);
-  const [endTime, setEndTime] = React.useState<number | null>(null);
+  const [startTime, setStartTime] = React.useState<Date>(new Date());
+  const [endTime, setEndTime] = React.useState<Date>(new Date());
   const [orgName, setOrgName] = React.useState("");
   const [capacity, setCapacity] = React.useState<number | null>(null);
   const [description, setDescription] = React.useState("");
@@ -28,8 +28,8 @@ export function EventCreateForm(props: EventCreateForm) {
   const userId = user.user.id // prevent TS from reading it as nullable in createEvent
 
   const resetForm = () => {
-    setStartTime(null)
-    setEndTime(null)
+    setStartTime(new Date())
+    setEndTime(new Date())
     setOrgName("")
     setCapacity(null)
     setDescription("")
@@ -39,12 +39,18 @@ export function EventCreateForm(props: EventCreateForm) {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    if (!((startTime && startTime > 0)
-      && (endTime && endTime > 0)
-      && orgName
-      && (capacity && capacity > 0)
-      && name)) {
+    if (!(startTime && endTime && orgName && capacity && name)) {
       toast("Cannot create: Form input must be valid. All mandatory fields must be filled with positive/valid values.")
+      return
+    }
+
+    if (startTime < new Date()) {
+      toast("Cannot create: Start time is before current time.")
+      return
+    }
+
+    if (startTime >= endTime) {
+      toast("Cannot create: End time must come before start time.")
       return
     }
 
@@ -52,15 +58,15 @@ export function EventCreateForm(props: EventCreateForm) {
       name,
       description,
       orgName,
-      startTime,
-      endTime,
+      startTime: startTime.getTime(),
+      endTime: endTime.getTime(),
       userCapacity: capacity,
       hostId: userId
       }).then(result => {
         if  (!result.data?.createEvent) {
           throw Error('Unable to create event.')
         }
-        toast('Event Created! Your event id is ' + result.data?.createEvent.id + '. You can go to the find event page to find it.')
+        toast('Event Created! Your event id is ' + result.data?.createEvent.id + '. Make sure to keep this event ID, it is important to access!')
         return result
       }).then(resetForm)
         .catch(err => {
@@ -74,37 +80,37 @@ export function EventCreateForm(props: EventCreateForm) {
         <label className="db fw4 lh-copy f6" htmlFor="eventName">
           Event Name*
         </label>
-        <Input $onChange={setName} value={name} name="eventName" type="eventName" required />
+        <Input $onChange={setName} value={name} name="eventName" type="text" required />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="orgName">
           Organization Name*
         </label>
-        <Input $onChange={setOrgName} value={orgName} name="orgName" type="orgName" required />
+        <Input $onChange={setOrgName} value={orgName} name="orgName" type="text" required />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="description">
           Description
         </label>
-        <Input $onChange={setDescription} value={description} name="description" type="description" />
+        <Input $onChange={setDescription} value={description} name="description" type="text" />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="capacity">
           Capacity*
         </label>
-        <Input $onChange={e => setCapacity(Number(e))} value={capacity || ''} name="capacity" type="capacity" required />
+        <Input $onChange={e => setCapacity(Number(e))} value={capacity || ''} name="capacity" type="number" min="1" required />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="startTime">
           Start Time*
         </label>
-        <Input $onChange={e => setStartTime(Number(e))} value={startTime || ''} name="startTime" type="startTime" required />
+        <Input $onChange={e => setStartTime(new Date(e))} value={startTime.toISOString().split('.')[0]} name="startTime" type="datetime-local" required />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="endTime">
           End Time*
         </label>
-        <Input $onChange={e => setEndTime(Number(e))} value={endTime || ''} name="endTime" type="endTime" required />
+        <Input $onChange={e => setEndTime(new Date(e))} value={endTime.toISOString().split('.')[0]} name="endTime" type="datetime-local" required />
       </div>
       <div className="mt3">
         <Button onClick={handleSubmit}>Create Event</Button>

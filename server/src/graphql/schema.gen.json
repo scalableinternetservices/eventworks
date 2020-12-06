@@ -1625,7 +1625,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Date",
                 "ofType": null
               }
             },
@@ -1639,7 +1639,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Date",
                 "ofType": null
               }
             },
@@ -1750,7 +1750,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Date",
                 "ofType": null
               }
             },
@@ -1766,7 +1766,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Int",
+                "name": "Date",
                 "ofType": null
               }
             },

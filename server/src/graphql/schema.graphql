@@ -62,8 +62,8 @@ input SwitchTableInput {
 
 #wrote manually
 input EventInput {
-  startTime: Int!
-  endTime: Int!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
   name: String!
   orgName: String!
@@ -74,8 +74,8 @@ input EventInput {
 #wrote manually, overlaps with input above
 type Event {
   id: Int!
-  startTime: Int!
-  endTime: Int!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
   name: String!
   orgName: String!

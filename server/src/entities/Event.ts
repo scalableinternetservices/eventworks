@@ -26,11 +26,11 @@ export class Event extends BaseEntity {
   @UpdateDateColumn()
   timeUpdated: Date
 
-  @Column()
-  startTime: number
+  @Column({ type: 'timestamp' })
+  startTime: Date
 
-  @Column()
-  endTime: number
+  @Column({ type: 'timestamp' })
+  endTime: Date
 
   @Column('int')
   userCapacity: number

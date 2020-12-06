@@ -32,8 +32,8 @@ export interface FetchAllEvent_events_eventTables {
 export interface FetchAllEvent_events {
   __typename: "Event";
   id: number;
-  endTime: number;
-  startTime: number;
+  endTime: any;
+  startTime: any;
   description: string;
   name: string;
   orgName: string;
@@ -78,8 +78,8 @@ export interface FetchEvent_event_eventTables {
 export interface FetchEvent_event {
   __typename: "Event";
   id: number;
-  endTime: number;
-  startTime: number;
+  endTime: any;
+  startTime: any;
   description: string;
   name: string;
   orgName: string;
@@ -160,8 +160,8 @@ export interface CreateEvent_createEvent_eventTables {
 export interface CreateEvent_createEvent {
   __typename: "Event";
   id: number;
-  startTime: number;
-  endTime: number;
+  startTime: any;
+  endTime: any;
   userCapacity: number;
   name: string;
   orgName: string;
@@ -728,8 +728,8 @@ export interface Event_eventTables {
 export interface Event {
   __typename: "Event";
   id: number;
-  startTime: number;
-  endTime: number;
+  startTime: any;
+  endTime: any;
   userCapacity: number;
   name: string;
   orgName: string;
@@ -895,8 +895,8 @@ export enum UserType {
 }
 
 export interface EventInput {
-  startTime: number;
-  endTime: number;
+  startTime: any;
+  endTime: any;
   userCapacity: number;
   name: string;
   orgName: string;
