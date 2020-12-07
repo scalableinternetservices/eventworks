@@ -45,7 +45,8 @@ export function Room ({ event, user }: RoomProps) {
   const leaveTableOnUnmount = () => {
     switchTable(getApolloClient(), {
       eventTableId: null, // leave event
-      participantId: user.user.id
+      participantId: user.user.id,
+      participantName: user.user.name
     })
   }
 
@@ -63,7 +64,8 @@ export function Room ({ event, user }: RoomProps) {
     console.log('bb')
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,
-      participantId: user.user.id
+      participantId: user.user.id,
+      participantName: user.user.name
     }).then(() => setUserTableId(mainEventTableId))
   }, [])
 

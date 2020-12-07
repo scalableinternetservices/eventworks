@@ -1,15 +1,14 @@
 import { ApolloClient, gql } from '@apollo/client'
 import { getApolloClient } from '../../graphql/apolloClient'
 import { SwitchTable, SwitchTableInput, SwitchTableVariables } from '../../graphql/query.gen'
-import { fragmentUser } from '../auth/fetchUser'
 
 export const switchTableMutation = gql`
   mutation SwitchTable($input: SwitchTableInput!) {
     switchTable(input: $input) {
-      ...User
+      id
+      name
     }
   }
-  ${fragmentUser}
 `
 
 export function switchTable(client: ApolloClient<any>, input: SwitchTableInput) {

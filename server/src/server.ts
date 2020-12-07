@@ -272,3 +272,9 @@ initORM()
     )
   )
   .catch(err => console.error(err))
+
+/*my_redis.keys("*").then((result : any) => {
+  result.map((key : any) => {
+    my_redis.del(key.toString())
+  })
+})*/

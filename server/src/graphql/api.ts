@@ -34,13 +34,10 @@ export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
     usersAtTable: async (_, { tableId }, { redis }) => {
-      const userRedis = ( await redis.lrange(tableId.toString(), 0, -1))
-      const userRedisObject = userRedis.map(x => JSON.parse(x));
+      const redisTableKey = tableId.toString() + "t";
 
-      /*const user = check(await User.find({
-        relations: ['table'],
-        where: { table: { id: tableId } }
-      }))*/
+      const userRedis = ( await redis.lrange(redisTableKey, 0, -1))
+      const userRedisObject = userRedis.map(x => JSON.parse(x));
 
       return userRedisObject;
   },
@@ -63,11 +60,14 @@ export const graphqlRoot: Resolvers<Context> = {
     tables: async(_, {}, ctx) => (await EventTable.find()),
     event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables'] })),
     table: async (_, { tableId }, {redis}) => {
-      const participantsRedis = await redis.lrange(tableId.toString(), 0, -1)
+      const redisTableKey = tableId.toString() + "t";
+
+      const participantsRedis = await redis.lrange(redisTableKey, 0, -1)
       const particpantsRedisObject = participantsRedis.map((x) => JSON.parse(x))
+
       return particpantsRedisObject;
     },
-    tableInfo: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
+    tableInfo: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
   },
   Mutation: {
     updateUser: async (_, { input }, ctx) => {
@@ -145,30 +145,35 @@ export const graphqlRoot: Resolvers<Context> = {
       return chat
     },
     switchTable: async (_, { input }, { redis }) => {
-      const user = check(await User.findOne({ where: { id: input.participantId }, relations: ['table'] }));
-      const oldTable = user.table
+      const redisTableKey = input.eventTableId?.toString() + "t";
+      const redisUserKey = input.participantId.toString() + "u";
+
+      const userTableRedis = check(await redis.mget(redisUserKey));
+      const oldTable = userTableRedis[0] ? JSON.parse(userTableRedis.toString()).tableId : null
 
       if (input.eventTableId) { // join or switch to a new table
-        const newTable = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
-        user.table = newTable;
-        await user.save();
-        await redis.rpush(input.eventTableId.toString(), JSON.stringify({id: user.id, name: user.name}));
+        await redis.rpush(redisTableKey, JSON.stringify({id: input.participantId, name: input.participantName}));
+        await redis.set(redisUserKey, JSON.stringify({tableId: input.eventTableId}));
 
-        const newTableUpdated = check(await EventTable.findOne({ where: { id : input.eventTableId }, relations: ['participants'] }));
-        pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdated)
+        const newTableUpdatedRedis = await redis.lrange(redisTableKey, 0, -1)
+        const newTableUpdatedObject = newTableUpdatedRedis.map(x => JSON.parse(x));
+
+        pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdatedObject);
       } else { // leave table
-        user.table = null
-        await user.save();
+        await redis.del(redisUserKey, JSON.stringify({tableId: input.eventTableId}));
       }
 
       if (oldTable) {
-        await redis.lrem(oldTable.id.toString(), -1, JSON.stringify({id: user.id, name: user.name}));
+        const oldTableKey = oldTable.toString() + "t";
+        await redis.lrem(oldTableKey, -1, JSON.stringify({id: input.participantId, name: input.participantName}));
 
-        const oldTableUpdated = check(await EventTable.findOne({ where: { id: oldTable.id }, relations: ['participants'] }))
-        pubsub.publish('TABLE_UPDATE' + oldTable.id, oldTableUpdated)
+        const oldTableUpdatedRedis = check( await redis.lrange(oldTableKey, 0, -1))
+        const oldTableUpdatedObject = oldTableUpdatedRedis.map(x => JSON.parse(x));
+
+        pubsub.publish('TABLE_UPDATE' + oldTable, oldTableUpdatedObject)
       }
 
-      return user;
+      return {id: input.participantId, name: input.participantName};
     }
   },
   Subscription: {

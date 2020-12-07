@@ -104,7 +104,7 @@ export interface FetchEventVariables {
 // ====================================================
 
 export interface FetchTable_table {
-  __typename: "TableParticipants";
+  __typename: "TableParticipant";
   id: number;
   name: string;
 }
@@ -233,7 +233,7 @@ export interface FetchUserContext {
 // ====================================================
 
 export interface FetchUsersAtTable_usersAtTable {
-  __typename: "TableParticipants";
+  __typename: "TableParticipant";
   id: number;
   name: string;
 }
@@ -486,30 +486,14 @@ export interface FetchAllEventTables {
 // GraphQL subscription operation: EventTableSubscription
 // ====================================================
 
-export interface EventTableSubscription_tableUpdates_head {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
-export interface EventTableSubscription_tableUpdates_participants {
-  __typename: "User";
-  id: number;
-  name: string;
-}
-
 export interface EventTableSubscription_tableUpdates {
-  __typename: "EventTable";
+  __typename: "TableParticipant";
   id: number;
   name: string;
-  description: string;
-  userCapacity: number;
-  head: EventTableSubscription_tableUpdates_head;
-  participants: EventTableSubscription_tableUpdates_participants[] | null;
 }
 
 export interface EventTableSubscription {
-  tableUpdates: EventTableSubscription_tableUpdates | null;
+  tableUpdates: EventTableSubscription_tableUpdates[];
 }
 
 export interface EventTableSubscriptionVariables {
@@ -564,21 +548,10 @@ export interface CreateTableVariables {
 // GraphQL mutation operation: SwitchTable
 // ====================================================
 
-export interface SwitchTable_switchTable_table {
-  __typename: "EventTable";
-  id: number;
-  name: string;
-}
-
 export interface SwitchTable_switchTable {
-  __typename: "User";
+  __typename: "TableParticipant";
   id: number;
-  userType: UserType;
-  email: string;
   name: string;
-  title: string | null;
-  linkedinLink: string | null;
-  table: SwitchTable_switchTable_table | null;
 }
 
 export interface SwitchTable {
@@ -977,6 +950,7 @@ export interface SurveyInput {
 export interface SwitchTableInput {
   eventTableId?: number | null;
   participantId: number;
+  participantName: string;
 }
 
 export interface UserInput {

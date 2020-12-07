@@ -17,7 +17,7 @@ schema {
 type Query {
   # Returns the logged-in user making the query, or null if anonymous.
   self: User
-  usersAtTable(tableId: Int!): [TableParticipants!]!
+  usersAtTable(tableId: Int!): [TableParticipant!]!
   user(userId: Int!): User!
   users: [User!]!
 
@@ -28,7 +28,7 @@ type Query {
   events: [Event!]!
   tables: [EventTable!]!
   event(eventId: Int!): Event!
-  table(tableId: Int!): [TableParticipants!]
+  table(tableId: Int!): [TableParticipant!]
   tableInfo(tableId: Int!): EventTable!
 }
 
@@ -47,13 +47,13 @@ type Mutation {
   updateUser(input: UserInput!): User!
 
   sendMessage(senderId: Int!, eventId: Int!, tableId: Int!, message: String!): ChatMessage!
-  switchTable(input: SwitchTableInput!): User! # move from one table to another "atomically". Setting to table id to null will leave table.
+  switchTable(input: SwitchTableInput!): TableParticipant! # move from one table to another "atomically". Setting to table id to null will leave table.
 }
 
 type Subscription {
   surveyUpdates(surveyId: Int!): Survey
   chatUpdates(eventId: Int!, tableId: Int!): ChatMessage
-  tableUpdates(eventTableId: Int!): EventTable
+  tableUpdates(eventTableId: Int!): [TableParticipant!]!
 }
 
 scalar Date
@@ -61,6 +61,12 @@ scalar Date
 input SwitchTableInput {
   eventTableId: Int
   participantId: Int!
+  participantName: String!
+}
+
+type TableParticipant {
+  id: Int!
+  name: String!
 }
 
 #wrote manually
@@ -183,9 +189,4 @@ input EventTableInput {
   name: String!
   description: String!
   userCapacity: Int
-}
-
-type TableParticipants {
-  id: Int!
-  name: String!
 }

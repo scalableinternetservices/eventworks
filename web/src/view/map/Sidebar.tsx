@@ -60,7 +60,7 @@ export function Sidebar ({ event, user, userTableId }: SidebarProps) {
     if (sub.data?.tableUpdates) {
       refetch()
         .then(data => {
-          setUserList(data?.data.usersAtTable || [])
+          setUserList(data.data.usersAtTable || [])
         })
     }
   }, [sub.data])

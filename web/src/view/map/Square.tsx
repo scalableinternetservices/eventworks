@@ -73,13 +73,14 @@ export function Square ({
 
     switchTable(getApolloClient(), {
       eventTableId,
-      participantId: user.user.id
+      participantId: user.user.id,
+      participantName: user.user.name
     }).then(result => {
       const table = result.data?.switchTable
       if (!table) {
         throw Error('Error joining table!')
       }
-      toast(`Switched to ${table.name}!`)
+      toast(`Switched to Table ${eventTableId}!`)
       setUserTableId(eventTableId)
       refetchTableData()
     }).catch(handleError)

@@ -16,7 +16,7 @@ export interface Scalars {
 export interface Query {
   __typename?: 'Query'
   self?: Maybe<User>
-  usersAtTable: Array<TableParticipants>
+  usersAtTable: Array<TableParticipant>
   user: User
   users: Array<User>
   surveys: Array<Survey>
@@ -25,7 +25,7 @@ export interface Query {
   events: Array<Event>
   tables: Array<EventTable>
   event: Event
-  table?: Maybe<Array<TableParticipants>>
+  table?: Maybe<Array<TableParticipant>>
   tableInfo: EventTable
 }
 
@@ -66,7 +66,7 @@ export interface Mutation {
   createTable: EventTable
   updateUser: User
   sendMessage: ChatMessage
-  switchTable: User
+  switchTable: TableParticipant
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -104,7 +104,7 @@ export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
   chatUpdates?: Maybe<ChatMessage>
-  tableUpdates?: Maybe<EventTable>
+  tableUpdates: Array<TableParticipant>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -123,6 +123,13 @@ export interface SubscriptionTableUpdatesArgs {
 export interface SwitchTableInput {
   eventTableId?: Maybe<Scalars['Int']>
   participantId: Scalars['Int']
+  participantName: Scalars['String']
+}
+
+export interface TableParticipant {
+  __typename?: 'TableParticipant'
+  id: Scalars['Int']
+  name: Scalars['String']
 }
 
 export interface EventInput {
@@ -236,12 +243,6 @@ export interface EventTableInput {
   userCapacity?: Maybe<Scalars['Int']>
 }
 
-export interface TableParticipants {
-  __typename?: 'TableParticipants'
-  id: Scalars['Int']
-  name: Scalars['String']
-}
-
 export type ResolverTypeWrapper<T> = Promise<T> | T
 
 export type LegacyStitchingResolver<TResult, TParent, TContext, TArgs> = {
@@ -327,6 +328,7 @@ export type ResolversTypes = {
   Subscription: ResolverTypeWrapper<{}>
   Date: ResolverTypeWrapper<Scalars['Date']>
   SwitchTableInput: SwitchTableInput
+  TableParticipant: ResolverTypeWrapper<TableParticipant>
   EventInput: EventInput
   Event: ResolverTypeWrapper<Event>
   UserInput: UserInput
@@ -340,7 +342,6 @@ export type ResolversTypes = {
   ChatMessage: ResolverTypeWrapper<ChatMessage>
   EventTable: ResolverTypeWrapper<EventTable>
   EventTableInput: EventTableInput
-  TableParticipants: ResolverTypeWrapper<TableParticipants>
 }
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -353,6 +354,7 @@ export type ResolversParentTypes = {
   Subscription: {}
   Date: Scalars['Date']
   SwitchTableInput: SwitchTableInput
+  TableParticipant: TableParticipant
   EventInput: EventInput
   Event: Event
   UserInput: UserInput
@@ -364,7 +366,6 @@ export type ResolversParentTypes = {
   ChatMessage: ChatMessage
   EventTable: EventTable
   EventTableInput: EventTableInput
-  TableParticipants: TableParticipants
 }
 
 export type QueryResolvers<
@@ -373,7 +374,7 @@ export type QueryResolvers<
 > = {
   self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   usersAtTable?: Resolver<
-    Array<ResolversTypes['TableParticipants']>,
+    Array<ResolversTypes['TableParticipant']>,
     ParentType,
     ContextType,
     RequireFields<QueryUsersAtTableArgs, 'tableId'>
@@ -397,7 +398,7 @@ export type QueryResolvers<
   tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
   table?: Resolver<
-    Maybe<Array<ResolversTypes['TableParticipants']>>,
+    Maybe<Array<ResolversTypes['TableParticipant']>>,
     ParentType,
     ContextType,
     RequireFields<QueryTableArgs, 'tableId'>
@@ -446,7 +447,7 @@ export type MutationResolvers<
     RequireFields<MutationSendMessageArgs, 'senderId' | 'eventId' | 'tableId' | 'message'>
   >
   switchTable?: Resolver<
-    ResolversTypes['User'],
+    ResolversTypes['TableParticipant'],
     ParentType,
     ContextType,
     RequireFields<MutationSwitchTableArgs, 'input'>
@@ -472,7 +473,7 @@ export type SubscriptionResolvers<
     RequireFields<SubscriptionChatUpdatesArgs, 'eventId' | 'tableId'>
   >
   tableUpdates?: SubscriptionResolver<
-    Maybe<ResolversTypes['EventTable']>,
+    Array<ResolversTypes['TableParticipant']>,
     'tableUpdates',
     ParentType,
     ContextType,
@@ -482,6 +483,15 @@ export type SubscriptionResolvers<
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
   name: 'Date'
+}
+
+export type TableParticipantResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['TableParticipant'] = ResolversParentTypes['TableParticipant']
+> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
+  __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
 export type EventResolvers<
@@ -574,20 +584,12 @@ export type EventTableResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
-export type TableParticipantsResolvers<
-  ContextType = any,
-  ParentType extends ResolversParentTypes['TableParticipants'] = ResolversParentTypes['TableParticipants']
-> = {
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
-  __isTypeOf?: IsTypeOfResolverFn<ParentType>
-}
-
 export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>
   Mutation?: MutationResolvers<ContextType>
   Subscription?: SubscriptionResolvers<ContextType>
   Date?: GraphQLScalarType
+  TableParticipant?: TableParticipantResolvers<ContextType>
   Event?: EventResolvers<ContextType>
   User?: UserResolvers<ContextType>
   Survey?: SurveyResolvers<ContextType>
@@ -595,7 +597,6 @@ export type Resolvers<ContextType = any> = {
   SurveyAnswer?: SurveyAnswerResolvers<ContextType>
   ChatMessage?: ChatMessageResolvers<ContextType>
   EventTable?: EventTableResolvers<ContextType>
-  TableParticipants?: TableParticipantsResolvers<ContextType>
 }
 
 /**

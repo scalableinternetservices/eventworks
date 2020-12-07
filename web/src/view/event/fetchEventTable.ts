@@ -1,5 +1,4 @@
 import { gql } from '@apollo/client';
-import { fragmentEventTable } from '../../graphql/fetchEvent';
 
 export const fetchAllEventTables = gql`
   query FetchAllEventTables {
@@ -23,8 +22,8 @@ export const fetchAllEventTables = gql`
 export const subscribeEventTable = gql`
   subscription EventTableSubscription($eventTableId: Int!) {
     tableUpdates(eventTableId: $eventTableId) {
-      ...EventTable
+      id
+      name
     }
   }
-  ${fragmentEventTable}
 `
