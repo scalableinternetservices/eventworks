@@ -41,8 +41,6 @@ export function MapPage({ user, eventId }: MapPageProps) {
     variables: { eventId, userId: user.user.id }
   })
 
-  console.log(data)
-
   if (!data?.event) {
     return (
       <Page>
