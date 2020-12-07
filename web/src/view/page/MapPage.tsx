@@ -38,8 +38,10 @@ interface MapPageProps {
 
 export function MapPage({ user, eventId }: MapPageProps) {
   const { data } = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
-    variables: { eventId }
+    variables: { eventId, userId: user.user.id }
   })
+
+  console.log(data)
 
   if (!data?.event) {
     return (
@@ -51,7 +53,7 @@ export function MapPage({ user, eventId }: MapPageProps) {
 
   const startTime = new Date(data.event.startTime)
 
-  if (startTime > new Date()) {
+  if (!data.event.host && startTime > new Date()) {
     return (
       <Page>
         <H2>{data.event.name} by {data.event.orgName} will begin at {startTime.toLocaleString()}.</H2>

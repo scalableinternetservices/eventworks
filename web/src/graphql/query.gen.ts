@@ -53,6 +53,11 @@ export interface FetchAllEvent {
 // GraphQL query operation: FetchEvent
 // ====================================================
 
+export interface FetchEvent_event_host {
+  __typename: "User";
+  id: number;
+}
+
 export interface FetchEvent_event_eventTables_head {
   __typename: "User";
   id: number;
@@ -83,6 +88,7 @@ export interface FetchEvent_event {
   description: string;
   name: string;
   orgName: string;
+  host: FetchEvent_event_host | null;
   eventTables: FetchEvent_event_eventTables[] | null;
 }
 
@@ -92,6 +98,7 @@ export interface FetchEvent {
 
 export interface FetchEventVariables {
   eventId: number;
+  userId: number;
 }
 
 /* tslint:disable */

@@ -56,7 +56,13 @@ export const graphqlRoot: Resolvers<Context> = {
       take: DEFAULT_TAKE_AMOUNT
     }).then(messages => messages.reverse()),
     events: async (_, {}, ctx) => (await Event.find({ relations: ['eventTables'] })),
-    event: async (_, { eventId }, ctx) => check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables'] })),
+    event: async (_, { eventId, userId }, ctx) => {
+      const event = check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables', 'host'] }))
+      if (userId !== event.host.id) {
+        return { ...event, host: null }
+      }
+      return event
+    },
     table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
   },
   Mutation: {
@@ -71,12 +77,14 @@ export const graphqlRoot: Resolvers<Context> = {
     },
     createEvent: async (_, { input }, ctx) => {
       const newEvent = new Event()
+      const host = check(await User.findOne({ where: { id: input.hostId } }))
       newEvent.userCapacity = input.userCapacity
       newEvent.description = input.description
       newEvent.startTime = input.startTime
       newEvent.endTime = input.endTime
       newEvent.orgName = input.orgName
       newEvent.name = input.name
+      newEvent.host = host
 
       await newEvent.save()
 
@@ -85,7 +93,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newTable.description = `${input.name} Main Room`
       newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
       newTable.name = `${input.name} Main Room`
-      newTable.head = check(await User.findOne({ where: { id: input.hostId } }))
+      newTable.head = host
       newTable.event = check(await Event.findOne({ where: { id: newEvent.id } }))
       await newTable.save()
 

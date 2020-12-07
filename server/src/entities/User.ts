@@ -1,6 +1,7 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { User as GraphqlUser, UserType } from '../graphql/schema.types'
 import { ChatMessage } from './ChatMessage'
+import { Event } from './Event'
 import { EventTable } from './EventTable'
 import { EventUserConfig } from './EventUserConfig'
 
@@ -45,6 +46,9 @@ export class User extends BaseEntity implements GraphqlUser {
     nullable: true
   })
   photoLink: string
+
+  @OneToMany(() => Event, event => event.host)
+  hostedEvents: Event[]
 
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.user)
   eventUserConfigs: EventUserConfig[]

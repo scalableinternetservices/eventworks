@@ -1,7 +1,8 @@
-import { BaseEntity, Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { ChatMessage } from './ChatMessage'
 import { EventTable } from './EventTable'
 import { EventUserConfig } from './EventUserConfig'
+import { User } from './User'
 
 @Entity()
 export class Event extends BaseEntity {
@@ -38,6 +39,9 @@ export class Event extends BaseEntity {
   // deal with this later
   @Column({ default: false })
   isRecurring: boolean
+
+  @ManyToOne(() => User, user => user.hostedEvents)
+  host: User
 
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.event)
   eventUserConfigs: EventUserConfig[]

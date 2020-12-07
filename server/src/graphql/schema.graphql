@@ -25,7 +25,7 @@ type Query {
   survey(surveyId: Int!): Survey
   chatMessages(eventId: Int!, tableId: Int!, offset: Int! = 0): [ChatMessage!]!
   events: [Event!]!
-  event(eventId: Int!): Event!
+  event(eventId: Int!, userId: Int!): Event!
   table(tableId: Int!): EventTable!
 }
 
@@ -81,6 +81,7 @@ type Event {
   orgName: String!
   description: String!
   eventTables: [EventTable!]
+  host: User
 }
 input UserInput {
   email: String!
