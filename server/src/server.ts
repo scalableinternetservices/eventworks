@@ -280,4 +280,4 @@ initORM()
   })
 })*/
 
-initBackgroundProcesses()
+initBackgroundProcesses({redis: my_redis})

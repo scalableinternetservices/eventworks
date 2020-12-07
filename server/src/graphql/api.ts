@@ -81,7 +81,10 @@ export const graphqlRoot: Resolvers<Context> = {
     tableInfo: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
   },
   Mutation: {
-    ping: (_, { userId }, ctx) => {
+    ping: async (_, { userId }, { redis }) => {
+      const timeStampKey = userId + "time"
+      await redis.set(timeStampKey, new Date().getTime())
+
       console.log('ping', userId)
       return "ok"
     },
@@ -181,7 +184,7 @@ export const graphqlRoot: Resolvers<Context> = {
 
         pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdatedObject);
       } else { // leave table
-        await redis.del(redisUserKey, JSON.stringify({tableId: input.eventTableId}));
+        await redis.del(redisUserKey);
       }
 
       if (oldTable) {

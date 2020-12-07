@@ -41,6 +41,7 @@
     "@types/react-sidebar": "^3.0.0",
     "graphql": "^15.3.0",
     "honeycomb-beeline": "^2.5.0",
+    "k6": "0.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-infinite-scroll-component": "^5.1.0",

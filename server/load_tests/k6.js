@@ -6,8 +6,8 @@ export const options = {
   scenarios: {
     example_scenario: {
       executor: 'constant-vus',
-      vus: 10,
-      duration: '5s',
+      vus: 100,
+      duration: '240s',
     },
   },
 }
