@@ -9,7 +9,6 @@ import { LoggedInUserCtx, UserContext } from '../auth/user';
 import { Room } from '../map/Room';
 import { AppRouteParams, Route } from '../nav/route';
 import { Page } from './Page';
-import { SearchEventsPage } from './SearchEventPage';
 
 interface EventMapPageProps extends RouteComponentProps, AppRouteParams {}
 
@@ -26,7 +25,7 @@ export function EventMapPage(props: EventMapPageProps) {
 
   return (
     <Page>
-      {eventId > 0 ? <MapPage eventId={eventId} user={user as LoggedInUserCtx} /> : <SearchEventsPage />}
+      <MapPage eventId={eventId} user={user as LoggedInUserCtx} />
     </Page>
   )
 }
