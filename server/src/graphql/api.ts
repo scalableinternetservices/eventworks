@@ -66,6 +66,10 @@ export const graphqlRoot: Resolvers<Context> = {
     table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
   },
   Mutation: {
+    ping: (_, { userId }, ctx) => {
+      console.log('ping', userId)
+      return "ok"
+    },
     updateUser: async (_, { input }, ctx) => {
       const newUser = new User()
       newUser.title = input.title || ''

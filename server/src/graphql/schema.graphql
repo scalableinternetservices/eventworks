@@ -30,6 +30,7 @@ type Query {
 }
 
 type Mutation {
+  ping(userId: Int!): String
   # Records an answer to a survey question presented in class.
   answerSurvey(input: SurveyInput!): Boolean!
 

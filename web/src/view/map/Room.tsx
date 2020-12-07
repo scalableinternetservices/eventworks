@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { isClientSideRendered } from '../../../../common/src/context';
 import { getApolloClient } from '../../graphql/apolloClient';
+import { ping } from '../../graphql/mutateEvent';
 import { FetchEvent } from '../../graphql/query.gen';
 import { LoggedInUserCtx } from '../auth/user';
 import { switchTable } from '../event/mutateSwitchTable';
@@ -39,6 +40,8 @@ interface RoomProps {
   user: LoggedInUserCtx
 }
 
+const PING_FREQUENCY_MS = 60000
+
 export function Room ({ event, user }: RoomProps) {
   const tables = event.event.eventTables
 
@@ -67,6 +70,12 @@ export function Room ({ event, user }: RoomProps) {
     return leaveTableOnUnmount
   }, [])
 
+  React.useEffect(() => {
+    const pingInterval = setInterval(() => ping(user.user.id), PING_FREQUENCY_MS)
+    return () => clearInterval(pingInterval)
+  }, [])
+
+  // initial load of the event always causes switch back to main room
   React.useEffect(() => {
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,

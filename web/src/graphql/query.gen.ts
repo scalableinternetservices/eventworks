@@ -146,6 +146,23 @@ export interface FetchTableVariables {
 // This file was automatically generated and should not be edited.
 
 // ====================================================
+// GraphQL mutation operation: Ping
+// ====================================================
+
+export interface Ping {
+  ping: string | null;
+}
+
+export interface PingVariables {
+  userId: number;
+}
+
+/* tslint:disable */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
+// ====================================================
 // GraphQL mutation operation: CreateEvent
 // ====================================================
 
