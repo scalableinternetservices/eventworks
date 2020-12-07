@@ -37,9 +37,17 @@ interface MapPageProps {
 }
 
 export function MapPage({ user, eventId }: MapPageProps) {
-  const { data } = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
+  const { data, loading } = useQuery<FetchEvent, FetchEventVariables>(fetchEvent, {
     variables: { eventId, userId: user.user.id }
   })
+
+  if (loading) {
+    return (
+      <Page>
+        <H2>Loading event...</H2>
+      </Page>
+    )
+  }
 
   if (!data?.event) {
     return (

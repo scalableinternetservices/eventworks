@@ -1,7 +1,10 @@
 import { RouteComponentProps } from '@reach/router'
 import * as React from 'react'
+import { H2 } from '../../style/header'
+import { style } from '../../style/styled'
 import { Login } from '../auth/Login'
 import { Signup } from '../auth/SignUp'
+import { UserContext } from '../auth/user'
 import { AccountApp, AppRouteParams } from '../nav/route'
 import { Page } from './Page'
 import { Profile } from './ProfilePage'
@@ -13,8 +16,22 @@ export function LoginPage(props: LoginPageProps) {
 }
 
 function getLoginApp(form?: AccountApp) {
+  const user = React.useContext(UserContext)
   if (!form) {
-    return <div>choose an app</div>
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30 }}>
+        <div style={{ marginRight: 60 }}>
+          <H2>Account</H2>
+          <Login />
+        </div>
+        {!user.user ? (
+          <CenterLine>
+            <H2>Sign Up</H2>
+            <Signup />
+          </CenterLine>
+        ) : null}
+      </div>
+    )
   }
   switch (form) {
     case AccountApp.PROFILE:
@@ -27,3 +44,5 @@ function getLoginApp(form?: AccountApp) {
       throw new Error('no app found')
   }
 }
+
+const CenterLine = style('div', 'pl5 bl b--silver')
