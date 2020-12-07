@@ -24,7 +24,8 @@ const tablesStyle = {
   alignItems: "center",
   maxWidth: "75vw",
   flexWrap: "wrap",
-  overflow: "auto"
+  overflow: "auto",
+  flexGrow: 1
 } as React.CSSProperties
 
 const arrangementStyle = {

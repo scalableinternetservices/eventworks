@@ -56,14 +56,17 @@ export const fetchAllEvent = gql`
 `
 
 export const fetchEvent = gql`
-  query FetchEvent($eventId: Int!) {
-    event(eventId: $eventId) {
+  query FetchEvent($eventId: Int!, $userId: Int!) {
+    event(eventId: $eventId, userId: $userId) {
       id
       endTime
       startTime
       description
       name
       orgName
+      host {
+        id
+      }
       eventTables {
         ...EventTable
       }

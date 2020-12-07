@@ -25,7 +25,7 @@ type Query {
   survey(surveyId: Int!): Survey
   chatMessages(eventId: Int!, tableId: Int!, offset: Int! = 0): [ChatMessage!]!
   events: [Event!]!
-  event(eventId: Int!): Event!
+  event(eventId: Int!, userId: Int!): Event!
   table(tableId: Int!): EventTable!
 }
 
@@ -62,8 +62,8 @@ input SwitchTableInput {
 
 #wrote manually
 input EventInput {
-  startTime: Int!
-  endTime: Int!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
   name: String!
   orgName: String!
@@ -74,13 +74,14 @@ input EventInput {
 #wrote manually, overlaps with input above
 type Event {
   id: Int!
-  startTime: Int!
-  endTime: Int!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
   name: String!
   orgName: String!
   description: String!
   eventTables: [EventTable!]
+  host: User
 }
 input UserInput {
   email: String!

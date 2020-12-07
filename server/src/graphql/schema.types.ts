@@ -47,6 +47,7 @@ export interface QueryChatMessagesArgs {
 
 export interface QueryEventArgs {
   eventId: Scalars['Int']
+  userId: Scalars['Int']
 }
 
 export interface QueryTableArgs {
@@ -121,8 +122,8 @@ export interface SwitchTableInput {
 }
 
 export interface EventInput {
-  startTime: Scalars['Int']
-  endTime: Scalars['Int']
+  startTime: Scalars['Date']
+  endTime: Scalars['Date']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
@@ -133,13 +134,14 @@ export interface EventInput {
 export interface Event {
   __typename?: 'Event'
   id: Scalars['Int']
-  startTime: Scalars['Int']
-  endTime: Scalars['Int']
+  startTime: Scalars['Date']
+  endTime: Scalars['Date']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
   eventTables?: Maybe<Array<EventTable>>
+  host?: Maybe<User>
 }
 
 export interface UserInput {
@@ -381,7 +383,12 @@ export type QueryResolvers<
     RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId' | 'offset'>
   >
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
-  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
+  event?: Resolver<
+    ResolversTypes['Event'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryEventArgs, 'eventId' | 'userId'>
+  >
   table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType, RequireFields<QueryTableArgs, 'tableId'>>
 }
 
@@ -464,13 +471,14 @@ export type EventResolvers<
   ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  startTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  endTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  startTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   eventTables?: Resolver<Maybe<Array<ResolversTypes['EventTable']>>, ParentType, ContextType>
+  host?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

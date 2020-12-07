@@ -26,7 +26,7 @@ export class EventTable extends BaseEntity {
   @ManyToOne(() => User, user => user.headOfTables, { nullable: false, eager: true })
   head: User
 
-  @ManyToOne(() => Event, evt => evt.eventTables)
+  @ManyToOne(() => Event, evt => evt.eventTables, { onDelete: 'CASCADE' })
   event: Event
 
   @OneToMany(() => User, user => user.table, { nullable: true })
