@@ -1,35 +1,46 @@
 import * as React from 'react';
 import { isClientSideRendered } from '../../../../common/src/context';
 import { getApolloClient } from '../../graphql/apolloClient';
+import { ping } from '../../graphql/mutateEvent';
 import { FetchEvent } from '../../graphql/query.gen';
 import { LoggedInUserCtx } from '../auth/user';
 import { switchTable } from '../event/mutateSwitchTable';
 import { Sidebar } from './Sidebar';
 import { Square } from './Square';
 
-const seatRow = {
-  width: "240px",
-  margin: "none"
-};
 const roomStyle = {
-  width: "50vw",
-  display: "flex",
-  flexWrap: "wrap",
-  justifyContent: "center",
+  width: "100vw",
+  height: "calc(100vh - 66px)",
+  justifyContent: "space-between",
   margin: "auto",
-  transform: "translateX(-10vw)"
+  position: "absolute",
+  top: 66,
+  left: 0,
+  display: "flex",
 } as React.CSSProperties;
+
+const tablesStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  maxWidth: "75vw",
+  flexWrap: "wrap",
+  overflow: "auto",
+  flexGrow: 1
+} as React.CSSProperties
 
 const arrangementStyle = {
   display: "inline-block",
   textAlign: "center",
-  margin: "10px 20px"
+  margin: "10px 20px",
 } as React.CSSProperties;
 
 interface RoomProps {
   event: FetchEvent
   user: LoggedInUserCtx
 }
+
+const PING_FREQUENCY_MS = 60000
 
 export function Room ({ event, user }: RoomProps) {
   const tables = event.event.eventTables
@@ -61,7 +72,12 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   React.useEffect(() => {
-    console.log('bb')
+    const pingInterval = setInterval(() => ping(user.user.id), PING_FREQUENCY_MS)
+    return () => clearInterval(pingInterval)
+  }, [])
+
+  // initial load of the event always causes switch back to main room
+  React.useEffect(() => {
     switchTable(getApolloClient(), {
       eventTableId: mainEventTableId,
       participantId: user.user.id,
@@ -70,27 +86,25 @@ export function Room ({ event, user }: RoomProps) {
   }, [])
 
   return (
-    <>
-      <div className="room" style={roomStyle}>
+    <div className="room" style={roomStyle}>
+      <div className="tables" style={tablesStyle}>
         {(sortedTables || []).map((table, i) =>
           i != 0 ? (
-            <div className="square-row" style={seatRow}>
-              <div className="square-group" style={arrangementStyle}>
-                <Square
-                  mainEventTableId={mainEventTableId}
-                  table={table}
-                  user={user}
-                  tableNumber={i}
-                  setUserTableId={(id: number) => setUserTableId(id)}
-                  userTableId={userTableId}
-                />
-                <label style={{ display: "block", fontWeight: 600 }}>{table.name}</label>
-              </div>
+            <div className="square-group" style={arrangementStyle}>
+              <Square
+                mainEventTableId={mainEventTableId}
+                table={table}
+                user={user}
+                tableNumber={i}
+                setUserTableId={(id: number) => setUserTableId(id)}
+                userTableId={userTableId}
+              />
+              <label style={{ display: "block", fontWeight: 600 }}>{table.name}</label>
             </div>
           ) : null
         )}
       </div>
       <Sidebar event={event} user={user} userTableId={userTableId} />
-    </>
+    </div>
   );
 }

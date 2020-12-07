@@ -24,9 +24,9 @@ export interface Query {
   chatMessages: Array<ChatMessage>
   events: Array<Event>
   tables: Array<EventTable>
-  event: Event
   table?: Maybe<Array<TableParticipant>>
   tableInfo: EventTable
+  event: Event
 }
 
 export interface QueryUsersAtTableArgs {
@@ -44,10 +44,7 @@ export interface QuerySurveyArgs {
 export interface QueryChatMessagesArgs {
   eventId: Scalars['Int']
   tableId: Scalars['Int']
-}
-
-export interface QueryEventArgs {
-  eventId: Scalars['Int']
+  offset?: Scalars['Int']
 }
 
 export interface QueryTableArgs {
@@ -58,15 +55,25 @@ export interface QueryTableInfoArgs {
   tableId: Scalars['Int']
 }
 
+export interface QueryEventArgs {
+  eventId: Scalars['Int']
+  userId: Scalars['Int']
+}
+
 export interface Mutation {
   __typename?: 'Mutation'
+  ping?: Maybe<Scalars['String']>
   answerSurvey: Scalars['Boolean']
   nextSurveyQuestion?: Maybe<Survey>
   createEvent: Event
-  createTable: EventTable
+  createTable?: Maybe<EventTable>
   updateUser: User
   sendMessage: ChatMessage
   switchTable: TableParticipant
+}
+
+export interface MutationPingArgs {
+  userId: Scalars['Int']
 }
 
 export interface MutationAnswerSurveyArgs {
@@ -133,8 +140,8 @@ export interface TableParticipant {
 }
 
 export interface EventInput {
-  startTime: Scalars['Int']
-  endTime: Scalars['Int']
+  startTime: Scalars['Date']
+  endTime: Scalars['Date']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
@@ -145,13 +152,14 @@ export interface EventInput {
 export interface Event {
   __typename?: 'Event'
   id: Scalars['Int']
-  startTime: Scalars['Int']
-  endTime: Scalars['Int']
+  startTime: Scalars['Date']
+  endTime: Scalars['Date']
   userCapacity: Scalars['Int']
   name: Scalars['String']
   orgName: Scalars['String']
   description: Scalars['String']
   eventTables?: Maybe<Array<EventTable>>
+  host?: Maybe<User>
 }
 
 export interface UserInput {
@@ -323,8 +331,8 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>
   Int: ResolverTypeWrapper<Scalars['Int']>
   Mutation: ResolverTypeWrapper<{}>
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>
   String: ResolverTypeWrapper<Scalars['String']>
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>
   Subscription: ResolverTypeWrapper<{}>
   Date: ResolverTypeWrapper<Scalars['Date']>
   SwitchTableInput: SwitchTableInput
@@ -349,8 +357,8 @@ export type ResolversParentTypes = {
   Query: {}
   Int: Scalars['Int']
   Mutation: {}
-  Boolean: Scalars['Boolean']
   String: Scalars['String']
+  Boolean: Scalars['Boolean']
   Subscription: {}
   Date: Scalars['Date']
   SwitchTableInput: SwitchTableInput
@@ -392,11 +400,10 @@ export type QueryResolvers<
     Array<ResolversTypes['ChatMessage']>,
     ParentType,
     ContextType,
-    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId'>
+    RequireFields<QueryChatMessagesArgs, 'eventId' | 'tableId' | 'offset'>
   >
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
   tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>
-  event?: Resolver<ResolversTypes['Event'], ParentType, ContextType, RequireFields<QueryEventArgs, 'eventId'>>
   table?: Resolver<
     Maybe<Array<ResolversTypes['TableParticipant']>>,
     ParentType,
@@ -409,12 +416,19 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryTableInfoArgs, 'tableId'>
   >
+  event?: Resolver<
+    ResolversTypes['Event'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryEventArgs, 'eventId' | 'userId'>
+  >
 }
 
 export type MutationResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']
 > = {
+  ping?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType, RequireFields<MutationPingArgs, 'userId'>>
   answerSurvey?: Resolver<
     ResolversTypes['Boolean'],
     ParentType,
@@ -434,7 +448,7 @@ export type MutationResolvers<
     RequireFields<MutationCreateEventArgs, 'input'>
   >
   createTable?: Resolver<
-    ResolversTypes['EventTable'],
+    Maybe<ResolversTypes['EventTable']>,
     ParentType,
     ContextType,
     RequireFields<MutationCreateTableArgs, 'input'>
@@ -499,13 +513,14 @@ export type EventResolvers<
   ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  startTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
-  endTime?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  startTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
+  endTime?: Resolver<ResolversTypes['Date'], ParentType, ContextType>
   userCapacity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   orgName?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   eventTables?: Resolver<Maybe<Array<ResolversTypes['EventTable']>>, ParentType, ContextType>
+  host?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

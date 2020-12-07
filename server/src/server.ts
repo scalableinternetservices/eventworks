@@ -17,6 +17,7 @@ import path from 'path'
 import 'reflect-metadata'
 import { v4 as uuidv4 } from 'uuid'
 import { checkEqual, Unpromise } from '../../common/src/util'
+import { initBackgroundProcesses } from './background'
 import { Config } from './config'
 import { migrate } from './db/migrate'
 import { initORM } from './db/sql'
@@ -278,3 +279,5 @@ initORM()
     my_redis.del(key.toString())
   })
 })*/
+
+initBackgroundProcesses()

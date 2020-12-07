@@ -9,7 +9,7 @@ import { style } from '../../style/styled'
 import { UserContext } from '../auth/user'
 import { addToastListener, removeToastListener, Toast, ToastType } from '../toast/toast'
 import { link } from './Link'
-import { getChatPath, getLoginPath, getLoginPathTwo, getPath, getProfilePath, getSignupPath, getSignupPathTwo, getSurveyPath, Route } from './route'
+import { getLoginPath, getPath, getProfilePath, getSignupPath, getSurveyPath, Route } from './route'
 
 const title = {
   name: 'EventWorks',
@@ -18,22 +18,6 @@ const title = {
 }
 
 const otherTabs = [
-  /*{
-    name: 'lectures',
-    path: getPath(Route.LECTURES),
-  },
-  {
-    name: 'projects',
-    path: getPath(Route.PROJECTS),
-  },
-  {
-    name: 'playground',
-    path: getPath(Route.PLAYGROUND),
-  },*/
-  {
-    name: 'find event',
-    path: getPath(Route.FIND_EVENT),
-  },
   {
     name: 'create event',
     path: getPath(Route.CREATE_FORM),
@@ -46,10 +30,6 @@ const otherTabs = [
     name: 'account',
     path: getPath(Route.LOGIN_SIGNUP),
   }
-  /*{
-    name: 'event',
-    path: getPath(Route.MAP),
-  },*/
 ]
 
 export function NavBar() {
@@ -135,10 +115,7 @@ function SubNav() {
   else if (location.pathname.startsWith(getPath(Route.LOGIN_SIGNUP))) {
     return (
       <Nav $isSubNav>
-        {user && <NavItem name="chat" path={getChatPath()} />}
         {user && <NavItem name="profile" path={getProfilePath()} />}
-        {!user && <NavItem name="signup" path={getSignupPathTwo()} />}
-        <NavItem name={user ? 'logout' : 'login'} path={getLoginPathTwo()} />
       </Nav>
     )
   }

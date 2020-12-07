@@ -9,7 +9,8 @@ const sitStyle = {
   height: 36,
   width: 36,
   margin: "10px 6px",
-  color: 'white'
+  color: 'white',
+  boxShadow: '0 0 5px rgba(0, 0, 0, 0.3)'
 }
 
 export function TakenSeat({ tableSeat, username }: { tableSeat: number, username: string }) {

@@ -24,15 +24,16 @@ type Query {
 
   surveys: [Survey!]!
   survey(surveyId: Int!): Survey
-  chatMessages(eventId: Int!, tableId: Int!): [ChatMessage!]!
+  chatMessages(eventId: Int!, tableId: Int!, offset: Int! = 0): [ChatMessage!]!
   events: [Event!]!
   tables: [EventTable!]!
-  event(eventId: Int!): Event!
   table(tableId: Int!): [TableParticipant!]
   tableInfo(tableId: Int!): EventTable!
+  event(eventId: Int!, userId: Int!): Event!
 }
 
 type Mutation {
+  ping(userId: Int!): String
   # Records an answer to a survey question presented in class.
   answerSurvey(input: SurveyInput!): Boolean!
 
@@ -41,7 +42,7 @@ type Mutation {
   #Creates Event from form
   createEvent(input: EventInput!): Event!
   # given an event id, creates new table linked to that event
-  createTable(input: EventTableInput!): EventTable!
+  createTable(input: EventTableInput!): EventTable
   #below is to update an event
   #updateEvent(id: ID!, input: EventInput!): Event!
   updateUser(input: UserInput!): User!
@@ -71,8 +72,8 @@ type TableParticipant {
 
 #wrote manually
 input EventInput {
-  startTime: Int!
-  endTime: Int!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
   name: String!
   orgName: String!
@@ -83,13 +84,14 @@ input EventInput {
 #wrote manually, overlaps with input above
 type Event {
   id: Int!
-  startTime: Int!
-  endTime: Int!
+  startTime: Date!
+  endTime: Date!
   userCapacity: Int!
   name: String!
   orgName: String!
   description: String!
   eventTables: [EventTable!]
+  host: User
 }
 input UserInput {
   email: String!

@@ -80,7 +80,7 @@ export function Square ({
       if (!table) {
         throw Error('Error joining table!')
       }
-      toast(`Switched to Table ${eventTableId}!`)
+      toast(`Switched tables!`)
       setUserTableId(eventTableId)
       refetchTableData()
     }).catch(handleError)

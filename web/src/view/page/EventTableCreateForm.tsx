@@ -26,21 +26,24 @@ export function EventTableCreateForm(props: EventTableCreateForm) {
       eventId,
       head,
       userCapacity: 8,
-      }).then(result => {
+    }).then(result => {
 
-        if  (!result.data?.createTable) {
-          throw Error('Unable to create table.')
-        }
-        toast('Table created for your event!')
+      if (!result.data) {
+        throw Error('Unable to create table.')
+      } else if (!result.data.createTable) {
+        throw Error('Table limit exceeded for event. Cannot create more tables.')
+      }
 
-        // make field empty
-        Array.from(document.querySelectorAll("input")).forEach(
-          input => (input.value = "")
-        );
-        return result
-      }).catch(err => {
-        handleError(err)
-      })
+      toast('Table created for your event!')
+
+      // make field empty
+      Array.from(document.querySelectorAll("input")).forEach(
+        input => (input.value = "")
+      );
+      return result
+    }).catch(err => {
+      handleError(err)
+    })
   }
 
   return (
