@@ -14,8 +14,8 @@ interface EventCreateForm extends RouteComponentProps, AppRouteParams {}
 
 export function EventCreateForm(props: EventCreateForm) {
   const user = React.useContext(UserContext)
-  const [startTime, setStartTime] = React.useState<Date>(new Date());
-  const [endTime, setEndTime] = React.useState<Date>(new Date());
+  const [startTime, setStartTime] = React.useState<string>('');
+  const [endTime, setEndTime] = React.useState<string>('');
   const [orgName, setOrgName] = React.useState("");
   const [capacity, setCapacity] = React.useState<number | null>(null);
   const [description, setDescription] = React.useState("");
@@ -28,8 +28,8 @@ export function EventCreateForm(props: EventCreateForm) {
   const userId = user.user.id // prevent TS from reading it as nullable in createEvent
 
   const resetForm = () => {
-    setStartTime(new Date())
-    setEndTime(new Date())
+    setStartTime('')
+    setEndTime('')
     setOrgName("")
     setCapacity(null)
     setDescription("")
@@ -39,18 +39,21 @@ export function EventCreateForm(props: EventCreateForm) {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-    if (!(startTime && endTime && orgName && capacity && name)) {
+    const startTimeDate = new Date(startTime)
+    const endTimeDate = new Date(endTime)
+
+    if (!(startTimeDate && endTimeDate && orgName && capacity && name)) {
       toast("Cannot create: Form input must be valid. All mandatory fields must be filled with positive/valid values.")
       return
     }
     console.log(startTime, new Date())
 
-    if (startTime < new Date()) {
+    if (endTimeDate < new Date()) {
       toast("Cannot create: Start time is before current time.")
       return
     }
 
-    if (startTime >= endTime) {
+    if (startTimeDate >= endTimeDate) {
       toast("Cannot create: End time must come before start time.")
       return
     }
@@ -59,8 +62,8 @@ export function EventCreateForm(props: EventCreateForm) {
       name,
       description,
       orgName,
-      startTime: startTime.getTime(),
-      endTime: endTime.getTime(),
+      startTime: startTimeDate.getTime(),
+      endTime: endTimeDate.getTime(),
       userCapacity: capacity,
       hostId: userId
       }).then(result => {
@@ -103,13 +106,13 @@ export function EventCreateForm(props: EventCreateForm) {
         <label className="db fw4 lh-copy f6" htmlFor="startTime">
           Start Time*
         </label>
-        <Input $onChange={e => setStartTime(new Date(e))} value={startTime.toISOString().split('.')[0]} name="startTime" type="datetime-local" required />
+        <Input $onChange={e => setStartTime(e)} value={startTime} name="startTime" type="datetime-local" required />
       </div>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="endTime">
           End Time*
         </label>
-        <Input $onChange={e => setEndTime(new Date(e))} value={endTime.toISOString().split('.')[0]} name="endTime" type="datetime-local" required />
+        <Input $onChange={e => setEndTime(e)} value={endTime} name="endTime" type="datetime-local" required />
       </div>
       <div className="mt3">
         <Button onClick={handleSubmit}>Create Event</Button>
