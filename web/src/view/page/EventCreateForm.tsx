@@ -69,9 +69,7 @@ export function EventCreateForm(props: EventCreateForm) {
         toast('Event Created! Your event id is ' + result.data?.createEvent.id + '. Make sure to keep this event ID, it is important to access!')
         return result
       }).then(resetForm)
-        .catch(err => {
-        handleError(err)
-      })
+        .catch(handleError)
   }
 
   return (
