@@ -19,9 +19,9 @@ export class ChatMessage extends BaseEntity {
   @UpdateDateColumn()
   timeSent: Date
 
-  @ManyToOne(() => Event, event => event.chatMessages)
+  @ManyToOne(() => Event, event => event.chatMessages, { onDelete: 'CASCADE' })
   event: Event
 
-  @ManyToOne(() => EventTable, tbl => tbl.chatMessages)
+  @ManyToOne(() => EventTable, tbl => tbl.chatMessages, { onDelete: 'CASCADE' })
   table: EventTable
 }
