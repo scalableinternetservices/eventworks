@@ -98,7 +98,11 @@ export const graphqlRoot: Resolvers<Context> = {
     createTable: async (_, { input }, ctx) => {
       const numExistingTables = check(await EventTable.count({ where: { event: input.eventId } }))
       if (numExistingTables >= TABLE_LIMIT_PER_EVENT) {
-        return null
+        throw Error(`You've reached the maximum limit of ${TABLE_LIMIT_PER_EVENT} tables for your event.`)
+      }
+      const event = check(await Event.findOne({ where: { id: input.eventId } }))
+      if (event.hostId !== input.senderId) {
+        throw Error('Permission denied: Cannot create table because user is not the owner of this event.')
       }
       const newTable = new EventTable()
       newTable.chatMessages = []
@@ -106,7 +110,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
       newTable.name = input.name
       newTable.head = check(await User.findOne({ where: { id: input.head } }))
-      newTable.event = check(await Event.findOne({ where: { id: input.eventId } }))
+      newTable.event = event
       await newTable.save()
       return newTable
     },
