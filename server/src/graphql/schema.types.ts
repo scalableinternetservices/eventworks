@@ -241,6 +241,7 @@ export interface EventTableInput {
   name: Scalars['String']
   description: Scalars['String']
   userCapacity?: Maybe<Scalars['Int']>
+  senderId: Scalars['Int']
 }
 
 export type ResolverTypeWrapper<T> = Promise<T> | T

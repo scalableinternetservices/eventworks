@@ -187,4 +187,5 @@ input EventTableInput {
   name: String!
   description: String!
   userCapacity: Int
+  senderId: Int!
 }
