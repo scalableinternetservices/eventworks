@@ -83,6 +83,7 @@ type Event {
   description: String!
   eventTables: [EventTable!]
   host: User
+  hostId: Int!
 }
 input UserInput {
   email: String!
@@ -98,6 +99,7 @@ type User {
   title: String
   linkedinLink: String
   table: EventTable
+  tableId: Int
 }
 
 enum UserType {
@@ -161,13 +163,16 @@ input SurveyInput {
 type ChatMessage {
   id: Int!
   user: User!
+  userId: Int!
   message: String!
   event: Event!
   table: EventTable!
+  tableId: Int!
 }
 
 type EventTable {
   id: Int!
+  headId: Int!
   head: User!
   name: String!
   description: String!

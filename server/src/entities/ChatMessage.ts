@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, ManyToOne, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from 'typeorm'
 import { Event } from './Event'
 import { EventTable } from './EventTable'
 import { User } from './User'
@@ -8,8 +8,11 @@ export class ChatMessage extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(() => User, user => user.chatMessages, { eager: true })
+  @ManyToOne(() => User, user => user.chatMessages)
   user: User
+
+  @RelationId((msg: ChatMessage) => msg.user)
+  userId: number
 
   @Column({
     length: 500
@@ -24,4 +27,7 @@ export class ChatMessage extends BaseEntity {
 
   @ManyToOne(() => EventTable, tbl => tbl.chatMessages, { onDelete: 'CASCADE' })
   table: EventTable
+
+  @RelationId((msg: ChatMessage) => msg.table)
+  tableId: number
 }

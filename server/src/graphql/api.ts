@@ -33,17 +33,9 @@ const TABLE_LIMIT_PER_EVENT = 16 // 15 + main room
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
-    usersAtTable: async (_, { tableId }, ctx) => check(await User.find({
-      relations: ['table'],
-      where: { table: { id: tableId } }
-    })),
-    user: async (_, {userId}, ctx) => check (await User.findOne({
-      relations: ['table'],
-      where: { id : userId }
-    })),
-    users: async (_, args, ctx) => check(await User.find({
-      relations: ['table']
-    })),
+    usersAtTable: async (_, { tableId }, ctx) => check(await User.find({ where: { table: { id: tableId } } })),
+    user: async (_, {userId}, ctx) => check (await User.findOne({ where: { id : userId } })),
+    users: async (_, args, ctx) => check(await User.find()),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     chatMessages: async (root, { eventId, tableId, offset }, context) => await ChatMessage.find({
@@ -55,15 +47,15 @@ export const graphqlRoot: Resolvers<Context> = {
       skip: offset,
       take: DEFAULT_TAKE_AMOUNT
     }).then(messages => messages.reverse()),
-    events: async (_, {}, ctx) => (await Event.find({ relations: ['eventTables'] })),
+    events: async (_, {}, ctx) => (await Event.find()),
     event: async (_, { eventId, userId }, ctx) => {
-      const event = check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables', 'host'] }))
+      const event = check(await Event.findOne({ where: { id: eventId }, relations: ['host'] }))
       if (userId !== event.host.id) {
         return { ...event, host: null }
       }
       return event
     },
-    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId }, relations: ['participants'] }))
+    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
   },
   Mutation: {
     ping: (_, { userId }, ctx) => {
@@ -188,6 +180,21 @@ export const graphqlRoot: Resolvers<Context> = {
       },
       resolve: (payload: any) => payload,
     }
+  },
+  EventTable: {
+    participants: async (parent, args, ctx, info) => (await check(User.find({ where: { table: parent } }))),
+    head: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.headId } })))!,
+    chatMessages: async (parent, args, ctx, info) => (await check(ChatMessage.find({ where: { table: parent } })))
+  },
+  User: {
+    table: async (parent, args, ctx, info) => (await check(EventTable.findOne({ where: { id: parent.tableId } }))) || null
+  },
+  Event: {
+    eventTables: async (parent, args, ctx, info) => (await check(EventTable.find({ where: { event: parent } }))),
+    host: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.hostId } })))!
+  },
+  ChatMessage: {
+    user: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.userId } })))!
   },
   Date: new GraphQLScalarType({
     name: 'Date',
