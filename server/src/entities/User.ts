@@ -1,4 +1,4 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from 'typeorm'
 import { User as GraphqlUser, UserType } from '../graphql/schema.types'
 import { ChatMessage } from './ChatMessage'
 import { Event } from './Event'
@@ -61,4 +61,7 @@ export class User extends BaseEntity implements GraphqlUser {
 
   @ManyToOne(() => EventTable, tbl => tbl.participants, { nullable: true })
   table: EventTable | null
+
+  @RelationId((user: User) => user.table)
+  tableId: number | null
 }

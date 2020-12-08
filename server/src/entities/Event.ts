@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from 'typeorm'
 import { ChatMessage } from './ChatMessage'
 import { EventTable } from './EventTable'
 import { EventUserConfig } from './EventUserConfig'
@@ -42,6 +42,9 @@ export class Event extends BaseEntity {
 
   @ManyToOne(() => User, user => user.hostedEvents)
   host: User
+
+  @RelationId((event: Event) => event.host)
+  hostId: number
 
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.event)
   eventUserConfigs: EventUserConfig[]

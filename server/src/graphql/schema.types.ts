@@ -147,6 +147,7 @@ export interface Event {
   description: Scalars['String']
   eventTables?: Maybe<Array<EventTable>>
   host?: Maybe<User>
+  hostId: Scalars['Int']
 }
 
 export interface UserInput {
@@ -165,6 +166,7 @@ export interface User {
   title?: Maybe<Scalars['String']>
   linkedinLink?: Maybe<Scalars['String']>
   table?: Maybe<EventTable>
+  tableId?: Maybe<Scalars['Int']>
 }
 
 export enum UserType {
@@ -214,14 +216,17 @@ export interface ChatMessage {
   __typename?: 'ChatMessage'
   id: Scalars['Int']
   user: User
+  userId: Scalars['Int']
   message: Scalars['String']
   event: Event
   table: EventTable
+  tableId: Scalars['Int']
 }
 
 export interface EventTable {
   __typename?: 'EventTable'
   id: Scalars['Int']
+  headId: Scalars['Int']
   head: User
   name: Scalars['String']
   description: Scalars['String']
@@ -485,6 +490,7 @@ export type EventResolvers<
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   eventTables?: Resolver<Maybe<Array<ResolversTypes['EventTable']>>, ParentType, ContextType>
   host?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
+  hostId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -499,6 +505,7 @@ export type UserResolvers<
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   table?: Resolver<Maybe<ResolversTypes['EventTable']>, ParentType, ContextType>
+  tableId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -543,9 +550,11 @@ export type ChatMessageResolvers<
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType>
+  userId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   event?: Resolver<ResolversTypes['Event'], ParentType, ContextType>
   table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType>
+  tableId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 
@@ -554,6 +563,7 @@ export type EventTableResolvers<
   ParentType extends ResolversParentTypes['EventTable'] = ResolversParentTypes['EventTable']
 > = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
+  headId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>
   head?: Resolver<ResolversTypes['User'], ParentType, ContextType>
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>
