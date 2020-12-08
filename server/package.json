@@ -6,6 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "apollo-link-schema": "^1.2.5",
     "aws-sdk": "^2.751.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
