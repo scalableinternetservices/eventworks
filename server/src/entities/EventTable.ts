@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from 'typeorm'
+import { BaseEntity, Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from 'typeorm'
 import { ChatMessage } from './ChatMessage'
 import { Event } from './Event'
 import { User } from './User'
@@ -29,6 +29,7 @@ export class EventTable extends BaseEntity {
   @RelationId((table: EventTable) => table.head)
   headId: number
 
+  @Index()
   @ManyToOne(() => Event, evt => evt.eventTables, { onDelete: 'CASCADE' })
   event: Event
 
