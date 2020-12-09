@@ -34,7 +34,7 @@ export function UserEvents({event}: eventProps) {
           <H4 style={{marginLeft: 10, marginTop: 5,color: "#fff"}}><span style={{fontWeight: "bold"}}>Capacity</span>: {event.userCapacity} <span style={{fontWeight: "bold", marginLeft: 20}}>Start Time</span>: {new Date(event.startTime).toLocaleDateString()} {new Date(event.startTime).toLocaleTimeString()} <span style={{marginLeft: 20, fontWeight: "bold"}}>End Time</span>: {new Date(event.endTime).toLocaleDateString()} {new Date(event.endTime).toLocaleTimeString()}</H4>
         </span>
         <H3 style={hover ? {display: "block", color: "#fff", marginLeft: 10, marginTop: 30} : {display: "none"}}>
-          Your event link is <span style={{color:"#FFD100"}}>http://localhost:3000/app/account?eventID={event.id}</span>
+          Your event link is <span style={{color:"#FFD100"}}>http://localhost:3000/app/findevent?eventID={event.id}</span>
         </H3>
       </div>
     </>
