@@ -75,9 +75,8 @@ check(resp2, { 'created lobby2': (r) => r.status == 200 });
 let switchTable = `
   mutation SwitchTable{
     switchTable(input: {eventTableId:1, participantId:1, participantName:"John Rothfels"}){
-      table{
-        id
-      }
+      id
+      name
     }
   }
 `
@@ -301,9 +300,8 @@ check(chatCreationResponse4, { 'Mutated Chat4': (r) => r.status == 200 });
 let leaveTable = `
   mutation SwitchTable{
     switchTable(input: {eventTableId:null, participantId:1, participantName:"John Rothfels"}){
-      table{
-        id
-      }
+      id
+      name
     }
   }
 `
