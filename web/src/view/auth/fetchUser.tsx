@@ -9,6 +9,14 @@ export const fetchUser = gql`
       email
       title
       linkedinLink
+      hostedEvents {
+        id
+        name
+        orgName
+        userCapacity
+        startTime
+        endTime
+      }
     }
   }
 `

@@ -151,6 +151,7 @@ export interface Event {
 }
 
 export interface UserInput {
+  id: Scalars['Int']
   email: Scalars['String']
   name: Scalars['String']
   title?: Maybe<Scalars['String']>
@@ -167,6 +168,7 @@ export interface User {
   linkedinLink?: Maybe<Scalars['String']>
   table?: Maybe<EventTable>
   tableId?: Maybe<Scalars['Int']>
+  hostedEvents?: Maybe<Array<Event>>
 }
 
 export enum UserType {
@@ -507,6 +509,7 @@ export type UserResolvers<
   linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   table?: Resolver<Maybe<ResolversTypes['EventTable']>, ParentType, ContextType>
   tableId?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>
+  hostedEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

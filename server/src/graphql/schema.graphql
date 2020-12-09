@@ -86,6 +86,7 @@ type Event {
   hostId: Int!
 }
 input UserInput {
+  id: Int!
   email: String!
   name: String!
   title: String
@@ -100,6 +101,7 @@ type User {
   linkedinLink: String
   table: EventTable
   tableId: Int
+  hostedEvents: [Event!]
 }
 
 enum UserType {

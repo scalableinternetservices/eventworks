@@ -210,6 +210,16 @@ export interface CreateEventVariables {
 // GraphQL query operation: FetchUserContext
 // ====================================================
 
+export interface FetchUserContext_self_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  orgName: string;
+  userCapacity: number;
+  startTime: any;
+  endTime: any;
+}
+
 export interface FetchUserContext_self {
   __typename: "User";
   id: number;
@@ -218,6 +228,7 @@ export interface FetchUserContext_self {
   email: string;
   title: string | null;
   linkedinLink: string | null;
+  hostedEvents: FetchUserContext_self_hostedEvents[] | null;
 }
 
 export interface FetchUserContext {
@@ -948,6 +959,7 @@ export interface SwitchTableInput {
 }
 
 export interface UserInput {
+  id: number;
   email: string;
   name: string;
   title?: string | null;

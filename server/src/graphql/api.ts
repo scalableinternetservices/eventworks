@@ -67,13 +67,12 @@ export const graphqlRoot: Resolvers<Context> = {
       return "ok"
     },
     updateUser: async (_, { input }, ctx) => {
-      const newUser = new User()
-      newUser.title = input.title || ''
-      newUser.name = input.name
-      newUser.email = input.email
-      newUser.linkedinLink = input.linkedinLink || ''
-      await newUser.save()
-      return newUser
+      const user = check(await User.findOne({where: {id: input.id}}))
+      user.name = input.name || user.name
+      user.email = input.email || user.email
+      user.linkedinLink = input.linkedinLink || user.linkedinLink
+      await user.save()
+      return user
     },
     createEvent: async (_, { input }, ctx) => {
       const newEvent = new Event()
