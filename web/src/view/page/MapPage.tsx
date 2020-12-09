@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { fetchEvent } from '../../graphql/fetchEvent';
 import { FetchEvent, FetchEventVariables } from '../../graphql/query.gen';
-import { H1, H2 } from '../../style/header';
+import { H1, H2, H3 } from '../../style/header';
 import { LoggedInUserCtx, UserContext } from '../auth/user';
 import { Room } from '../map/Room';
 import { AppRouteParams, Route } from '../nav/route';
@@ -82,6 +82,7 @@ export function MapPage({ user, eventId }: MapPageProps) {
       <H1 style={{color:"#fff", marginTop: "10", marginLeft: "50"}}>{data.event.name} hosted by {data.event.orgName}</H1>
     </div>
     <Room event={data} user={user} />
+    <H3 style={{color: "#000", position: "absolute", bottom:"4", left:"8", opacity:"75%"}}>Created by EventWorks</H3>
     </>
   )
 }
