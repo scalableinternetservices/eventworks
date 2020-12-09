@@ -25,7 +25,7 @@ function getLoginApp(form?: AccountApp) {
           <div style={{ marginRight: 60 }}>
             <H2>Account</H2>
             {user.user ? (
-              <div className="mw8">
+              <div className="mw8" style={{}}>
                 <H3>ID: {user.user.id} </H3>
                 <H3>Name: {user.user.name}</H3>
                 <H3>Email: {user.user.email}</H3>
