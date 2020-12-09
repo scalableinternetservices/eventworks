@@ -9,6 +9,13 @@ export const fetchUser = gql`
       email
       title
       linkedinLink
+      hostedEvents {
+        id
+        name
+        description
+        startTime
+        endTime
+      }
     }
   }
 `
@@ -50,6 +57,13 @@ export const fragmentUser = gql`
     table {
       id
       name
+    }
+    hostedEvents {
+      id
+      name
+      description
+      startTime
+      endTime
     }
   }
 `

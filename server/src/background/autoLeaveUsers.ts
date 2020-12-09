@@ -1,39 +1,42 @@
 import { Redis } from 'ioredis';
+import { LessThan } from 'typeorm';
+import { check } from '../../../common/src/util';
+import { User } from '../entities/User';
 
 interface autoLeaveProps {
   redis: Redis
 }
 
+const MINUTE_MS = 60000;
+
 export async function autoLeaveUsers({redis}: autoLeaveProps) {
-  console.log( await redis.scan(0, "MATCH", "*"))
+  const awayUsers = await User.find({ where: { timeUpdated: LessThan(new Date(new Date().getTime() - MINUTE_MS)) }})
 
-  /*const userRow = check (await User.findOne({ where: {id: user.user?.id }}))
+  console.log(awayUsers)
 
-  if (userRow) {
-    const timeStampKey = userRow.id + "time"
-    const redisUserSearch = check(await redis.mget(timeStampKey));
+  if (awayUsers.length > 0) {
+    awayUsers.map(async user => {
+      user.hostedEvents.map(async events => {
+        try {
+          const userRedisKey = user.id + "u" + events.id + "e"
+          const userRedisObject = check( await redis.get(userRedisKey)) || null;
+          const tableRedisKey = userRedisObject ? JSON.parse(userRedisObject).tableId + "t" : null
 
-    const lastTimeUpdate = redisUserSearch ? parseInt(redisUserSearch + "") : null;
-    const currentTime = new Date().getTime();
-    if (lastTimeUpdate) {
-      if (lastTimeUpdate + 60000 < currentTime ) {
-        const userKey = userRow.id + "u";
-        const userTable = check (await redis.get(userKey));
+          const userObject = {id: user.id, name: user.name, email: user.email, userType: user.userType, linkedinLink: user.linkedinLink}
 
-        const tableId = JSON.parse(userTable).tableId;
-        const tableKey = tableId + "t";
+          await redis.del(userRedisKey);
+          tableRedisKey ? await redis.lrem(tableRedisKey, -1, JSON.stringify(userObject)) : console.log("user is not at an event or table");
+        } catch (err) {
+          console.log(err, "user isn't currently at any event or table")
+        }
+      })
+    });
 
-        await redis.lrem(tableKey, -1, JSON.stringify({id: userRow.id, name: userRow.name}));
-        await redis.del(userKey)
-        console.log("user not in any event")
-      }
-      else {
-        console.log("user in an event")
-      }
-    }
-  }*/
-
-  console.log('no user logged in')
+    console.log("users not on event deleted from redis");
+  }
+  else {
+    console.log("no users to be removed from event")
+  }
 }
 
 export const AUTO_LEAVE_USERS_MS = 60000

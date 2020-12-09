@@ -47,7 +47,7 @@ export class User extends BaseEntity implements GraphqlUser {
   })
   photoLink: string
 
-  @OneToMany(() => Event, event => event.host)
+  @OneToMany(() => Event, event => event.host, {eager: true})
   hostedEvents: Event[]
 
   @OneToMany(() => EventUserConfig, eventUserConfig => eventUserConfig.user)

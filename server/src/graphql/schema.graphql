@@ -17,7 +17,7 @@ schema {
 type Query {
   # Returns the logged-in user making the query, or null if anonymous.
   self: User
-  usersAtTable(tableId: Int!): [TableParticipant!]!
+  usersAtTable(tableId: Int!): [User!]!
   user(userId: Int!): User!
   users: [User!]!
 
@@ -27,7 +27,7 @@ type Query {
   chatMessages(eventId: Int!, tableId: Int!, offset: Int! = 0): [ChatMessage!]!
   events: [Event!]!
   tables: [EventTable!]!
-  table(tableId: Int!): [TableParticipant!]
+  table(tableId: Int!): [User!]
   tableInfo(tableId: Int!): EventTable!
   event(eventId: Int!, userId: Int!): Event!
 }
@@ -48,21 +48,21 @@ type Mutation {
   updateUser(input: UserInput!): User!
 
   sendMessage(senderId: Int!, eventId: Int!, tableId: Int!, message: String!): ChatMessage!
-  switchTable(input: SwitchTableInput!): TableParticipant! # move from one table to another "atomically". Setting to table id to null will leave table.
+  switchTable(input: SwitchTableInput!): User! # move from one table to another "atomically". Setting to table id to null will leave table.
 }
 
 type Subscription {
   surveyUpdates(surveyId: Int!): Survey
   chatUpdates(eventId: Int!, tableId: Int!): ChatMessage
-  tableUpdates(eventTableId: Int!): [TableParticipant!]!
+  tableUpdates(eventTableId: Int!): [User!]!
 }
 
 scalar Date
 
 input SwitchTableInput {
+  eventId: Int
   eventTableId: Int
   participantId: Int!
-  participantName: String!
 }
 
 type TableParticipant {
@@ -94,6 +94,7 @@ type Event {
   host: User
 }
 input UserInput {
+  id: Int
   email: String!
   name: String!
   title: String
@@ -107,6 +108,7 @@ type User {
   title: String
   linkedinLink: String
   table: EventTable
+  hostedEvents: [Event!]
 }
 
 enum UserType {

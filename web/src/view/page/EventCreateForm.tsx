@@ -46,7 +46,6 @@ export function EventCreateForm(props: EventCreateForm) {
       toast("Cannot create: Form input must be valid. All mandatory fields must be filled with positive/valid values.")
       return
     }
-    console.log(startTime, new Date())
 
     if (endTimeDate < new Date()) {
       toast("Cannot create: Start time is before current time.")

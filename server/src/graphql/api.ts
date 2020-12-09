@@ -82,20 +82,21 @@ export const graphqlRoot: Resolvers<Context> = {
   },
   Mutation: {
     ping: async (_, { userId }, { redis }) => {
-      const timeStampKey = userId + "time"
-      await redis.set(timeStampKey, new Date().getTime())
+      const user = check(await User.findOne({where: {id: userId}}));
+      user.timeUpdated = new Date();
+      user.save()
 
       console.log('ping', userId)
       return "ok"
     },
     updateUser: async (_, { input }, ctx) => {
-      const newUser = new User()
-      newUser.title = input.title || ''
-      newUser.name = input.name
-      newUser.email = input.email
-      newUser.linkedinLink = input.linkedinLink || ''
-      await newUser.save()
-      return newUser
+      const user = check(await User.findOne({where: {id: input.id} }))
+      user.title = input.title || ''
+      user.name = input.name || user.name
+      user.email = input.email || user.email
+      user.linkedinLink = input.linkedinLink || ''
+      await user.save()
+      return user
     },
     createEvent: async (_, { input }, ctx) => {
       const newEvent = new Event()
@@ -169,15 +170,20 @@ export const graphqlRoot: Resolvers<Context> = {
       return chat
     },
     switchTable: async (_, { input }, { redis }) => {
-      const redisTableKey = input.eventTableId?.toString() + "t";
-      const redisUserKey = input.participantId.toString() + "u";
+      const user = check(await User.findOne({where: {id: input.participantId}}));
+      user.timeUpdated = new Date();
+      user.save()
 
+      const redisTableKey = input.eventTableId?.toString() + "t";
+      const redisUserKey = input.participantId.toString() + "u" + input.eventId?.toString() + "e";
       const userTableRedis = check(await redis.mget(redisUserKey));
       const oldTable = userTableRedis[0] ? JSON.parse(userTableRedis.toString()).tableId : null
+      const userObject = {id: user.id, name: user.name, email: user.email, userType: user.userType, linkedinLink: user.linkedinLink}
+      const tableObject = {tableId: input.eventTableId}
 
       if (input.eventTableId) { // join or switch to a new table
-        await redis.rpush(redisTableKey, JSON.stringify({id: input.participantId, name: input.participantName}));
-        await redis.set(redisUserKey, JSON.stringify({tableId: input.eventTableId}));
+        await redis.rpush(redisTableKey, JSON.stringify(userObject));
+        await redis.set(redisUserKey, JSON.stringify(tableObject));
 
         const newTableUpdatedRedis = await redis.lrange(redisTableKey, 0, -1)
         const newTableUpdatedObject = newTableUpdatedRedis.map(x => JSON.parse(x));
@@ -189,7 +195,7 @@ export const graphqlRoot: Resolvers<Context> = {
 
       if (oldTable) {
         const oldTableKey = oldTable.toString() + "t";
-        await redis.lrem(oldTableKey, -1, JSON.stringify({id: input.participantId, name: input.participantName}));
+        await redis.lrem(oldTableKey, -1, JSON.stringify(userObject));
 
         const oldTableUpdatedRedis = check( await redis.lrange(oldTableKey, 0, -1))
         const oldTableUpdatedObject = oldTableUpdatedRedis.map(x => JSON.parse(x));
@@ -197,7 +203,7 @@ export const graphqlRoot: Resolvers<Context> = {
         pubsub.publish('TABLE_UPDATE' + oldTable, oldTableUpdatedObject)
       }
 
-      return {id: input.participantId, name: input.participantName};
+      return userObject;
     }
   },
   Subscription: {

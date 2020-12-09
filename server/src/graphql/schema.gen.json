@@ -914,7 +914,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "TableParticipant",
+                    "name": "User",
                     "ofType": null
                   }
                 }
@@ -1171,7 +1171,7 @@
                 "name": null,
                 "ofType": {
                   "kind": "OBJECT",
-                  "name": "TableParticipant",
+                  "name": "User",
                   "ofType": null
                 }
               }
@@ -1547,7 +1547,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "TableParticipant",
+                "name": "User",
                 "ofType": null
               }
             },
@@ -1663,7 +1663,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "OBJECT",
-                    "name": "TableParticipant",
+                    "name": "User",
                     "ofType": null
                   }
                 }
@@ -1695,6 +1695,16 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "eventId",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "eventTableId",
             "description": null,
             "type": {
@@ -1713,20 +1723,6 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "Int",
-                "ofType": null
-              }
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "participantName",
-            "description": null,
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
                 "ofType": null
               }
             },
@@ -2051,6 +2047,16 @@
         "fields": null,
         "inputFields": [
           {
+            "name": "id",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "email",
             "description": null,
             "type": {
@@ -2204,6 +2210,26 @@
               "kind": "OBJECT",
               "name": "EventTable",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "hostedEvents",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "Event",
+                  "ofType": null
+                }
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null

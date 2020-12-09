@@ -111,7 +111,7 @@ export interface FetchEventVariables {
 // ====================================================
 
 export interface FetchTable_table {
-  __typename: "TableParticipant";
+  __typename: "User";
   id: number;
   name: string;
 }
@@ -233,6 +233,15 @@ export interface CreateEventVariables {
 // GraphQL query operation: FetchUserContext
 // ====================================================
 
+export interface FetchUserContext_self_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface FetchUserContext_self {
   __typename: "User";
   id: number;
@@ -241,6 +250,7 @@ export interface FetchUserContext_self {
   email: string;
   title: string | null;
   linkedinLink: string | null;
+  hostedEvents: FetchUserContext_self_hostedEvents[] | null;
 }
 
 export interface FetchUserContext {
@@ -257,7 +267,7 @@ export interface FetchUserContext {
 // ====================================================
 
 export interface FetchUsersAtTable_usersAtTable {
-  __typename: "TableParticipant";
+  __typename: "User";
   id: number;
   name: string;
 }
@@ -319,15 +329,25 @@ export interface UpdateUser_updateUser_table {
   name: string;
 }
 
+export interface UpdateUser_updateUser_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface UpdateUser_updateUser {
   __typename: "User";
+  id: number;
   name: string;
   title: string | null;
   email: string;
   linkedinLink: string | null;
-  id: number;
   userType: UserType;
   table: UpdateUser_updateUser_table | null;
+  hostedEvents: UpdateUser_updateUser_hostedEvents[] | null;
 }
 
 export interface UpdateUser {
@@ -353,6 +373,15 @@ export interface FetchChatMessage_chatMessages_user_table {
   name: string;
 }
 
+export interface FetchChatMessage_chatMessages_user_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface FetchChatMessage_chatMessages_user {
   __typename: "User";
   id: number;
@@ -362,6 +391,7 @@ export interface FetchChatMessage_chatMessages_user {
   title: string | null;
   linkedinLink: string | null;
   table: FetchChatMessage_chatMessages_user_table | null;
+  hostedEvents: FetchChatMessage_chatMessages_user_hostedEvents[] | null;
 }
 
 export interface FetchChatMessage_chatMessages {
@@ -396,6 +426,15 @@ export interface ChatSubscription_chatUpdates_user_table {
   name: string;
 }
 
+export interface ChatSubscription_chatUpdates_user_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface ChatSubscription_chatUpdates_user {
   __typename: "User";
   id: number;
@@ -405,6 +444,7 @@ export interface ChatSubscription_chatUpdates_user {
   title: string | null;
   linkedinLink: string | null;
   table: ChatSubscription_chatUpdates_user_table | null;
+  hostedEvents: ChatSubscription_chatUpdates_user_hostedEvents[] | null;
 }
 
 export interface ChatSubscription_chatUpdates {
@@ -438,6 +478,15 @@ export interface SendChatMessage_sendMessage_user_table {
   name: string;
 }
 
+export interface SendChatMessage_sendMessage_user_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface SendChatMessage_sendMessage_user {
   __typename: "User";
   id: number;
@@ -447,6 +496,7 @@ export interface SendChatMessage_sendMessage_user {
   title: string | null;
   linkedinLink: string | null;
   table: SendChatMessage_sendMessage_user_table | null;
+  hostedEvents: SendChatMessage_sendMessage_user_hostedEvents[] | null;
 }
 
 export interface SendChatMessage_sendMessage {
@@ -477,7 +527,7 @@ export interface SendChatMessageVariables {
 // ====================================================
 
 export interface EventTableSubscription_tableUpdates {
-  __typename: "TableParticipant";
+  __typename: "User";
   id: number;
   name: string;
 }
@@ -538,10 +588,31 @@ export interface CreateTableVariables {
 // GraphQL mutation operation: SwitchTable
 // ====================================================
 
-export interface SwitchTable_switchTable {
-  __typename: "TableParticipant";
+export interface SwitchTable_switchTable_table {
+  __typename: "EventTable";
   id: number;
   name: string;
+}
+
+export interface SwitchTable_switchTable_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
+export interface SwitchTable_switchTable {
+  __typename: "User";
+  id: number;
+  userType: UserType;
+  email: string;
+  name: string;
+  title: string | null;
+  linkedinLink: string | null;
+  table: SwitchTable_switchTable_table | null;
+  hostedEvents: SwitchTable_switchTable_hostedEvents[] | null;
 }
 
 export interface SwitchTable {
@@ -803,6 +874,15 @@ export interface User_table {
   name: string;
 }
 
+export interface User_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface User {
   __typename: "User";
   id: number;
@@ -812,6 +892,7 @@ export interface User {
   title: string | null;
   linkedinLink: string | null;
   table: User_table | null;
+  hostedEvents: User_hostedEvents[] | null;
 }
 
 /* tslint:disable */
@@ -829,6 +910,15 @@ export interface ChatMessage_user_table {
   name: string;
 }
 
+export interface ChatMessage_user_hostedEvents {
+  __typename: "Event";
+  id: number;
+  name: string;
+  description: string;
+  startTime: any;
+  endTime: any;
+}
+
 export interface ChatMessage_user {
   __typename: "User";
   id: number;
@@ -838,6 +928,7 @@ export interface ChatMessage_user {
   title: string | null;
   linkedinLink: string | null;
   table: ChatMessage_user_table | null;
+  hostedEvents: ChatMessage_user_hostedEvents[] | null;
 }
 
 export interface ChatMessage {
@@ -938,12 +1029,13 @@ export interface SurveyInput {
 }
 
 export interface SwitchTableInput {
+  eventId?: number | null;
   eventTableId?: number | null;
   participantId: number;
-  participantName: string;
 }
 
 export interface UserInput {
+  id?: number | null;
   email: string;
   name: string;
   title?: string | null;

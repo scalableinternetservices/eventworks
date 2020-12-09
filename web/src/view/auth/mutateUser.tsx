@@ -6,6 +6,7 @@ import { fragmentUser } from './fetchUser'
 const updateUserMutation = gql `
 mutation UpdateUser($input: UserInput!) {
   updateUser(input: $input){
+    id
     name
     title
     email

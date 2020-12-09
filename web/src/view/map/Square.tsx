@@ -2,7 +2,7 @@ import { useQuery, useSubscription } from '@apollo/client';
 import * as React from 'react';
 import { getApolloClient } from '../../graphql/apolloClient';
 import { fetchTable } from '../../graphql/fetchEvent';
-import { EventTable, EventTableSubscription, EventTableSubscriptionVariables, FetchTable, FetchTableVariables } from '../../graphql/query.gen';
+import { EventTable, EventTableSubscription, EventTableSubscriptionVariables, FetchEvent, FetchTable, FetchTableVariables } from '../../graphql/query.gen';
 import { LoggedInUserCtx } from '../auth/user';
 import { subscribeEventTable } from '../event/fetchEventTable';
 import { switchTable } from '../event/mutateSwitchTable';
@@ -38,6 +38,7 @@ const rowStyle = {
 }
 
 interface SquareProps {
+  event: FetchEvent
   mainEventTableId: number
   table: EventTable
   user: LoggedInUserCtx
@@ -47,6 +48,7 @@ interface SquareProps {
 }
 
 export function Square ({
+  event,
   mainEventTableId,
   table,
   user,
@@ -72,9 +74,9 @@ export function Square ({
     e.preventDefault()
 
     switchTable(getApolloClient(), {
+      eventId: event.event.id,
       eventTableId,
-      participantId: user.user.id,
-      participantName: user.user.name
+      participantId: user.user.id
     }).then(result => {
       const table = result.data?.switchTable
       if (!table) {

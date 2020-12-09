@@ -16,7 +16,7 @@ export interface Scalars {
 export interface Query {
   __typename?: 'Query'
   self?: Maybe<User>
-  usersAtTable: Array<TableParticipant>
+  usersAtTable: Array<User>
   user: User
   users: Array<User>
   surveys: Array<Survey>
@@ -24,7 +24,7 @@ export interface Query {
   chatMessages: Array<ChatMessage>
   events: Array<Event>
   tables: Array<EventTable>
-  table?: Maybe<Array<TableParticipant>>
+  table?: Maybe<Array<User>>
   tableInfo: EventTable
   event: Event
 }
@@ -69,7 +69,7 @@ export interface Mutation {
   createTable?: Maybe<EventTable>
   updateUser: User
   sendMessage: ChatMessage
-  switchTable: TableParticipant
+  switchTable: User
 }
 
 export interface MutationPingArgs {
@@ -111,7 +111,7 @@ export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
   chatUpdates?: Maybe<ChatMessage>
-  tableUpdates: Array<TableParticipant>
+  tableUpdates: Array<User>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -128,9 +128,9 @@ export interface SubscriptionTableUpdatesArgs {
 }
 
 export interface SwitchTableInput {
+  eventId?: Maybe<Scalars['Int']>
   eventTableId?: Maybe<Scalars['Int']>
   participantId: Scalars['Int']
-  participantName: Scalars['String']
 }
 
 export interface TableParticipant {
@@ -163,6 +163,7 @@ export interface Event {
 }
 
 export interface UserInput {
+  id?: Maybe<Scalars['Int']>
   email: Scalars['String']
   name: Scalars['String']
   title?: Maybe<Scalars['String']>
@@ -178,6 +179,7 @@ export interface User {
   title?: Maybe<Scalars['String']>
   linkedinLink?: Maybe<Scalars['String']>
   table?: Maybe<EventTable>
+  hostedEvents?: Maybe<Array<Event>>
 }
 
 export enum UserType {
@@ -382,7 +384,7 @@ export type QueryResolvers<
 > = {
   self?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>
   usersAtTable?: Resolver<
-    Array<ResolversTypes['TableParticipant']>,
+    Array<ResolversTypes['User']>,
     ParentType,
     ContextType,
     RequireFields<QueryUsersAtTableArgs, 'tableId'>
@@ -405,7 +407,7 @@ export type QueryResolvers<
   events?: Resolver<Array<ResolversTypes['Event']>, ParentType, ContextType>
   tables?: Resolver<Array<ResolversTypes['EventTable']>, ParentType, ContextType>
   table?: Resolver<
-    Maybe<Array<ResolversTypes['TableParticipant']>>,
+    Maybe<Array<ResolversTypes['User']>>,
     ParentType,
     ContextType,
     RequireFields<QueryTableArgs, 'tableId'>
@@ -461,7 +463,7 @@ export type MutationResolvers<
     RequireFields<MutationSendMessageArgs, 'senderId' | 'eventId' | 'tableId' | 'message'>
   >
   switchTable?: Resolver<
-    ResolversTypes['TableParticipant'],
+    ResolversTypes['User'],
     ParentType,
     ContextType,
     RequireFields<MutationSwitchTableArgs, 'input'>
@@ -487,7 +489,7 @@ export type SubscriptionResolvers<
     RequireFields<SubscriptionChatUpdatesArgs, 'eventId' | 'tableId'>
   >
   tableUpdates?: SubscriptionResolver<
-    Array<ResolversTypes['TableParticipant']>,
+    Array<ResolversTypes['User']>,
     'tableUpdates',
     ParentType,
     ContextType,
@@ -535,6 +537,7 @@ export type UserResolvers<
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   linkedinLink?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>
   table?: Resolver<Maybe<ResolversTypes['EventTable']>, ParentType, ContextType>
+  hostedEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>
   __isTypeOf?: IsTypeOfResolverFn<ParentType>
 }
 

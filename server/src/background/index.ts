@@ -7,7 +7,6 @@ interface backgroundProps {
 }
 
 export function initBackgroundProcesses({redis} : backgroundProps) {
-
   setInterval(deleteOldEvents, DELETE_OLD_EVENTS_MS)
   setInterval(function() { autoLeaveUsers({redis: redis}) }, AUTO_LEAVE_USERS_MS)
 }
