@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { BaseEntity, Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from 'typeorm'
 import { ChatMessage } from './ChatMessage'
 import { Event } from './Event'
 import { User } from './User'
@@ -20,12 +20,16 @@ export class EventTable extends BaseEntity {
   @Column('int')
   userCapacity: number
 
-  @OneToMany(() => ChatMessage, msg => msg.event, { eager: true })
+  @OneToMany(() => ChatMessage, msg => msg.event)
   chatMessages: ChatMessage[]
 
-  @ManyToOne(() => User, user => user.headOfTables, { nullable: false, eager: true })
+  @ManyToOne(() => User, user => user.headOfTables, { nullable: false })
   head: User
 
+  @RelationId((table: EventTable) => table.head)
+  headId: number
+
+  @Index()
   @ManyToOne(() => Event, evt => evt.eventTables, { onDelete: 'CASCADE' })
   event: Event
 

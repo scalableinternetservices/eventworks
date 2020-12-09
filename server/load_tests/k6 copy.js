@@ -3,14 +3,14 @@ import { Counter, Rate } from 'k6/metrics'
 import { sleep, check } from 'k6'
 
 export const options = {
- scenarios: {
-   example_scenario: {
-     executor: 'constant-vus',
-     vus: 100,
-     duration: '600s',
+  scenarios: {
+    example_scenario: {
+      executor: 'constant-vus',
+      vus: 25,
+      duration: '200s',
 
-   },
- },
+    },
+  },
 }
 
 export default function () {
@@ -47,9 +47,9 @@ export default function () {
 }
 `;
 let resp = http.post('http://localhost:3000/graphql', JSON.stringify({ query: eventCreation }),{
- headers: {
- 'Content-Type': 'application/json',
-},
+  headers: {
+  'Content-Type': 'application/json',
+ },
 })
 check(resp, { 'created lobby': (r) => r.status == 200 });
 //create 2nd event
@@ -141,89 +141,11 @@ check(switchTableResponse, { 'Joined Table': (r) => r.status == 200 });
       message
   }
 }
-}
-`;
-let resp2 = http.post('http://localhost:3000/graphql', JSON.stringify({ query: eventCreation2 }),{
-headers: {
-'Content-Type': 'application/json',
-},
-})
-check(resp2, { 'created lobby2': (r) => r.status == 200 });
-//Join event
-let switchTable = `
- mutation SwitchTable{
-   switchTable(input: {eventTableId:1, participantId:1}){
-     table{
-       id
-     }
-   }
- }
-`
-let switchTableResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: switchTable }),{
- headers: {
- 'Content-Type': 'application/json',
-},
-})
-check(switchTableResponse, { 'Joined Table': (r) => r.status == 200 });
- //Find an Event
- let findAllEvents = http.post(
-   `http://localhost:3000/graphql`,
-   '{"operationName":"FetchEvent","variables":{},"query":"query FetchEvent{events{id}}"}',
-   {
-     headers: {
-     'Content-Type': 'application/json',
-    },
-   }
- );
- check(findAllEvents, { 'find all events': (r) => r.status == 200 });
-
- //Fetch Chat
- let chatResponse = http.post(`http://localhost:3000/graphql`,
- '{"operationName":"FetchChat","variables":{"eventID": 1, "tableID": 1},"query":"query FetchChat($eventID: Int!, $tableID: Int!){chatMessages(eventId: $eventID, tableId: $tableID){message}}"}',
- {
-   headers: {
-   'Content-Type': 'application/json',
-  },
- });
- let chatResponse2 = http.post(`http://localhost:3000/graphql`,
- '{"operationName":"FetchChat","variables":{"eventID": 1, "tableID": 1},"query":"query FetchChat($eventID: Int!, $tableID: Int!){chatMessages(eventId: $eventID, tableId: $tableID){message}}"}',
- {
-   headers: {
-   'Content-Type': 'application/json',
-  },
- });
- let chatResponse3 = http.post(`http://localhost:3000/graphql`,
- '{"operationName":"FetchChat","variables":{"eventID": 1, "tableID": 1},"query":"query FetchChat($eventID: Int!, $tableID: Int!){chatMessages(eventId: $eventID, tableId: $tableID){message}}"}',
- {
-   headers: {
-   'Content-Type': 'application/json',
-  },
- });
- let chatResponse4 = http.post(`http://localhost:3000/graphql`,
- '{"operationName":"FetchChat","variables":{"eventID": 1, "tableID": 1},"query":"query FetchChat($eventID: Int!, $tableID: Int!){chatMessages(eventId: $eventID, tableId: $tableID){message}}"}',
- {
-   headers: {
-   'Content-Type': 'application/json',
-  },
- });
- check(chatResponse, { 'Fetch Chat': (r) => r.status == 200 });
- check(chatResponse2, { 'Fetch Chat2': (r) => r.status == 200 });
- check(chatResponse3, { 'Fetch Chat3': (r) => r.status == 200 });
- check(chatResponse4, { 'Fetch Chat4': (r) => r.status == 200 });
-
-
- //Mutate Chat
- let chatCreation  = `
- mutation SendChatMessage{
-   sendMessage(senderId: 2, eventId: 1, tableId: 1, message: "testing") {
-     message
- }
-}
- `
- let chatCreationResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: chatCreation }),{
- headers: {
- 'Content-Type': 'application/json',
-},
+  `
+  let chatCreationResponse = http.post('http://localhost:3000/graphql', JSON.stringify({ query: chatCreation }),{
+  headers: {
+  'Content-Type': 'application/json',
+ },
 })
 check(chatCreationResponse, { 'Mutated Chat': (r) => r.status == 200 });
 
@@ -405,20 +327,20 @@ const rate400 = new Rate('rate_status_code_4xx')
 const rate500 = new Rate('rate_status_code_5xx')
 
 function recordRates(res) {
- if (res.status >= 200 && res.status < 300) {
-   count200.add(1)
-   rate200.add(1)
- } else if (res.status >= 300 && res.status < 400) {
-   console.log(res.body)
-   count300.add(1)
-   rate300.add(1)
- } else if (res.status >= 400 && res.status < 500) {
-   count400.add(1)
-   rate400.add(1)
- } else if (res.status >= 500 && res.status < 600) {
-   count500.add(1)
-   rate500.add(1)
- }
+  if (res.status >= 200 && res.status < 300) {
+    count200.add(1)
+    rate200.add(1)
+  } else if (res.status >= 300 && res.status < 400) {
+    console.log(res.body)
+    count300.add(1)
+    rate300.add(1)
+  } else if (res.status >= 400 && res.status < 500) {
+    count400.add(1)
+    rate400.add(1)
+  } else if (res.status >= 500 && res.status < 600) {
+    count500.add(1)
+    rate500.add(1)
+  }
 }
 
 
