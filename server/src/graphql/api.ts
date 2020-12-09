@@ -44,12 +44,9 @@ export const graphqlRoot: Resolvers<Context> = {
       return userRedisObject;
   },
     user: async (_, {userId}, ctx) => check (await User.findOne({
-      relations: ['table'],
       where: { id : userId }
     })),
-    users: async (_, args, ctx) => check(await User.find({
-      relations: ['table']
-    })),
+    users: async (_, args, ctx) => check(await User.find()),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
     chatMessages: async (root, { eventId, tableId, offset }, context) => await ChatMessage.find({
@@ -64,7 +61,7 @@ export const graphqlRoot: Resolvers<Context> = {
     events: async (_, {}, ctx) => (await Event.find({ relations: ['eventTables'] })),
     tables: async(_, {}, ctx) => (await EventTable.find()),
     event: async (_, { eventId, userId }, ctx) => {
-      const event = check(await Event.findOne({ where: { id: eventId }, relations: ['eventTables', 'host'] }))
+      const event = check(await Event.findOne({ where: { id: eventId }, relations: ['host'] }))
       if (userId !== event.host.id) {
         return { ...event, host: null }
       }
@@ -121,7 +118,11 @@ export const graphqlRoot: Resolvers<Context> = {
     createTable: async (_, { input }, ctx) => {
       const numExistingTables = check(await EventTable.count({ where: { event: input.eventId } }))
       if (numExistingTables >= TABLE_LIMIT_PER_EVENT) {
-        return null
+        throw Error(`You've reached the maximum limit of ${TABLE_LIMIT_PER_EVENT} tables for your event.`)
+      }
+      const event = check(await Event.findOne({ where: { id: input.eventId } }))
+      if (event.hostId !== input.senderId) {
+        throw Error('Permission denied: Cannot create table because user is not the owner of this event.')
       }
       const newTable = new EventTable()
       newTable.chatMessages = []
@@ -129,7 +130,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
       newTable.name = input.name
       newTable.head = check(await User.findOne({ where: { id: input.head } }))
-      newTable.event = check(await Event.findOne({ where: { id: input.eventId } }))
+      newTable.event = event
       await newTable.save()
       return newTable
     },
@@ -214,6 +215,21 @@ export const graphqlRoot: Resolvers<Context> = {
       },
       resolve: (payload: any) => payload,
     }
+  },
+  EventTable: {
+    participants: async (parent, args, ctx, info) => (await check(User.find({ where: { table: parent } }))),
+    head: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.headId } })))!,
+    chatMessages: async (parent, args, ctx, info) => (await check(ChatMessage.find({ where: { table: parent } })))
+  },
+  User: {
+    table: async (parent, args, ctx, info) => (await check(EventTable.findOne({ where: { id: parent.tableId } }))) || null
+  },
+  Event: {
+    eventTables: async (parent, args, ctx, info) => (await check(EventTable.find({ where: { event: parent } }))),
+    host: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.hostId } })))!
+  },
+  ChatMessage: {
+    user: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.userId } })))!
   },
   Date: new GraphQLScalarType({
     name: 'Date',

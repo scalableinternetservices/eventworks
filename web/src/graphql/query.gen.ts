@@ -930,6 +930,7 @@ export interface EventTableInput {
   name: string;
   description: string;
   userCapacity?: number | null;
+  senderId: number;
 }
 
 export interface SurveyInput {

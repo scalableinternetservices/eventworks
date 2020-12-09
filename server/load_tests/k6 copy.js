@@ -6,8 +6,8 @@ export const options = {
   scenarios: {
     example_scenario: {
       executor: 'constant-vus',
-      vus: 100,
-      duration: '300s',
+      vus: 25,
+      duration: '200s',
 
     },
   },
@@ -74,7 +74,7 @@ check(resp2, { 'created lobby2': (r) => r.status == 200 });
 //Join event
 let switchTable = `
   mutation SwitchTable{
-    switchTable(input: {eventTableId:1, participantId:1, participantName:"John Rothfels"}){
+    switchTable(input: {eventTableId:1, participantId:1}){
       table{
         id
       }
@@ -300,7 +300,7 @@ check(chatCreationResponse4, { 'Mutated Chat4': (r) => r.status == 200 });
 //Leave Table/Event
 let leaveTable = `
   mutation SwitchTable{
-    switchTable(input: {eventTableId:null, participantId:1, participantName:"John Rothfels"}){
+    switchTable(input: {eventTableId:null, participantId:1}){
       table{
         id
       }

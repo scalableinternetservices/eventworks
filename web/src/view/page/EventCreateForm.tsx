@@ -3,6 +3,7 @@ import * as React from 'react';
 import { getApolloClient } from '../../graphql/apolloClient';
 import { createEvent } from '../../graphql/mutateEventCreateForm';
 import { Button } from '../../style/button';
+import { H1 } from '../../style/header';
 import { Input } from '../../style/input';
 import { UserContext } from '../auth/user';
 import { AppRouteParams, Route } from '../nav/route';
@@ -78,6 +79,7 @@ export function EventCreateForm(props: EventCreateForm) {
 
   return (
     <Page>
+      <H1 style={{ fontWeight: 600 }}>Create Event</H1>
       <div className="mt3">
         <label className="db fw4 lh-copy f6" htmlFor="eventName">
           Event Name*
