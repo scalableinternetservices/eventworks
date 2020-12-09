@@ -31,7 +31,8 @@ function getLoginApp(form?: AccountApp) {
                 <H3>Email: {user.user.email}</H3>
                 <H3>Linkedin: {user.user.linkedinLink}</H3>
               </div>
-            ) : <Login />}
+            ) : "" }
+            <Login />
           </div>
           {!user.user ? (
             <CenterLine>
@@ -46,9 +47,9 @@ function getLoginApp(form?: AccountApp) {
           )}
         </div>
 
-        <div style={{display: 'flex', justifyContent: 'center', marginTop: '90px'}}>
+        {user.user ? (<div style={{display: 'flex', justifyContent: 'center', marginTop: '90px'}}>
           <H2>Events You're Hosting</H2>
-        </div>
+        </div>) : ""}
 
         <div className="allEvents" style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}>
           {user.user ? (

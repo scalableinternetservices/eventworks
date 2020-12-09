@@ -6,8 +6,8 @@ export const options = {
   scenarios: {
     example_scenario: {
       executor: 'constant-vus',
-      vus: 100,
-      duration: '300s',
+      vus: 1,
+      duration: '10s',
 
     },
   },
@@ -87,6 +87,47 @@ let switchTableResponse = http.post('http://localhost:3000/graphql', JSON.string
  },
 })
 check(switchTableResponse, { 'Joined Table': (r) => r.status == 200 });
+//fetch event
+let fetchUserTable = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+let fetchUserTable2 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+let fetchUserTable3 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+let fetchUserTable4 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+check(fetchUserTable, { 'fetch user table': (r) => r.status == 200 });
+check(fetchUserTable2, { 'fetch user table2': (r) => r.status == 200 });
+check(fetchUserTable3, { 'fetch user table3': (r) => r.status == 200 });
+check(fetchUserTable4, { 'fetch user table4': (r) => r.status == 200 });
   //Find an Event
   let findAllEvents = http.post(
     `http://localhost:3000/graphql`,
@@ -313,7 +354,46 @@ let leaveTableResponse = http.post('http://localhost:3000/graphql', JSON.stringi
  },
 })
 check(leaveTableResponse, { 'Left Table': (r) => r.status == 200 });
-
+let fetchUserTable5 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+let fetchUserTable6 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+let fetchUserTable7 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+let fetchUserTable8 = http.post(
+  `http://localhost:3000/graphql`,
+  '{"operationName":"UsersAtTable","variables":{"tableId":1},"query":"query UsersAtTable($tableId: Int!){usersAtTable(tableId: $tableId){id}}"}',
+  {
+    headers: {
+    'Content-Type': 'application/json',
+   },
+  }
+);
+check(fetchUserTable5, { 'fetch user table5': (r) => r.status == 200 });
+check(fetchUserTable6, { 'fetch user table6': (r) => r.status == 200 });
+check(fetchUserTable7, { 'fetch user table7': (r) => r.status == 200 });
+check(fetchUserTable8, { 'fetch user table8': (r) => r.status == 200 });
 
   }
 const count200 = new Counter('status_code_2xx')
