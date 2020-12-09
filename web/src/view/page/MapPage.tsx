@@ -36,7 +36,9 @@ export function EventMapPage(props: EventMapPageProps) {
   }
 
   return (
-    <MapPage eventId={eventId} user={user as LoggedInUserCtx} />
+    <Page>
+      <MapPage eventId={eventId} user={user as LoggedInUserCtx} />
+      </Page>
   )
 }
 
@@ -68,7 +70,7 @@ export function MapPage({ user, eventId }: MapPageProps) {
 
   const startTime = new Date(data.event.startTime)
 
-  if (!data.event.host && startTime > new Date()) {
+  if (data.event.host?.id != user.user.id && startTime > new Date()) {
     return (
       <Page>
         <H2>{data.event.name} by {data.event.orgName} will begin at {startTime.toLocaleString()}.</H2>
