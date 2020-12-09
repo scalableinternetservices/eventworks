@@ -1,3 +1,4 @@
+import DataLoader from 'dataloader'
 import { readFileSync } from 'fs'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { PubSub } from 'graphql-yoga'
@@ -26,6 +27,9 @@ interface Context {
  response: Response
  pubsub: PubSub
  redis: Redis
+ chatMessageLoader: DataLoader<number, ChatMessage>
+ userLoader: DataLoader<number, User>
+ tableLoader: DataLoader<number, EventTable>
 }
 
 const DEFAULT_USER_CAPACITY = 10
@@ -217,19 +221,19 @@ export const graphqlRoot: Resolvers<Context> = {
     }
   },
   EventTable: {
-    participants: async (parent, args, ctx, info) => (await check(User.find({ where: { table: parent } }))),
-    head: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.headId } })))!,
-    chatMessages: async (parent, args, ctx, info) => (await check(ChatMessage.find({ where: { table: parent } })))
+    participants: async (parent, args, ctx, info) => check(await User.find({ where: { table: parent } })),
+    head: async (parent, args, { userLoader }, info) => check(await userLoader.load(parent.headId)),
+    chatMessages: async (parent, args, ctx, info) => check(await ChatMessage.find({ where: { table: parent } }))
   },
   User: {
-    table: async (parent, args, ctx, info) => (await check(EventTable.findOne({ where: { id: parent.tableId } }))) || null
+    table: async (parent, args, { tableLoader }, info) => parent.tableId ? check(await tableLoader.load(parent.tableId)) : null
   },
   Event: {
-    eventTables: async (parent, args, ctx, info) => (await check(EventTable.find({ where: { event: parent } }))),
-    host: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.hostId } })))!
+    eventTables: async (parent, args, ctx, info) => check(await EventTable.find({ where: { event: parent } })),
+    host: async (parent, args, { userLoader }, info) => check(await userLoader.load(parent.hostId))
   },
   ChatMessage: {
-    user: async (parent, args, ctx, info) => (await check(User.findOne({ where: { id: parent.userId } })))!
+    user: async (parent, args, { userLoader }, info) => check(await userLoader.load(parent.userId))
   },
   Date: new GraphQLScalarType({
     name: 'Date',

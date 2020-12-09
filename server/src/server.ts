@@ -25,6 +25,7 @@ import { Session } from './entities/Session'
 import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
+import { createChatMessageLoader, createTableLoader, createUserLoader } from './graphql/dataloader'
 import { UserType } from './graphql/schema.types'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
@@ -35,7 +36,15 @@ const my_redis = new Redis()
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
-  context: ctx => ({ ...ctx, pubsub, user: (ctx.request as any)?.user || null, redis: my_redis }),
+  context: ctx => ({
+    ...ctx,
+    pubsub,
+    user: (ctx.request as any)?.user || null,
+    redis: my_redis,
+    chatMessageLoader: createChatMessageLoader(),
+    userLoader: createUserLoader(),
+    tableLoader: createTableLoader()
+  }),
 })
 
 server.express.use(cookieParser())
