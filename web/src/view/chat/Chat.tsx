@@ -1,8 +1,8 @@
 import { useQuery, useSubscription } from '@apollo/client'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { fetchTable } from '../../graphql/fetchEvent'
-import { ChatMessage, ChatSubscription, FetchChatMessage, FetchTable } from '../../graphql/query.gen'
+import { fetchTableInfo } from '../../graphql/fetchEvent'
+import { ChatMessage, ChatSubscription, FetchChatMessage, FetchTableInfo, FetchTableInfoVariables } from '../../graphql/query.gen'
 import { UpArrow } from '../../style/arrow'
 import { H2 } from '../../style/header'
 import { LoggedInUserCtx } from '../auth/user'
@@ -60,7 +60,7 @@ export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
     loading: tableLoading,
     data: tableData,
     error: tableError
-  } = useQuery<FetchTable>(fetchTable, {
+  } = useQuery<FetchTableInfo, FetchTableInfoVariables>(fetchTableInfo, {
     variables: { tableId }
   })
 
@@ -131,14 +131,14 @@ export const ChatBox = ({ eventId, tableId, user }: ChatBoxProps) => {
     return <div style={chatBoxView}>Loading chat...</div>
   }
 
-  if (!tableData?.table) {
+  if (!tableData?.tableInfo) {
     console.error(tableError)
     return <div style={chatBoxView}>Error loading chat. Please try again.</div>
   }
 
   return (
     <>
-      <H2 style={chatHeaderView}>{tableData.table.name}</H2>
+      <H2 style={chatHeaderView}>{tableData.tableInfo.name}</H2>
       <div style={{ visibility: reachedTop ? 'hidden' : 'inherit' }}>
         <UpArrow onClick={loadMoreChat} />
       </div>

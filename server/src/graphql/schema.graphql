@@ -26,7 +26,8 @@ type Query {
   chatMessages(eventId: Int!, tableId: Int!, offset: Int! = 0): [ChatMessage!]!
   events: [Event!]!
   event(eventId: Int!, userId: Int!): Event!
-  table(tableId: Int!): EventTable!
+  table(tableId: Int!): [User!]
+  tableInfo(tableId: Int!): EventTable!
 }
 
 type Mutation {
@@ -51,12 +52,13 @@ type Mutation {
 type Subscription {
   surveyUpdates(surveyId: Int!): Survey
   chatUpdates(eventId: Int!, tableId: Int!): ChatMessage
-  tableUpdates(eventTableId: Int!): EventTable
+  tableUpdates(eventTableId: Int!): [User!]!
 }
 
 scalar Date
 
 input SwitchTableInput {
+  eventId: Int!
   eventTableId: Int
   participantId: Int!
 }

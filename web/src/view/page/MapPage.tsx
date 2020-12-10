@@ -36,9 +36,7 @@ export function EventMapPage(props: EventMapPageProps) {
   }
 
   return (
-    <Page>
-      <MapPage eventId={eventId} user={user as LoggedInUserCtx} />
-      </Page>
+    <MapPage eventId={eventId} user={user as LoggedInUserCtx} />
   )
 }
 

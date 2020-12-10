@@ -24,7 +24,8 @@ export interface Query {
   chatMessages: Array<ChatMessage>
   events: Array<Event>
   event: Event
-  table: EventTable
+  table?: Maybe<Array<User>>
+  tableInfo: EventTable
 }
 
 export interface QueryUsersAtTableArgs {
@@ -51,6 +52,10 @@ export interface QueryEventArgs {
 }
 
 export interface QueryTableArgs {
+  tableId: Scalars['Int']
+}
+
+export interface QueryTableInfoArgs {
   tableId: Scalars['Int']
 }
 
@@ -105,7 +110,7 @@ export interface Subscription {
   __typename?: 'Subscription'
   surveyUpdates?: Maybe<Survey>
   chatUpdates?: Maybe<ChatMessage>
-  tableUpdates?: Maybe<EventTable>
+  tableUpdates: Array<User>
 }
 
 export interface SubscriptionSurveyUpdatesArgs {
@@ -122,6 +127,7 @@ export interface SubscriptionTableUpdatesArgs {
 }
 
 export interface SwitchTableInput {
+  eventId: Scalars['Int']
   eventTableId?: Maybe<Scalars['Int']>
   participantId: Scalars['Int']
 }
@@ -402,7 +408,18 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryEventArgs, 'eventId' | 'userId'>
   >
-  table?: Resolver<ResolversTypes['EventTable'], ParentType, ContextType, RequireFields<QueryTableArgs, 'tableId'>>
+  table?: Resolver<
+    Maybe<Array<ResolversTypes['User']>>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryTableArgs, 'tableId'>
+  >
+  tableInfo?: Resolver<
+    ResolversTypes['EventTable'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryTableInfoArgs, 'tableId'>
+  >
 }
 
 export type MutationResolvers<
@@ -468,7 +485,7 @@ export type SubscriptionResolvers<
     RequireFields<SubscriptionChatUpdatesArgs, 'eventId' | 'tableId'>
   >
   tableUpdates?: SubscriptionResolver<
-    Maybe<ResolversTypes['EventTable']>,
+    Array<ResolversTypes['User']>,
     'tableUpdates',
     ParentType,
     ContextType,
