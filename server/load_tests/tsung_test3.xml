@@ -20,15 +20,23 @@
       <users arrivalrate="2" unit="second"></users>
     </arrivalphase>
     <arrivalphase phase="3" duration="10" unit="second">
-      <users arrivalrate="10" unit="second"></users>
+      <users arrivalrate="4" unit="second"></users>
     </arrivalphase>
     <arrivalphase phase="4" duration="10" unit="second">
-      <users arrivalrate="20" unit="second"></users>
+      <users arrivalrate="8" unit="second"></users>
     </arrivalphase>
     <arrivalphase phase="5" duration="10" unit="second">
-      <users arrivalrate="40" unit="second"></users>
+      <users arrivalrate="16" unit="second"></users>
     </arrivalphase>
-    
+    <arrivalphase phase="6" duration="10" unit="second">
+      <users arrivalrate="32" unit="second"></users>
+    </arrivalphase>  
+    <arrivalphase phase="7" duration="10" unit="second">
+      <users arrivalrate="64" unit="second"></users>
+    </arrivalphase>
+    <arrivalphase phase="8" duration="1" unit="second">
+      <users arrivalrate="100" unit="second"></users>
+    </arrivalphase>     
   </load>
 
 
@@ -42,22 +50,25 @@
   </options>
 
   <sessions>
-    <session name="http-example" probability="100" type="ts_http">
+    <!-- before running test, make sure to set up manually -->
+    <!-- create 2 event rooms with tables and update event ids and table ids -->
+    
+    <!-- session1: EventId: 2 TableId: 6 -->
+    <!-- session2: EventId: 3 TableId: 7 -->
+
+    <session name="session1" probability="50" type="ts_http">
       <!-- start out at the dashboard. -->
       <transaction name="getIndex">
-        <request>
-          <http url='/app/index' version='1.1' method='GET'></http>
-        </request>
+        <request><http url='/app/index' version='1.1' method='GET'></http></request>
       </transaction>
 
        <!-- wait for up to 2 seconds, user is looking at options/page -->
       <thinktime value="2" random="true"></thinktime>
 
-      <!-- login -->
-      <request>
-        <http url='/app/account' version='1.1' method='GET'></http>
-      </request>
-        <!-- add in a typing time -->
+      <!-- navigate to login -->
+      <request><http url='/app/account' version='1.1' method='GET'></http></request>
+
+        <!-- type in user/pw and login -->
       <thinktime value="2" random="true"/>
       <transaction name="login">
         <request>
@@ -71,69 +82,183 @@
         </request>
       </transaction>
 
-      <transaction name="createEventCreateTable">
-        <request subst="true">
-        <!-- Create 1 event with id 4 -->
+      <!-- type event id -->
+      <thinktime value="1" random="true"/>
+
+      <!-- have several users go to each room (fetch event) -->
+     <transaction name="fetchEvent">
+        <request>
+          <http
+            url='/app/findevent?eventID=2'
+            version='1.1'
+            method='POST'
+            content_type='application/json'
+            contents='{&quot;operationName&quot;:&quot;FetchEvent&quot;,&quot;variables&quot;:{&quot;eventId&quot;:2,&quot;userId&quot;:5},&quot;query&quot;:&quot;query FetchEvent($eventId: Int!, $userId: Int!) {\n  event(eventId: $eventId, userId: $userId) {\n    id\n    endTime\n    startTime\n    description\n    name\n    orgName\n    host {\n      id\n      __typename\n    }\n    eventTables {\n      ...EventTable\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment EventTable on EventTable {\n  id\n  name\n  description\n  userCapacity\n  head {\n    id\n    name\n    __typename\n  }\n  participants {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
+          </http>
+        </request>
+      </transaction>
+      
+      <!-- Have several users join different tables (fetch the users at the table and the (first page of) chat) -->
+      <transaction name="joinTable">
+        <request>
+          <http
+            url='/graphql?opName=FetchTable'
+            version='1.1'
+            method='POST'
+            content_type='application/json'
+            contents='{&quot;operationName&quot;:&quot;FetchTable&quot;,&quot;variables&quot;:{&quot;tableId&quot;:6},&quot;query&quot;:&quot;query FetchTable($tableId: Int!) {\n  table(tableId: $tableId) {\n    ...EventTable\n    __typename\n  }\n}\n\nfragment EventTable on EventTable {\n  id\n  name\n  description\n  userCapacity\n  head {\n    id\n    name\n    __typename\n  }\n  participants {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
+          </http>
+        </request>
+        <request>
         <http
-          url='/app/createevent'
+            url='/graphql?opName=FetchUsersAtTable'
+            version='1.1'
+            method='POST'
+            content_type='application/json'
+            contents='{&quot;operationName&quot;:&quot;FetchUsersAtTable&quot;,&quot;variables&quot;:{&quot;tableId&quot;:6},&quot;query&quot;:&quot;query FetchUsersAtTable($tableId: Int!) {\n  usersAtTable(tableId: $tableId) {\n    id\n    name\n    __typename\n  }\n}\n&quot;}'>
+          </http>
+        </request>
+      </transaction>
+      
+      <!-- Have each user send chats and fetch chats (4x) -->
+      <!-- Have some users fetch chat for table with different offsets (simulate pagination) -->
+      <for from="1" to="4" incr="1" var="counter">
+        <transaction name="sendChat">
+          <request>
+            <!-- hope it's ok to have the same senderId -->
+            <http
+              url='/graphql?opName=SendChatMessage'
+              version='1.1'
+              method='POST'
+              content_type='application/json'
+              contents='{&quot;operationName&quot;:&quot;SendChatMessage&quot;,&quot;variables&quot;:{&quot;senderId&quot;:5,&quot;eventId&quot;:2,&quot;tableId&quot;:6,&quot;message&quot;:&quot;hello&quot;},&quot;query&quot;:&quot;mutation SendChatMessage($senderId: Int!, $eventId: Int!, $tableId: Int!, $message: String!) {\n  sendMessage(senderId: $senderId, eventId: $eventId, tableId: $tableId, message: $message) {\n    ...ChatMessage\n    __typename\n  }\n}\n\nfragment ChatMessage on ChatMessage {\n  id\n  user {\n    ...User\n    __typename\n  }\n  message\n  __typename\n}\n\nfragment User on User {\n  id\n  userType\n  email\n  name\n  title\n  linkedinLink\n  table {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
+            </http>
+          </request> 
+        </transaction> 
+        <!-- read chat -->
+        <thinktime value="2" random="true"></thinktime>
+        <!-- fetch chat -->
+        <transaction name="fetchChat">
+          <request>
+            <http
+              url='/graphql?opName=FetchChatMessage'
+              version='1.1'
+              method='POST'
+              content_type='application/json'
+              contents='{&quot;operationName&quot;:&quot;FetchChatMessage&quot;,&quot;variables&quot;:{&quot;offset&quot;:0,&quot;eventId&quot;:2,&quot;tableId&quot;:6},&quot;query&quot;:&quot;query FetchChatMessage($eventId: Int!, $tableId: Int!, $offset: Int! = 0) {\n  chatMessages(eventId: $eventId, tableId: $tableId, offset: $offset) {\n    ...ChatMessage\n    __typename\n  }\n}\n\nfragment ChatMessage on ChatMessage {\n  id\n  user {\n    ...User\n    __typename\n  }\n  message\n  __typename\n}\n\nfragment User on User {\n  id\n  userType\n  email\n  name\n  title\n  linkedinLink\n  table {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
+            </http>
+          </request> 
+        </transaction> 
+      </for>
+
+      <!-- logout -->  
+      <transaction name="logout">
+        <request><http url='/auth/logout' version='1.1' method='POST'></http></request> 
+      </transaction>   
+    </session>
+
+    <!-- session2: EventId: 3 TableId: 7 -->
+    <session name="session2" probability="50" type="ts_http">
+      <!-- start out at the dashboard. -->
+      <transaction name="getIndex">
+        <request><http url='/app/index' version='1.1' method='GET'></http></request>
+      </transaction>
+
+       <!-- wait for up to 2 seconds, user is looking at options/page -->
+      <thinktime value="2" random="true"></thinktime>
+
+      <!-- navigate to login -->
+      <request><http url='/app/account' version='1.1' method='GET'></http></request>
+
+        <!-- type in user/pw and login -->
+      <thinktime value="2" random="true"/>
+      <transaction name="login">
+        <request>
+          <http
+          url='/auth/login'
           version='1.1'
           method='POST'
           content_type='application/json'
-          contents='{"operationName":"CreateEvent","variables":{"input":{"name":"Event","description":"Desc","orgName":"Org","startTime":1607370780000,"endTime":1607410800000,"userCapacity":1000,"hostId":2}},"query":"mutation CreateEvent($input: EventInput!) {\n  createEvent(input: $input) {\n    ...Event\n    __typename\n  }\n}\n\nfragment Event on Event {\n  id\n  startTime\n  endTime\n  userCapacity\n  name\n  orgName\n  description\n  eventTables {\n    id\n    name\n    description\n    userCapacity\n    head {\n      id\n      name\n      __typename\n    }\n    __typename\n  }\n  __typename\n}\n"}'>
-        </http>
-      </request>
-      <!--create a table-->
-      <!-- todo: have dynvars for all the variable inputs -->
-        <request subst="true">
-          <http
-            url='/graphql?opName=CreateTable'
-            version='1.1'
-            method='POST'
-            contents='{"operationName":"CreateTable","variables":{"input":{"name":"Table_name","description":"Table_desc","eventId":2,"head":2,"userCapacity":8}},"query":"mutation CreateTable($input: EventTableInput!) {\n  createTable(input: $input) {\n    ...EventTable\n    __typename\n  }\n}\n\nfragment EventTable on EventTable {\n  id\n  name\n  description\n  userCapacity\n  head {\n    id\n    name\n    __typename\n  }\n  participants {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n"}'>
-          </http>
+          contents='
+          {&quot;email&quot;:&quot;melissa@ucla.edu&quot;,&quot;password&quot;:&quot;password&quot;}'></http>
         </request>
       </transaction>
 
-      <!-- typing time -->
-      <thinktime value="2" random="true"/>
-      <!-- join an event -->    
+      <!-- type event id -->
+      <thinktime value="1" random="true"/>
+
+      <!-- have several users go to each room (fetch event) -->
      <transaction name="fetchEvent">
-        <request subst="true">
+        <request>
           <http
-            url='/app/findevent?eventID=4'
+            url='/app/findevent?eventID=3'
             version='1.1'
             method='POST'
             content_type='application/json'
-            contents='{"operationName":"FetchEvent","variables":{"eventId":2,"userId":5},"query":"query FetchEvent($eventId: Int!, $userId: Int!) {\n  event(eventId: $eventId, userId: $userId) {\n    id\n    endTime\n    startTime\n    description\n    name\n    orgName\n    host {\n      id\n      __typename\n    }\n    eventTables {\n      ...EventTable\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment EventTable on EventTable {\n  id\n  name\n  description\n  userCapacity\n  head {\n    id\n    name\n    __typename\n  }\n  participants {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n"}'>
+            contents='{&quot;operationName&quot;:&quot;FetchEvent&quot;,&quot;variables&quot;:{&quot;eventId&quot;:3,&quot;userId&quot;:5},&quot;query&quot;:&quot;query FetchEvent($eventId: Int!, $userId: Int!) {\n  event(eventId: $eventId, userId: $userId) {\n    id\n    endTime\n    startTime\n    description\n    name\n    orgName\n    host {\n      id\n      __typename\n    }\n    eventTables {\n      ...EventTable\n      __typename\n    }\n    __typename\n  }\n}\n\nfragment EventTable on EventTable {\n  id\n  name\n  description\n  userCapacity\n  head {\n    id\n    name\n    __typename\n  }\n  participants {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
           </http>
         </request>
       </transaction>
-      <!-- send a chat -->
-      <!-- need to figure out variables -->
-      <transaction name="sendChat">
-      <request subst="true">
+      
+      <!-- Have several users join different tables (fetch the users at the table and the (first page of) chat) -->
+      <transaction name="joinTable">
+        <request>
           <http
-            url='/graphql?opName=SendChatMessage'
+            url='/graphql?opName=FetchTable'
             version='1.1'
             method='POST'
             content_type='application/json'
-            contents='{"operationName":"SendChatMessage","variables":{"senderId":4,"eventId":2,"tableId":1,"message":"hello"},"query":"mutation SendChatMessage($senderId: Int!, $eventId: Int!, $tableId: Int!, $message: String!) {\n  sendMessage(senderId: $senderId, eventId: $eventId, tableId: $tableId, message: $message) {\n    ...ChatMessage\n    __typename\n  }\n}\n\nfragment ChatMessage on ChatMessage {\n  id\n  user {\n    ...User\n    __typename\n  }\n  message\n  __typename\n}\n\nfragment User on User {\n  id\n  userType\n  email\n  name\n  title\n  linkedinLink\n  table {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n"}'>
+            contents='{&quot;operationName&quot;:&quot;FetchTable&quot;,&quot;variables&quot;:{&quot;tableId&quot;:8},&quot;query&quot;:&quot;query FetchTable($tableId: Int!) {\n  table(tableId: $tableId) {\n    ...EventTable\n    __typename\n  }\n}\n\nfragment EventTable on EventTable {\n  id\n  name\n  description\n  userCapacity\n  head {\n    id\n    name\n    __typename\n  }\n  participants {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
           </http>
-        </request> 
-        </transaction> 
-
-        <!-- read chat then logout -->  
-        <thinktime value="2" random="true"></thinktime>
-        <transaction name="logout">
-        <request subst="true">
+        </request>
+        <request>
+        <http
+            url='/graphql?opName=FetchUsersAtTable'
+            version='1.1'
+            method='POST'
+            content_type='application/json'
+            contents='{&quot;operationName&quot;:&quot;FetchUsersAtTable&quot;,&quot;variables&quot;:{&quot;tableId&quot;:8},&quot;query&quot;:&quot;query FetchUsersAtTable($tableId: Int!) {\n  usersAtTable(tableId: $tableId) {\n    id\n    name\n    __typename\n  }\n}\n&quot;}'>
+          </http>
+        </request>
+      </transaction>
+      
+      <!-- Have each user send chats and fetch chats (4x) -->
+      <!-- todo: Have some users fetch chat for table with different offsets (simulate pagination) -->
+      <for from="1" to="4" incr="1" var="counter">
+        <transaction name="sendChat">
+          <request>
+            <!-- hope it's ok to have the same senderId -->
             <http
-              url='/auth/logout'
+              url='/graphql?opName=SendChatMessage'
               version='1.1'
-              method='POST'>
+              method='POST'
+              content_type='application/json'
+              contents='{&quot;operationName&quot;:&quot;SendChatMessage&quot;,&quot;variables&quot;:{&quot;senderId&quot;:5,&quot;eventId&quot;:3,&quot;tableId&quot;:8,&quot;message&quot;:&quot;hello&quot;},&quot;query&quot;:&quot;mutation SendChatMessage($senderId: Int!, $eventId: Int!, $tableId: Int!, $message: String!) {\n  sendMessage(senderId: $senderId, eventId: $eventId, tableId: $tableId, message: $message) {\n    ...ChatMessage\n    __typename\n  }\n}\n\nfragment ChatMessage on ChatMessage {\n  id\n  user {\n    ...User\n    __typename\n  }\n  message\n  __typename\n}\n\nfragment User on User {\n  id\n  userType\n  email\n  name\n  title\n  linkedinLink\n  table {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
             </http>
           </request> 
-        </transaction>   
+        </transaction> 
+        <!-- read chat -->
+        <thinktime value="2" random="true"></thinktime>
+        <!-- fetch chat -->
+        <transaction name="fetchChat">
+          <request>
+            <http
+              url='/graphql?opName=FetchChatMessage'
+              version='1.1'
+              method='POST'
+              content_type='application/json'
+              contents='{&quot;operationName&quot;:&quot;FetchChatMessage&quot;,&quot;variables&quot;:{&quot;offset&quot;:0,&quot;eventId&quot;:3,&quot;tableId&quot;:8},&quot;query&quot;:&quot;query FetchChatMessage($eventId: Int!, $tableId: Int!, $offset: Int! = 0) {\n  chatMessages(eventId: $eventId, tableId: $tableId, offset: $offset) {\n    ...ChatMessage\n    __typename\n  }\n}\n\nfragment ChatMessage on ChatMessage {\n  id\n  user {\n    ...User\n    __typename\n  }\n  message\n  __typename\n}\n\nfragment User on User {\n  id\n  userType\n  email\n  name\n  title\n  linkedinLink\n  table {\n    id\n    name\n    __typename\n  }\n  __typename\n}\n&quot;}'>
+            </http>
+          </request> 
+        </transaction> 
+      </for>
 
-    </session>
+      <!-- logout -->  
+      <transaction name="logout">
+        <request><http url='/auth/logout' version='1.1' method='POST'></http></request> 
+      </transaction> 
+    </session>  
+
+<!-- Once a minute users must ping server (non issue since each user completes tasks in <1min) --> 
   </sessions>
 </tsung>
