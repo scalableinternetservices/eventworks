@@ -54,7 +54,9 @@ export function Room ({ event, user }: RoomProps) {
   const [userTableId, setUserTableId] = React.useState(0)
 
   const leaveTableOnUnmount = () => {
+    {console.log("leaving")}
     switchTable(getApolloClient(), {
+      eventId: event.event.id,
       eventTableId: null, // leave event
       participantId: user.user.id
     })
@@ -78,6 +80,7 @@ export function Room ({ event, user }: RoomProps) {
   // initial load of the event always causes switch back to main room
   React.useEffect(() => {
     switchTable(getApolloClient(), {
+      eventId: event.event.id,
       eventTableId: mainEventTableId,
       participantId: user.user.id
     }).then(() => setUserTableId(mainEventTableId))
@@ -90,6 +93,7 @@ export function Room ({ event, user }: RoomProps) {
           i != 0 ? (
             <div className="square-group" style={arrangementStyle}>
               <Square
+                event={event}
                 mainEventTableId={mainEventTableId}
                 table={table}
                 user={user}

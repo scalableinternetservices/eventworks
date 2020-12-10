@@ -30,12 +30,16 @@ import { UserType } from './graphql/schema.types'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
 
+const Redis = require('ioredis')
+const my_redis = new Redis()
+
 const server = new GraphQLServer({
   typeDefs: getSchema(),
   resolvers: graphqlRoot as any,
   context: ctx => ({
     ...ctx,
     pubsub,
+    redis: my_redis,
     user: (ctx.request as any)?.user || null,
     chatMessageLoader: createChatMessageLoader(),
     userLoader: createUserLoader(),
@@ -279,4 +283,4 @@ initORM()
   )
   .catch(err => console.error(err))
 
-initBackgroundProcesses()
+initBackgroundProcesses({redis: my_redis})

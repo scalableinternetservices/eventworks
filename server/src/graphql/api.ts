@@ -2,6 +2,7 @@ import DataLoader from 'dataloader'
 import { readFileSync } from 'fs'
 import { GraphQLScalarType, Kind } from 'graphql'
 import { PubSub } from 'graphql-yoga'
+import { Redis } from 'ioredis'
 import path from 'path'
 import { check } from '../../../common/src/util'
 import { ChatMessage } from '../entities/ChatMessage'
@@ -25,6 +26,7 @@ interface Context {
  request: Request
  response: Response
  pubsub: PubSub
+ redis: Redis
  chatMessageLoader: DataLoader<number, ChatMessage>
  userLoader: DataLoader<number, User>
  tableLoader: DataLoader<number, EventTable>
@@ -37,7 +39,16 @@ const TABLE_LIMIT_PER_EVENT = 16 // 15 + main room
 export const graphqlRoot: Resolvers<Context> = {
   Query: {
     self: (_, args, ctx) => ctx.user,
-    usersAtTable: async (_, { tableId }, ctx) => check(await User.find({ where: { table: { id: tableId } } })),
+    usersAtTable: async (_, { tableId }, {redis}) => {
+      const redisTableKey = tableId.toString() + "t";
+
+      const userRedis = ( await redis.lrange(redisTableKey, 0, -1))
+      const userRedisObject = userRedis.map(x => JSON.parse(x));
+
+      console.log(await redis.keys("*"))
+
+      return userRedisObject;
+    },
     user: async (_, {userId}, ctx) => check (await User.findOne({ where: { id : userId } })),
     users: async (_, args, ctx) => check(await User.find()),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
@@ -59,10 +70,22 @@ export const graphqlRoot: Resolvers<Context> = {
       }
       return event
     },
-    table: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
+    table: async (_, { tableId }, {redis}) => {
+      const redisTableKey = tableId.toString() + "t";
+
+      const participantsRedis = await redis.lrange(redisTableKey, 0, -1)
+      const particpantsRedisObject = participantsRedis.map((x) => JSON.parse(x))
+
+      return particpantsRedisObject;
+    },
+    tableInfo: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
   },
   Mutation: {
-    ping: (_, { userId }, ctx) => {
+    ping: async (_, { userId }, {redis}) => {
+      const user = check(await User.findOne({where: {id: userId}}));
+      user.timeUpdated = new Date();
+      user.save()
+
       console.log('ping', userId)
       return "ok"
     },
@@ -149,25 +172,43 @@ export const graphqlRoot: Resolvers<Context> = {
       pubsub.publish(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`, chat)
       return chat
     },
-    switchTable: async (_, { input }, ctx) => {
-      const user = check(await User.findOne({ where: { id: input.participantId }, relations: ['table'] }));
-      const oldTable = user.table
+    switchTable: async (_, { input }, {redis}) => {
+      const user = check(await User.findOne({where: {id: input.participantId}}));
+      user.timeUpdated = new Date();
+      user.save()
+
+      const redisTableKey = input.eventTableId?.toString() + "t";
+      const redisUserKey = input.participantId.toString() + "u" + input.eventId.toString() + "e";
+
+      const userTableRedis = check(await redis.mget(redisUserKey));
+
+      const oldTable = userTableRedis[0] ? JSON.parse(userTableRedis.toString()).tableId : null
+      const userObject = {id: user.id, name: user.name, email: user.email, userType: user.userType, linkedinLink: user.linkedinLink}
+      const tableObject = {tableId: input.eventTableId}
+
       if (input.eventTableId) { // join or switch to a new table
-        const newTable = check(await EventTable.findOne({ where: { id : input.eventTableId }}));
-        user.table = newTable;
-        await user.save();
-        const newTableUpdated = check(await EventTable.findOne({ where: { id : input.eventTableId }, relations: ['participants'] }));
-        pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdated)
+        await redis.rpush(redisTableKey, JSON.stringify(userObject));
+        await redis.set(redisUserKey, JSON.stringify(tableObject));
+
+        const newTableUpdatedRedis = await redis.lrange(redisTableKey, 0, -1)
+        const newTableUpdatedObject = newTableUpdatedRedis.map(x => JSON.parse(x));
+
+        pubsub.publish('TABLE_UPDATE' + input.eventTableId, newTableUpdatedObject);
       } else { // leave table
-        user.table = null
-        await user.save();
-      }
-      if (oldTable) {
-        const oldTableUpdated = check(await EventTable.findOne({ where: { id: oldTable.id }, relations: ['participants'] }))
-        pubsub.publish('TABLE_UPDATE' + oldTable.id, oldTableUpdated)
+        await redis.del(redisUserKey);
       }
 
-      return user;
+      if (oldTable) {
+        const oldTableKey = oldTable.toString() + "t";
+        await redis.lrem(oldTableKey, -1, JSON.stringify(userObject));
+
+        const oldTableUpdatedRedis = check( await redis.lrange(oldTableKey, 0, -1))
+        const oldTableUpdatedObject = oldTableUpdatedRedis.map(x => JSON.parse(x));
+
+        pubsub.publish('TABLE_UPDATE' + oldTable, oldTableUpdatedObject)
+      }
+
+      return userObject;
     }
   },
   Subscription: {
