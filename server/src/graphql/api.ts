@@ -30,6 +30,7 @@ interface Context {
  chatMessageLoader: DataLoader<number, ChatMessage>
  userLoader: DataLoader<number, User>
  tableLoader: DataLoader<number, EventTable>
+ eventLoader: DataLoader<number, Event>
 }
 
 const DEFAULT_USER_CAPACITY = 10
@@ -49,7 +50,7 @@ export const graphqlRoot: Resolvers<Context> = {
 
       return userRedisObject;
     },
-    user: async (_, {userId}, ctx) => check (await User.findOne({ where: { id : userId } })),
+    user: async (_, { userId }, { userLoader }) => check(await userLoader.load(userId)),
     users: async (_, args, ctx) => check(await User.find()),
     survey: async (_, { surveyId }) => (await Survey.findOne({ where: { id: surveyId } })) || null,
     surveys: () => Survey.find(),
@@ -78,28 +79,28 @@ export const graphqlRoot: Resolvers<Context> = {
 
       return particpantsRedisObject;
     },
-    tableInfo: async (_, { tableId }, ctx) => check(await EventTable.findOne({ where: { id: tableId } }))
+    tableInfo: async (_, { tableId }, { tableLoader }) => check(await tableLoader.load(tableId))
   },
   Mutation: {
-    ping: async (_, { userId }, {redis}) => {
-      const user = check(await User.findOne({where: {id: userId}}));
+    ping: async (_, { userId }, { redis, userLoader }) => {
+      const user = check(await userLoader.load(userId));
       user.timeUpdated = new Date();
       user.save()
 
       console.log('ping', userId)
       return "ok"
     },
-    updateUser: async (_, { input }, ctx) => {
-      const user = check(await User.findOne({where: {id: input.id}}))
+    updateUser: async (_, { input }, { userLoader }) => {
+      const user = check(await userLoader.load(input.id))
       user.name = input.name || user.name
       user.email = input.email || user.email
       user.linkedinLink = input.linkedinLink || user.linkedinLink
       await user.save()
       return user
     },
-    createEvent: async (_, { input }, ctx) => {
+    createEvent: async (_, { input }, { userLoader, eventLoader }) => {
       const newEvent = new Event()
-      const host = check(await User.findOne({ where: { id: input.hostId } }))
+      const host = check(await userLoader.load(input.hostId))
       newEvent.userCapacity = input.userCapacity
       newEvent.description = input.description
       newEvent.startTime = input.startTime
@@ -116,17 +117,17 @@ export const graphqlRoot: Resolvers<Context> = {
       newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
       newTable.name = `${input.name} Main Room`
       newTable.head = host
-      newTable.event = check(await Event.findOne({ where: { id: newEvent.id } }))
+      newTable.event = check(await eventLoader.load(newEvent.id))
       await newTable.save()
 
       return newEvent
     },
-    createTable: async (_, { input }, ctx) => {
+    createTable: async (_, { input }, { eventLoader, userLoader }) => {
       const numExistingTables = check(await EventTable.count({ where: { event: input.eventId } }))
       if (numExistingTables >= TABLE_LIMIT_PER_EVENT) {
         throw Error(`You've reached the maximum limit of ${TABLE_LIMIT_PER_EVENT} tables for your event.`)
       }
-      const event = check(await Event.findOne({ where: { id: input.eventId } }))
+      const event = check(await eventLoader.load(input.eventId))
       if (event.hostId !== input.senderId) {
         throw Error('Permission denied: Cannot create table because user is not the owner of this event.')
       }
@@ -135,7 +136,7 @@ export const graphqlRoot: Resolvers<Context> = {
       newTable.description = input.description
       newTable.userCapacity = input.userCapacity || DEFAULT_USER_CAPACITY
       newTable.name = input.name
-      newTable.head = check(await User.findOne({ where: { id: input.head } }))
+      newTable.head = check(await userLoader.load(input.head))
       newTable.event = event
       await newTable.save()
       return newTable
@@ -162,18 +163,18 @@ export const graphqlRoot: Resolvers<Context> = {
       ctx.pubsub.publish('SURVEY_UPDATE_' + surveyId, survey)
       return survey
     },
-    sendMessage: async (root, { senderId, eventId, tableId, message }, { pubsub }) => {
+    sendMessage: async (root, { senderId, eventId, tableId, message }, { pubsub, userLoader, eventLoader, tableLoader }) => {
       const chat = new ChatMessage()
-      chat.user = check(await User.findOne({ where: { id: senderId } }))
-      chat.event = check(await Event.findOne({ where: { id: eventId } }))
-      chat.table = check(await EventTable.findOne({ where: { id: tableId } }))
+      chat.user = check(await userLoader.load(senderId))
+      chat.event = check(await eventLoader.load(eventId))
+      chat.table = check(await tableLoader.load(tableId))
       chat.message = message
       await chat.save()
       pubsub.publish(`CHAT_UPDATE_EVENT_${eventId}_TABLE_${tableId}`, chat)
       return chat
     },
-    switchTable: async (_, { input }, {redis}) => {
-      const user = check(await User.findOne({where: {id: input.participantId}}));
+    switchTable: async (_, { input }, { redis, userLoader }) => {
+      const user = check(await userLoader.load(input.participantId));
       user.timeUpdated = new Date();
       user.save()
 

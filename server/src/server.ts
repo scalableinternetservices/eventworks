@@ -25,7 +25,7 @@ import { Session } from './entities/Session'
 import { User } from './entities/User'
 import { getSchema, graphqlRoot, pubsub } from './graphql/api'
 import { ConnectionManager } from './graphql/ConnectionManager'
-import { createChatMessageLoader, createTableLoader, createUserLoader } from './graphql/dataloader'
+import { createChatMessageLoader, createEventLoader, createTableLoader, createUserLoader } from './graphql/dataloader'
 import { UserType } from './graphql/schema.types'
 import { expressLambdaProxy } from './lambda/handler'
 import { renderApp } from './render'
@@ -43,7 +43,8 @@ const server = new GraphQLServer({
     user: (ctx.request as any)?.user || null,
     chatMessageLoader: createChatMessageLoader(),
     userLoader: createUserLoader(),
-    tableLoader: createTableLoader()
+    tableLoader: createTableLoader(),
+    eventLoader: createEventLoader()
   }),
 })
 
